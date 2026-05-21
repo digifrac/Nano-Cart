@@ -1,0 +1,40 @@
+# Local-only directories — never published
+nano/
+web/
+.claude/
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+
+# Editor and IDE state
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# PHP runtime artefacts
+*.log
+error_log
+php_errors.log
+
+# Local config that must never be committed
+/shop-config/
+config.json
+bootstrap.php
+
+# Build / dependency caches (defensive — Nano Cart has none, but guards against
+# accidental npm/composer introduction polluting the repo)
+node_modules/
+vendor/
+composer.lock
+
+# Test artefacts
+.phpunit.result.cache
+coverage/

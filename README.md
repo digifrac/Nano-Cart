@@ -1,5 +1,7 @@
 # Nano Cart
 
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/digitalfracture)
+
 A flat-file PHP product catalogue framework for static client sites. Sells fixed-price products, one item per purchase, with one external checkout URL per product. Drops into existing sites at `/shop/`. No database, no frameworks, no JavaScript checkout flows.
 
 **Status: v1 in development.** Design contracts ([FORMAT.md](FORMAT.md), [ARCHITECTURE.md](ARCHITECTURE.md)) are complete. Frontend, admin, image manager, and licence verification are scheduled for v1.0.0 release. Track progress on the [issues board](https://github.com/digifrac/Nano-Cart/issues).

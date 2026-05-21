@@ -302,7 +302,43 @@ Seed images are hand-made placeholders, small file size, with appropriate alt te
 
 ---
 
-## 14. Build sequence
+## 14. Developer support link (Buy Me A Coffee) — audience-separated
+
+Digital Fracture maintains a Buy Me A Coffee page at `https://buymeacoffee.com/digitalfracture`. The link appears in **developer-facing surfaces only** and is never rendered on public shop pages, regardless of licence state.
+
+### Permitted surfaces
+
+| Surface | Placement | Audience |
+|---------|-----------|----------|
+| `README.md` | Section near the bottom: "If Nano Cart saves you time, consider buying me a coffee" with the link | Developers evaluating or installing Nano Cart |
+| `CONTRIBUTING.md` | Listed alongside other ways to support the project (issues, PRs, sharing) | Developers contributing to the project |
+| Admin dashboard | Small, unobtrusive link in the admin footer or sidebar | The operator, only present when admin is uploaded |
+| Licence purchase confirmation page (on `digitalfracture.co.uk`) | Thank-you message with optional BMC link | Customers who just bought a licence — a developer audience |
+| Marketing site (`nanocart.co.uk`) | Donation link in the site footer | Developers discovering the project |
+
+### Forbidden surfaces
+
+- **Public shop pages rendered by Nano Cart** (`/shop/`, `/shop/<category>/`, `/shop/<category>/<product>/`) — never, in any licence state.
+- **Anywhere on the operator's client sites** where end-shoppers might encounter it.
+- The `template.php` footer area visible to public visitors, regardless of whether the licence-removable attribution is showing.
+
+### Rationale
+
+Public shop pages have one job: serve the operator's shop visitors. A donation link to the tool's developer has no place there.
+
+- **Unlicensed shops** show "Powered by Nano Cart — Developed by Digital Fracture" — fair attribution that says *"this shop runs on Nano Cart"*. That is a credit, not an ask.
+- **A BMC link in the same footer would change the message to *"give the tool's developer money"* — which is asking the wrong audience.** End-shoppers chose to visit the operator's shop; they did not choose to fund the underlying tool.
+- **Licensed shops** show no attribution at all. Adding a persistent BMC link there would be worse than the unlicensed state — the operator paid £29–£249 specifically for a clean white-label shop.
+
+Audience separation is the design rule: ask developers (in developer-facing surfaces) and never ask shop visitors (in any surface they might see).
+
+### Cross-project note
+
+The same rule applies to Nano CMS. If the CMS repo currently surfaces a BMC link on public pages rendered by the CMS, that should be removed and the link kept to README, admin dashboard, and CONTRIBUTING.md only. Worth a check next time the CMS repo is open.
+
+---
+
+## 15. Build sequence
 
 Nano Cart is built across six Claude Code sessions. Each session has a standalone prompt file under `nano/` (or wherever the prompt set is held). The sessions are strictly sequential — each reads the artefacts of the previous.
 

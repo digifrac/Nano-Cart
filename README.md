@@ -27,14 +27,14 @@ If your shop needs any of these, **use the right tool instead:**
 | Simple shops with multi-item cart | [Big Cartel](https://bigcartel.com) or [Gumroad](https://gumroad.com) |
 | Subscriptions or recurring billing | [Lemon Squeezy](https://lemonsqueezy.com) |
 
-Nano Cart is the right tool for a potter, a print-maker, a jewellery designer, an author, a consultant, or a gallery — anyone selling 20-50 distinct items at fixed prices through hosted checkout links.
+Nano Cart is the right tool for a potter, a print-maker, a jewellery designer, an author, a consultant, or a gallery: anyone selling 20-50 distinct items at fixed prices through hosted checkout links.
 
 ---
 
 ## How it works
 
 - **Flat-file JSON.** One JSON file per product, one per category. No database. Edit by hand or through the admin.
-- **External checkout.** Each product links to a Stripe Payment Link, PayPal hosted checkout, Square, Gumroad, Ko-fi, or any processor-hosted URL. Nano Cart renders its own "Buy" button as a plain `<a href>` to that URL — no SDKs, no embed code, no JavaScript on the shop page.
+- **External checkout.** Each product links to a Stripe Payment Link, PayPal hosted checkout, Square, Gumroad, Ko-fi, or any processor-hosted URL. Nano Cart renders its own "Buy" button as a plain `<a href>` to that URL. No SDKs, no embed code, no JavaScript on the shop page.
 - **Catalogue mode** alternative: replace the buy button with a site-wide enquiry action (mailto, contact form, Calendly, WhatsApp) for businesses selling through quotes.
 - **Removable admin.** A portable admin folder you upload via SFTP when you want to make changes, then remove. When the admin isn't on the server, it can't be attacked.
 - **SEO as a core output.** Every page renders complete metadata, JSON-LD Product schema, JSON-LD BreadcrumbList, Open Graph and Twitter Card tags, canonical URLs computed at render time. Target Lighthouse SEO score 100.
@@ -96,7 +96,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design and [FORMAT.md](FORMA
 
 ## Backup
 
-Same `rsync` approach as Nano CMS — the whole shop is a directory of JSON files and images. A daily rsync of `/shop/` and `/shop-config/` to a backup host is sufficient. Example cron:
+Same `rsync` approach as Nano CMS. The whole shop is a directory of JSON files and images. A daily rsync of `/shop/` and `/shop-config/` to a backup host is sufficient. Example cron:
 
 ```cron
 0 3 * * *  rsync -az --delete /var/www/example.com/shop/ backup@host:/backups/example-shop/
@@ -113,7 +113,7 @@ Restore is `rsync` in the other direction. No database to dump, no migrations to
 
 **v1.1+ (planned, post-launch).** Features will be prioritised based on early-adopter feedback. Likely candidates: optional product collections (cross-category groupings), homepage block layouts, multi-language support via per-locale JSON files.
 
-**Explicitly not planned.** Variants, quantity selectors, multi-item carts, inventory, search, tax/shipping engines, subscriptions. These are out of scope by design — see "Not for you" above.
+**Explicitly not planned.** Variants, quantity selectors, multi-item carts, inventory, search, tax/shipping engines, subscriptions. These are out of scope by design. See "Not for you" above.
 
 ---
 
@@ -129,7 +129,7 @@ Restore is `rsync` in the other direction. No database to dump, no migrations to
 | Agency 3-pack | £69 | Up to three shops |
 | Agency unlimited | £249 | Unlimited domains |
 
-Without a licence, Nano Cart displays a small *"Powered by Nano Cart — Developed by Digital Fracture"* footer on the pages it renders. With a valid licence, the footer is hidden.
+Without a licence, Nano Cart displays a small *"Powered by Nano Cart. Developed by Digital Fracture."* footer on the pages it renders. With a valid licence, the footer is hidden.
 
 Localhost and `.test` / `.local` development domains skip the licence check, so local development is always footer-free.
 
@@ -153,8 +153,8 @@ If Nano Cart saves you time on a client project, consider [buying me a coffee](h
 
 ## See also
 
-- [FORMAT.md](FORMAT.md) — on-disk format specification (schemas, paths, URLs)
-- [ARCHITECTURE.md](ARCHITECTURE.md) — runtime architecture and design contracts
-- [Nano CMS](https://github.com/digifrac/Nano-CMS) — sibling project for publishing blog posts on the same philosophy
-- [nanocart.co.uk](https://nanocart.co.uk) — marketing site
-- [digitalfracture.co.uk](https://digitalfracture.co.uk) — the studio behind Nano Cart
+- [FORMAT.md](FORMAT.md): on-disk format specification (schemas, paths, URLs)
+- [ARCHITECTURE.md](ARCHITECTURE.md): runtime architecture and design contracts
+- [Nano CMS](https://github.com/digifrac/Nano-CMS): sibling project for publishing blog posts on the same philosophy
+- [nanocart.co.uk](https://nanocart.co.uk): marketing site
+- [digitalfracture.co.uk](https://digitalfracture.co.uk): the studio behind Nano Cart

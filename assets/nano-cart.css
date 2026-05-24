@@ -243,10 +243,25 @@ a.nano-cart-breadcrumb-item:hover {
 .nano-cart-empty {
   text-align: center;
   color: var(--nano-cart-text-muted);
-  padding: 2rem;
+  padding: 2.5rem 1.5rem;
   background: var(--nano-cart-bg-soft);
+  border: 1px dashed var(--nano-cart-border);
   border-radius: var(--nano-cart-radius);
 }
+.nano-cart-empty h1 {
+  color: var(--nano-cart-text);
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+}
+.nano-cart-empty p { margin: 0 0 0.5rem; }
+.nano-cart-empty-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--nano-cart-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.nano-cart-empty-link:hover { color: var(--nano-cart-accent-hover); text-decoration: underline; }
 
 /* Product page. */
 .nano-cart-product { display: block; }

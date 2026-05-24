@@ -30,8 +30,17 @@ $nano_cart_head   = nano_cart_seo_head($title, $description, $canonical, null, '
 $nano_cart_jsonld = '';
 
 ob_start();
+
+$has_any_content = $hero !== null || !empty($categories) || !empty($featured);
 ?>
 <article class="nano-cart-home">
+<?php if (!$has_any_content): ?>
+  <section class="nano-cart-empty">
+    <h1>Welcome to <?= htmlspecialchars($site_name !== '' ? $site_name : 'your shop') ?></h1>
+    <p>This shop is empty so far. Add your first category and product through the admin to get started.</p>
+    <p><a class="nano-cart-empty-link" href="<?= htmlspecialchars($shop_path) ?>/admin/">Open the admin &rarr;</a></p>
+  </section>
+<?php endif; ?>
 <?php if ($hero !== null):
     $primary = nano_cart_primary_image($hero);
     $hero_cat = $cats_by_slug[$hero['category']] ?? null;

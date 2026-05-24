@@ -1,7 +1,8 @@
-# Local-only directories — never published
+# Local-only directories and files. Never published.
 nano/
 web/
 .claude/
+LOCAL-NOTES.md
 
 # Operating system metadata
 .DS_Store

@@ -88,7 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $h = static fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
 
+$shop_path = nano_cart_shop_path();
 echo nano_cart_admin_header($is_edit ? 'Edit category' : 'Add category', 'categories');
+echo '<link rel="stylesheet" href="' . $h($admin_url . '/image-manager.css') . '">';
+echo '<script src="' . $h($admin_url . '/image-manager.js') . '" defer></script>';
 ?>
 
 <?php if (!empty($errors)): ?>
@@ -134,11 +137,30 @@ echo nano_cart_admin_header($is_edit ? 'Edit category' : 'Add category', 'catego
 
   <fieldset class="nano-cart-admin-fieldset">
     <legend>Banner image</legend>
+<?php
+$cat_images = [];
+if ($values['image'] !== '') {
+    $cat_images[] = ['file' => $values['image'], 'alt' => (string)$values['name'], 'is_primary' => true];
+}
+?>
+<?php if ($is_edit): ?>
+    <div class="nano-cart-admin-image-manager"
+         data-endpoint="<?= $h($admin_url . '/upload.php') ?>"
+         data-csrf="<?= $h(nano_cart_admin_csrf_token()) ?>"
+         data-target-type="category"
+         data-target-id="<?= $h($values['slug']) ?>"
+         data-media-base="<?= $h($shop_path . '/media') ?>"
+         data-rel-root="category-images"
+         data-single-image="1"
+         data-images='<?= $h(json_encode($cat_images, JSON_UNESCAPED_SLASHES)) ?>'></div>
+    <p class="nano-cart-admin-help">Only one banner per category; uploading a new one replaces the previous reference.</p>
+<?php else: ?>
+    <p class="nano-cart-admin-empty">Save the category first; the image manager opens once the slug exists on disk.</p>
+<?php endif; ?>
     <label>
-      Image path under media/category-images/ (without extension, with optional one-level subfolder)
+      Or set the image path manually (under media/category-images/, optional one-level subfolder)
       <input type="text" name="image" maxlength="200" placeholder="e.g. pottery or pottery/banner" value="<?= $h($values['image']) ?>">
     </label>
-    <p class="nano-cart-admin-help">Upload images via the image manager (built in Session 4). For now, drop pre-generated files into media/category-images/ via SFTP and reference the basename here.</p>
     <label>
       Width
       <select name="image_width">

@@ -128,6 +128,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $h = static fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
 
 echo nano_cart_admin_header($is_edit ? 'Edit product' : 'Add product', 'products');
+echo '<link rel="stylesheet" href="' . $h($admin_url . '/image-manager.css') . '">';
+echo '<script src="' . $h($admin_url . '/image-manager.js') . '" defer></script>';
 ?>
 
 <?php if (!empty($errors)): ?>
@@ -242,15 +244,18 @@ echo nano_cart_admin_header($is_edit ? 'Edit product' : 'Add product', 'products
 
   <fieldset class="nano-cart-admin-fieldset">
     <legend>Images</legend>
-    <p class="nano-cart-admin-help">Single-image upload for now. The full multi-image gallery with drag-reorder and alt-text editing is built in Cart Session 4.</p>
-<?php if (!empty($values['images'])): ?>
-    <ul class="nano-cart-admin-image-list">
-<?php foreach ($values['images'] as $img): ?>
-      <li><code><?= $h((string)($img['file'] ?? '')) ?></code> - <?= $h((string)($img['alt'] ?? '')) ?> <?= !empty($img['is_primary']) ? '<span class="nano-cart-admin-pill">primary</span>' : '' ?></li>
-<?php endforeach; ?>
-    </ul>
+    <p class="nano-cart-admin-help">Drop one or more images below. Variants in three sizes (JPEG + WebP) are generated on upload. Drag thumbnails to reorder; first in order is the primary unless you set the star explicitly.</p>
+<?php if ($is_edit): ?>
+    <div class="nano-cart-admin-image-manager"
+         data-endpoint="<?= $h($admin_url . '/upload.php') ?>"
+         data-csrf="<?= $h(nano_cart_admin_csrf_token()) ?>"
+         data-target-type="product"
+         data-target-id="<?= $h($values['sku']) ?>"
+         data-media-base="<?= $h($shop_path . '/media') ?>"
+         data-rel-root="product-images/<?= $h($values['sku']) ?>"
+         data-images='<?= $h(json_encode($values['images'], JSON_UNESCAPED_SLASHES)) ?>'></div>
 <?php else: ?>
-    <p class="nano-cart-admin-empty">No images yet. Upload via the image manager once Session 4 ships, or hand-edit the JSON for now.</p>
+    <p class="nano-cart-admin-empty">Save the product first; the image manager opens once the SKU exists on disk.</p>
 <?php endif; ?>
   </fieldset>
 

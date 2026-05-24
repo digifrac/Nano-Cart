@@ -288,6 +288,59 @@ function nano_cart_picture(
         . '</picture>';
 }
 
+/**
+ * Structured view of all variants for a product's images. Returns:
+ *   [
+ *     'primary' => ['file' => ..., 'alt' => ..., 'urls' => [
+ *         'hero'         => ['jpg' => ..., 'webp' => ...],
+ *         'thumb'        => ['jpg' => ..., 'webp' => ...],
+ *         'gallery-thumb'=> ['jpg' => ..., 'webp' => ...],
+ *         'original'     => ['jpg' => ...],
+ *     ]],
+ *     'gallery' => [ ... same shape, one entry per non-primary image ],
+ *   ]
+ * Returns null entries when no images exist.
+ */
+function nano_cart_image_set(array $product): array
+{
+    $images = is_array($product['images'] ?? null) ? $product['images'] : [];
+    $sku = (string)($product['sku'] ?? '');
+    $build = static function (array $img) use ($sku): array {
+        $file = (string)($img['file'] ?? '');
+        $base = 'product-images/' . $sku . '/' . $file;
+        return [
+            'file' => $file,
+            'alt'  => (string)($img['alt'] ?? ''),
+            'is_primary' => !empty($img['is_primary']),
+            'urls' => [
+                'original'      => ['jpg' => nano_cart_image_url($base, 'original', 'jpg')],
+                'hero'          => ['jpg' => nano_cart_image_url($base, 'hero', 'jpg'),
+                                    'webp'=> nano_cart_image_url($base, 'hero', 'webp')],
+                'thumb'         => ['jpg' => nano_cart_image_url($base, 'thumb', 'jpg'),
+                                    'webp'=> nano_cart_image_url($base, 'thumb', 'webp')],
+                'gallery-thumb' => ['jpg' => nano_cart_image_url($base, 'gallery-thumb', 'jpg'),
+                                    'webp'=> nano_cart_image_url($base, 'gallery-thumb', 'webp')],
+            ],
+        ];
+    };
+    $primary = null;
+    $gallery = [];
+    foreach ($images as $img) {
+        if (!is_array($img)) continue;
+        $entry = $build($img);
+        if ($entry['is_primary'] && $primary === null) {
+            $primary = $entry;
+        } else {
+            $gallery[] = $entry;
+        }
+    }
+    if ($primary === null && !empty($gallery)) {
+        $primary = array_shift($gallery);
+        $primary['is_primary'] = true;
+    }
+    return ['primary' => $primary, 'gallery' => $gallery];
+}
+
 /* ----------------------------------------------------------------------- */
 /* Price formatting                                                          */
 /* ----------------------------------------------------------------------- */

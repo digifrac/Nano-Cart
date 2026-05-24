@@ -59,12 +59,6 @@ php -S 127.0.0.1:8000 -t .
 
 Visit `http://127.0.0.1:8000/admin/setup.php` to run the setup wizard.
 
-Run the tests:
-
-```bash
-php tests/licence/01-verify.php
-```
-
 ---
 
 ## Other ways to support the project

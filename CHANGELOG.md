@@ -55,8 +55,6 @@ Initial public release.
 - Canonical host derived from `config.site_url`, NOT `HTTP_HOST`, to prevent Host-spoof and reverse-proxy cache-poisoning bypass
 - Dev-host bypass: `localhost`, `127.0.0.1`, `::1`, any host with a port, `*.test`, `*.local`
 - Admin Licence page with status display, paste-to-verify-save, remove with confirmation
-- Test licence generator script (`tests/licence/generate-test-licence.php`) using a throwaway keypair, so contributors can verify the full integration without access to the production keypair
-- 22 verification tests covering happy path, www-stripping, case-insensitive host, tampered signature, wrong product, empty/malformed input, wildcard rules per tier, expiry, dev-host detection
 
 ### Documentation
 

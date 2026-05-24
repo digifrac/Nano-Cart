@@ -179,8 +179,6 @@ Paste your licence key into the admin under **Licence**, or directly into `/shop
 
 Buy a licence at [digitalfracture.co.uk/licensing/nano-cart](https://digitalfracture.co.uk/licensing/nano-cart).
 
-**Testing licence verification:** contributors can use `tests/licence/generate-test-licence.php` to generate a working test licence with a throwaway keypair. Instructions are at the top of the script. After testing, revert `licence.php`'s `NANO_CART_LICENCE_PUBKEY_V1` constant to the real Digital Fracture key.
-
 ---
 
 ## Contributing

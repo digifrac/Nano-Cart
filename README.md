@@ -39,11 +39,13 @@ Nano Cart is the right tool for a potter, a print-maker, a jewellery designer, a
 - **External checkout.** Each product links to a Stripe Payment Link, PayPal hosted checkout, Square, Gumroad, Ko-fi, or any processor-hosted URL. Nano Cart renders its own "Buy" button as a plain `<a href>` to that URL. No SDKs, no embed code, no JavaScript on the shop page.
 - **Catalogue mode** alternative: replace the buy button with a site-wide enquiry action (mailto, contact form, Calendly, WhatsApp) for businesses selling through quotes.
 - **Removable admin.** A portable admin folder you upload via SFTP when you want to make changes, then remove. When the admin isn't on the server, it can't be attacked.
+- **Web installer.** A small `install.php` script auto-detects your hosting layout (cPanel, addon domains, standard), creates the outside-webroot config directory, writes `bootstrap.php` for you, and hands off to the setup wizard. One-click delete from the admin dashboard after setup. No SFTP-and-edit-bootstrap-by-hand required.
 - **SEO as a core output.** Every page renders complete metadata, JSON-LD Product schema, JSON-LD BreadcrumbList, Open Graph and Twitter Card tags, canonical URLs computed at render time.
 - **Mobile-first.** Templates designed for a 375px viewport and progressively enhanced for larger screens. Sticky buy button on mobile. Native scroll-snap image gallery. Tap targets at least 44px.
 - **No frameworks.** Hand-written PHP, hand-written CSS scoped to `nano-cart-*` class names, minimal vanilla JavaScript. The only vendored dependency is Parsedown (single file, no Composer).
+- **Tiny on purpose.** Around 7,500 lines of code total, deploys in under 250KB on disk. For comparison, WooCommerce is ~50MB and a single one of its bundled JavaScript files is often larger than the whole of Nano Cart.
 
-Total size: around 7500 lines of code (about 5750 hand-written PHP / CSS / JS, plus the 1700-line vendored Parsedown). The whole shop deploys in under 250KB on disk. For comparison, WooCommerce is ~50MB.
+Total size: around 7,500 lines of code (about 5,750 hand-written PHP / CSS / JS, plus the 1,700-line vendored Parsedown). The whole shop deploys in under 250KB on disk.
 
 ---
 

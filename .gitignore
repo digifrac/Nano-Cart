@@ -37,11 +37,15 @@ bootstrap.php
 /media/
 /sitemap.xml
 
-# Build / dependency caches (defensive — Nano Cart has none, but guards against
-# accidental npm/composer introduction polluting the repo)
+# Build / dependency caches (defensive. Nano Cart has none, but guards against
+# accidental npm/composer introduction polluting the repo).
 node_modules/
 vendor/
 composer.lock
+
+# Release zips (built locally, uploaded to GitHub releases as assets
+# rather than committed to source).
+*.zip
 
 # Test artefacts
 .phpunit.result.cache

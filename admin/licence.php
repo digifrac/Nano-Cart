@@ -122,7 +122,7 @@ echo nano_cart_admin_flash_html();
 
 <section class="nano-cart-admin-section">
   <h2 class="nano-cart-admin-section-title">Buy a licence</h2>
-  <p>Purchase a per-domain perpetual licence at <a href="https://digitalfracture.co.uk/licensing/nano-cart" target="_blank" rel="noopener">digitalfracture.co.uk/licensing/nano-cart</a>.</p>
+  <p>Purchase a per-domain perpetual licence at <a href="https://digitalfracture.co.uk/nano-cart.html" target="_blank" rel="noopener">digitalfracture.co.uk/nano-cart.html</a>.</p>
   <ul>
     <li>Single domain: &pound;29</li>
     <li>3-domain agency pack: &pound;69</li>

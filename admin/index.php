@@ -8,8 +8,11 @@
 require __DIR__ . '/../bootstrap.php';
 require __DIR__ . '/auth.php';
 
+// No config yet means the operator has not run setup. Redirect with a
+// relative URL so we don't need to call nano_cart_shop_path(), which
+// itself depends on config.json.
 if (!defined('NANO_CART_CONFIG_PATH') || !is_file(NANO_CART_CONFIG_PATH)) {
-    nano_cart_admin_redirect(nano_cart_shop_path() . '/admin/setup.php');
+    nano_cart_admin_redirect('setup.php');
 }
 
 nano_cart_admin_auth_check();
@@ -27,9 +30,22 @@ $recent = array_slice($recent, 0, 5);
 
 $h = static fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
 
+$install_php = dirname(__DIR__) . '/install.php';
+$install_exists = is_file($install_php);
+
 echo nano_cart_admin_header('Dashboard', 'dashboard');
 echo nano_cart_admin_flash_html();
+
+if ($install_exists):
 ?>
+<div class="nano-cart-admin-flash nano-cart-admin-flash-error">
+  <p><strong>install.php is still on the server.</strong> Setup is complete; the installer should be removed now. Leaving it in place is a small fingerprinting risk and could let someone reconfigure the shop if your config files were ever wiped.</p>
+  <form method="post" action="<?= $h($shop_path) ?>/install.php" style="margin-top:0.5rem">
+    <input type="hidden" name="action" value="delete">
+    <button type="submit" class="nano-cart-admin-button nano-cart-admin-button-danger" onclick="return confirm('Delete install.php from the server now?')">Delete install.php now</button>
+  </form>
+</div>
+<?php endif; ?>
 
 <section class="nano-cart-admin-stats">
   <div class="nano-cart-admin-stat">

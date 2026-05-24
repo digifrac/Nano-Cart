@@ -12,6 +12,7 @@ Initial public release.
 - `core.php` loader and helper library: config, product/category JSON loaders with filtering, markdown rendering via vendored Parsedown, canonical URL construction, image URL builder with variant suffix, breadcrumb data and HTML, SEO metadata block, JSON-LD Product and BreadcrumbList builders, buy/enquiry button, `nano_cart_image_set()` structured-variant view
 - `template.php` per-site HTML wrapper that operators customise to match host site chrome
 - `generators.php` sitemap generator (XML, regenerated on every admin save)
+- `install.php` web-based first-time installer: detects whether `bootstrap.php` exists, prompts for an outside-webroot config directory, creates it (`chmod 0750`), writes `bootstrap.php` with absolute paths, hands off to the admin setup wizard. Refuses to run once `bootstrap.php` exists, so a forgotten `install.php` cannot reconfigure a live shop. Operator deletes it after install, same pattern as the admin folder.
 - `nano-preflight.php` first-run detector
 - `.htaccess` URL rewriting, HTTPS enforcement, trailing-slash canonicalisation
 - `assets/nano-cart.css`: scoped stylesheet (`nano-cart-*` prefix), mobile-first, CSS variables for retheming

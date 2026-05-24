@@ -93,22 +93,7 @@ The PHP process needs read AND write access to `/shop-config/` because the setup
 
 ---
 
-## Step 4: configure bootstrap.php
-
-Copy the example bootstrap and edit the paths:
-
-```bash
-cd /var/www/example.com/public_html/shop/
-cp bootstrap.example.php bootstrap.php
-```
-
-Edit `bootstrap.php` and set the four `NANO_CART_*_PATH` constants. The defaults in the example assume the layout above; if you split things differently, update accordingly.
-
-`bootstrap.php` is gitignored by default (and listed in the example as a per-site file). Do NOT commit it to a public repo.
-
----
-
-## Step 5: upload the admin folder
+## Step 4: upload the admin folder
 
 Upload the `admin/` directory from the release zip into `/shop/admin/`. This is temporary: you will remove it after setup is done.
 
@@ -126,9 +111,42 @@ Upload the `admin/` directory from the release zip into `/shop/admin/`. This is 
 
 ---
 
-## Step 6: run the setup wizard
+## Step 5: run the web installer
 
-Visit `https://example.com/shop/admin/setup.php` in a browser.
+Visit `https://example.com/shop/install.php` in a browser.
+
+The installer detects that no `bootstrap.php` exists yet and shows a form with one field: the absolute path for the config directory you created in Step 3. The default suggestion is a sibling of `/shop/` (e.g. `/var/www/example.com/nano-shop-config`).
+
+Submit. The installer:
+
+- Creates the config directory if it does not already exist (`chmod 0750`)
+- Writes `bootstrap.php` in `/shop/` with the right path constants
+- Hands off to the setup wizard
+
+If PHP cannot create the directory (some shared hosts block writes above the webroot), the installer shows a clear error with the exact shell commands to run manually. Then you reload the installer and it picks up the directory you created.
+
+**After a successful install:**
+
+- The installer shows a prominent "delete me" warning. Delete `/shop/install.php` via SFTP. It served its purpose.
+- The installer refuses to run again while `bootstrap.php` exists, so a forgotten `install.php` cannot reconfigure a live shop, but it is still a small fingerprinting risk worth removing.
+
+**Manual fallback (if you do not want to use the installer):**
+
+```bash
+cd /var/www/example.com/public_html/shop/
+cp bootstrap.example.php bootstrap.php
+# edit bootstrap.php, set NANO_CART_CONFIG_PATH and NANO_CART_RATE_LIMIT_PATH
+```
+
+The four `NANO_CART_*_PATH` constants point at the four directories Nano Cart needs to find. The two outside-webroot ones (`CONFIG_PATH`, `RATE_LIMIT_PATH`) you set to your `/nano-shop-config/` folder. The three in-webroot ones default to `__DIR__ . '/products'` etc. and need no edit if the layout matches Step 2.
+
+`bootstrap.php` is gitignored by default. Do NOT commit it to a public repo.
+
+---
+
+## Step 6: complete the setup wizard
+
+The installer (or your manual install) finishes by sending you to `https://example.com/shop/admin/setup.php`.
 
 You will see the use-case advisory panel ("Nano Cart works best when..."). Read it, then fill in the form:
 

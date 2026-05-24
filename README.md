@@ -43,7 +43,7 @@ Nano Cart is the right tool for a potter, a print-maker, a jewellery designer, a
 - **Mobile-first.** Templates designed for a 375px viewport and progressively enhanced for larger screens. Sticky buy button on mobile. Native scroll-snap image gallery. Tap targets at least 44px.
 - **No frameworks.** Hand-written PHP, hand-written CSS scoped to `nano-cart-*` class names, minimal vanilla JavaScript. The only vendored dependency is Parsedown (single file, no Composer).
 
-Total size: around 5500 lines of hand-written PHP, CSS, and JS, plus the vendored Parsedown. The whole shop deploys in under 250KB on disk. For comparison, WooCommerce is ~50MB.
+Total size: around 7500 lines of code (about 5750 hand-written PHP / CSS / JS, plus the 1700-line vendored Parsedown). The whole shop deploys in under 250KB on disk. For comparison, WooCommerce is ~50MB.
 
 ---
 

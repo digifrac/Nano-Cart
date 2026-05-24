@@ -5,19 +5,26 @@
 :root {
   --nano-cart-admin-text:   #1f2328;
   --nano-cart-admin-muted:  #57606a;
-  --nano-cart-admin-bg:     #f6f8fa;
+  --nano-cart-admin-bg:     #f1f4f8;
   --nano-cart-admin-panel:  #ffffff;
   --nano-cart-admin-border: #d0d7de;
   --nano-cart-admin-border-soft: #e6e8eb;
   --nano-cart-admin-accent: #1f6feb;
   --nano-cart-admin-accent-hover: #0a4fc4;
+  --nano-cart-admin-accent-soft:  #eaf3ff;
   --nano-cart-admin-danger: #cf222e;
   --nano-cart-admin-danger-hover: #a30c1c;
   --nano-cart-admin-success-bg: #dafbe1;
   --nano-cart-admin-success-fg: #1a7f37;
   --nano-cart-admin-error-bg:   #ffebe9;
   --nano-cart-admin-error-fg:   #82071e;
-  --nano-cart-admin-radius:    6px;
+  --nano-cart-admin-warning-bg: #fff8c5;
+  --nano-cart-admin-warning-fg: #7d4e00;
+  --nano-cart-admin-radius:    8px;
+  --nano-cart-admin-radius-sm: 5px;
+  --nano-cart-admin-shadow:        0 1px 2px rgba(15, 23, 42, 0.05);
+  --nano-cart-admin-shadow-panel:  0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --nano-cart-admin-shadow-raised: 0 4px 12px rgba(15, 23, 42, 0.10), 0 2px 4px rgba(15, 23, 42, 0.05);
   --nano-cart-admin-font:      system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -32,15 +39,20 @@ body.nano-cart-admin {
 
 .nano-cart-admin * { box-sizing: border-box; }
 
-/* Header / nav. */
+/* Header / nav. Sticky for fast navigation; subtle shadow lifts it
+   above the scrolled content so it always feels distinct. */
 .nano-cart-admin-header {
   background: var(--nano-cart-admin-panel);
   border-bottom: 1px solid var(--nano-cart-admin-border);
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.5rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem 1rem;
+  box-shadow: var(--nano-cart-admin-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 .nano-cart-admin-brand {
   font-weight: 700;
@@ -48,55 +60,90 @@ body.nano-cart-admin {
   color: var(--nano-cart-admin-text);
   text-decoration: none;
   margin-right: 1rem;
+  letter-spacing: -0.01em;
 }
 .nano-cart-admin-nav {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.15rem;
   flex-wrap: wrap;
 }
 .nano-cart-admin-nav-link {
   color: var(--nano-cart-admin-muted);
   text-decoration: none;
-  padding: 0.4rem 0.75rem;
-  border-radius: var(--nano-cart-admin-radius);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--nano-cart-admin-radius-sm);
   font-weight: 500;
+  transition: background-color 120ms ease, color 120ms ease;
 }
-.nano-cart-admin-nav-link:hover { color: var(--nano-cart-admin-text); background: var(--nano-cart-admin-bg); }
+.nano-cart-admin-nav-link:hover {
+  color: var(--nano-cart-admin-text);
+  background: var(--nano-cart-admin-bg);
+}
 .nano-cart-admin-nav-current {
   color: var(--nano-cart-admin-accent);
-  background: var(--nano-cart-admin-bg);
+  background: var(--nano-cart-admin-accent-soft);
+}
+.nano-cart-admin-nav-current:hover {
+  color: var(--nano-cart-admin-accent-hover);
+  background: var(--nano-cart-admin-accent-soft);
 }
 .nano-cart-admin-logout {
   margin-left: auto;
   color: var(--nano-cart-admin-muted);
   text-decoration: none;
   font-size: 0.9rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--nano-cart-admin-radius-sm);
+  transition: color 120ms ease, background-color 120ms ease;
 }
-.nano-cart-admin-logout:hover { color: var(--nano-cart-admin-danger); }
+.nano-cart-admin-logout:hover {
+  color: var(--nano-cart-admin-danger);
+  background: var(--nano-cart-admin-error-bg);
+}
 
-/* Main layout. */
+/* Main layout. The page-title now has a coloured accent bar on the
+   left so it reads as a heading distinct from any section beneath. */
 .nano-cart-admin-main {
-  max-width: 1000px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 1.25rem;
+  padding: 1.75rem 1.5rem;
 }
 .nano-cart-admin-page-title {
-  margin: 0 0 1.25rem;
-  font-size: 1.5rem;
+  margin: 0 0 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
+  letter-spacing: -0.015em;
+  padding-left: 0.85rem;
+  border-left: 4px solid var(--nano-cart-admin-accent);
+  line-height: 1.2;
 }
+
+/* Sections: lifted panels with a distinct header band. The shadow +
+   header background give clear visual separation between adjacent
+   sections, fixing the "everything looks flat" complaint. The title
+   uses negative margins to span the full panel width as a header
+   while the section keeps normal padding for its content. */
 .nano-cart-admin-section {
   background: var(--nano-cart-admin-panel);
   border: 1px solid var(--nano-cart-admin-border);
   border-radius: var(--nano-cart-admin-radius);
   padding: 1.25rem;
   margin-bottom: 1.5rem;
+  box-shadow: var(--nano-cart-admin-shadow-panel);
 }
 .nano-cart-admin-section-title {
-  margin: 0 0 1rem;
-  font-size: 1.1rem;
+  margin: -1.25rem -1.25rem 1.25rem;
+  padding: 0.7rem 1.25rem;
+  font-size: 0.78rem;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--nano-cart-admin-muted);
+  background: linear-gradient(to bottom, var(--nano-cart-admin-bg), var(--nano-cart-admin-panel));
+  border-bottom: 1px solid var(--nano-cart-admin-border-soft);
+  border-radius: var(--nano-cart-admin-radius) var(--nano-cart-admin-radius) 0 0;
 }
+.nano-cart-admin-section > :last-child { margin-bottom: 0; }
 .nano-cart-admin-actions {
   margin-bottom: 1rem;
   display: flex;
@@ -105,17 +152,20 @@ body.nano-cart-admin {
 }
 .nano-cart-admin-footer {
   text-align: center;
-  padding: 1.5rem 1rem 2rem;
+  padding: 2rem 1rem 2.5rem;
   color: var(--nano-cart-admin-muted);
   font-size: 0.85rem;
 }
 
-/* Flash messages. */
+/* Flash messages: coloured left bar for at-a-glance status, plus
+   stronger visual weight than a plain border all round. */
 .nano-cart-admin-flash {
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1rem 0.85rem 1.1rem;
   border-radius: var(--nano-cart-admin-radius);
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   border: 1px solid transparent;
+  border-left-width: 4px;
+  box-shadow: var(--nano-cart-admin-shadow);
 }
 .nano-cart-admin-flash-success {
   background: var(--nano-cart-admin-success-bg);
@@ -127,30 +177,53 @@ body.nano-cart-admin {
   color: var(--nano-cart-admin-error-fg);
   border-color: var(--nano-cart-admin-error-fg);
 }
-.nano-cart-admin-flash ul { margin: 0.25rem 0 0 1.25rem; padding: 0; }
+.nano-cart-admin-flash ul { margin: 0.35rem 0 0 1.25rem; padding: 0; }
 
-/* Stats grid (dashboard). */
+/* Stats grid (dashboard). Each stat is a small lifted panel with an
+   accent strip on top: gives the dashboard immediate visual interest
+   without going chart-heavy. */
 .nano-cart-admin-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 .nano-cart-admin-stat {
+  position: relative;
   background: var(--nano-cart-admin-panel);
   border: 1px solid var(--nano-cart-admin-border);
   border-radius: var(--nano-cart-admin-radius);
-  padding: 1rem;
+  padding: 1.25rem 1rem 1rem;
   text-align: center;
+  box-shadow: var(--nano-cart-admin-shadow-panel);
+  transition: box-shadow 150ms ease, transform 150ms ease;
+  overflow: hidden;
+}
+.nano-cart-admin-stat::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--nano-cart-admin-accent), #4a9eff);
+}
+.nano-cart-admin-stat:hover {
+  box-shadow: var(--nano-cart-admin-shadow-raised);
+  transform: translateY(-1px);
 }
 .nano-cart-admin-stat-value {
-  font-size: 1.8rem;
+  font-size: 1.9rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--nano-cart-admin-text);
+  line-height: 1;
 }
 .nano-cart-admin-stat-label {
   color: var(--nano-cart-admin-muted);
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 500;
 }
 
 .nano-cart-admin-quick-actions {
@@ -159,25 +232,32 @@ body.nano-cart-admin {
   gap: 0.5rem;
 }
 
-/* Forms. */
+/* Forms. The form itself is a panel; long forms (settings, setup,
+   product edit) get subheadings (h2) that act as in-form section
+   dividers, distinct from the page-level section headers above. */
 .nano-cart-admin-form {
   background: var(--nano-cart-admin-panel);
   border: 1px solid var(--nano-cart-admin-border);
   border-radius: var(--nano-cart-admin-radius);
-  padding: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: var(--nano-cart-admin-shadow-panel);
 }
 .nano-cart-admin-form h2 {
-  margin: 1.5rem 0 0.75rem;
-  font-size: 1rem;
+  margin: 2rem 0 1rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  padding-bottom: 0.35rem;
-  border-bottom: 1px solid var(--nano-cart-admin-border-soft);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--nano-cart-admin-muted);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--nano-cart-admin-accent-soft);
 }
 .nano-cart-admin-form h2:first-of-type { margin-top: 0; }
 .nano-cart-admin-form label {
   display: block;
   margin-bottom: 1rem;
   font-weight: 500;
+  color: var(--nano-cart-admin-text);
 }
 .nano-cart-admin-form input[type=text],
 .nano-cart-admin-form input[type=url],
@@ -188,38 +268,50 @@ body.nano-cart-admin {
 .nano-cart-admin-form textarea {
   display: block;
   width: 100%;
-  margin-top: 0.35rem;
-  padding: 0.55rem 0.7rem;
+  margin-top: 0.4rem;
+  padding: 0.6rem 0.75rem;
   font-family: inherit;
   font-size: 1rem;
   color: var(--nano-cart-admin-text);
   background: var(--nano-cart-admin-panel);
   border: 1px solid var(--nano-cart-admin-border);
-  border-radius: var(--nano-cart-admin-radius);
+  border-radius: var(--nano-cart-admin-radius-sm);
+  box-shadow: inset 0 1px 1px rgba(15, 23, 42, 0.03);
+  transition: border-color 100ms ease, box-shadow 100ms ease;
 }
 .nano-cart-admin-form input:focus,
 .nano-cart-admin-form select:focus,
 .nano-cart-admin-form textarea:focus {
-  outline: 2px solid var(--nano-cart-admin-accent);
-  outline-offset: 1px;
+  outline: none;
   border-color: var(--nano-cart-admin-accent);
+  box-shadow: inset 0 1px 1px rgba(15, 23, 42, 0.03),
+              0 0 0 3px var(--nano-cart-admin-accent-soft);
 }
 .nano-cart-admin-form input[readonly] {
   background: var(--nano-cart-admin-bg);
   color: var(--nano-cart-admin-muted);
+  cursor: not-allowed;
 }
 .nano-cart-admin-form textarea { resize: vertical; min-height: 6rem; }
 
+/* Fieldsets: subtle tinted background distinguishes a group of
+   related inputs (e.g. image fitting controls) from surrounding
+   labels. */
 .nano-cart-admin-fieldset {
   border: 1px solid var(--nano-cart-admin-border);
   border-radius: var(--nano-cart-admin-radius);
+  background: var(--nano-cart-admin-bg);
   padding: 0.85rem 1rem;
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
 }
 .nano-cart-admin-fieldset legend {
-  padding: 0 0.5rem;
+  padding: 0 0.55rem;
   font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--nano-cart-admin-text);
 }
+.nano-cart-admin-fieldset label { margin-bottom: 0.75rem; }
+.nano-cart-admin-fieldset label:last-child { margin-bottom: 0; }
 .nano-cart-admin-inline {
   display: inline-flex !important;
   align-items: center;
@@ -246,39 +338,54 @@ body.nano-cart-admin {
   margin: 0 0 0.75rem;
 }
 
-/* Buttons. */
+/* Buttons. Subtle shadow gives clickable affordance; the primary
+   button has slightly more shadow weight so it reads as the obvious
+   default action. */
 .nano-cart-admin-button {
-  display: inline-block;
-  padding: 0.55rem 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.15rem;
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--nano-cart-admin-text);
   background: var(--nano-cart-admin-panel);
   border: 1px solid var(--nano-cart-admin-border);
-  border-radius: var(--nano-cart-admin-radius);
+  border-radius: var(--nano-cart-admin-radius-sm);
   text-decoration: none;
   cursor: pointer;
   min-height: 40px;
   line-height: 1.4;
-  transition: background-color 100ms ease-out;
+  box-shadow: var(--nano-cart-admin-shadow);
+  transition: background-color 100ms ease, border-color 100ms ease, box-shadow 100ms ease, transform 80ms ease;
 }
-.nano-cart-admin-button:hover { background: var(--nano-cart-admin-bg); }
+.nano-cart-admin-button:hover {
+  background: var(--nano-cart-admin-bg);
+  border-color: #b6becc;
+}
+.nano-cart-admin-button:active { transform: translateY(1px); box-shadow: none; }
 .nano-cart-admin-button-primary {
   background: var(--nano-cart-admin-accent);
   border-color: var(--nano-cart-admin-accent);
   color: #fff;
+  box-shadow: 0 1px 2px rgba(31, 111, 235, 0.25), var(--nano-cart-admin-shadow);
 }
-.nano-cart-admin-button-primary:hover { background: var(--nano-cart-admin-accent-hover); border-color: var(--nano-cart-admin-accent-hover); }
+.nano-cart-admin-button-primary:hover {
+  background: var(--nano-cart-admin-accent-hover);
+  border-color: var(--nano-cart-admin-accent-hover);
+}
 .nano-cart-admin-button-secondary { color: var(--nano-cart-admin-muted); }
 .nano-cart-admin-button-danger {
   background: var(--nano-cart-admin-danger);
   border-color: var(--nano-cart-admin-danger);
   color: #fff;
+  box-shadow: 0 1px 2px rgba(207, 34, 46, 0.25), var(--nano-cart-admin-shadow);
 }
 .nano-cart-admin-button-danger:hover { background: var(--nano-cart-admin-danger-hover); border-color: var(--nano-cart-admin-danger-hover); }
 
-/* Tables. */
+/* Tables: zebra-striped rows, hover highlight, comfy row height.
+   Reads as a real data table, not a wall of identical rows. */
 .nano-cart-admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -286,92 +393,125 @@ body.nano-cart-admin {
   border: 1px solid var(--nano-cart-admin-border);
   border-radius: var(--nano-cart-admin-radius);
   overflow: hidden;
+  box-shadow: var(--nano-cart-admin-shadow-panel);
 }
 .nano-cart-admin-table th,
 .nano-cart-admin-table td {
   text-align: left;
-  padding: 0.65rem 0.85rem;
+  padding: 0.7rem 1rem;
   border-bottom: 1px solid var(--nano-cart-admin-border-soft);
-  vertical-align: top;
+  vertical-align: middle;
 }
 .nano-cart-admin-table th {
-  background: var(--nano-cart-admin-bg);
+  background: linear-gradient(to bottom, var(--nano-cart-admin-bg), #e9eef5);
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
   color: var(--nano-cart-admin-muted);
+  border-bottom: 1px solid var(--nano-cart-admin-border);
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
 }
+.nano-cart-admin-table tbody tr { transition: background-color 80ms ease; }
+.nano-cart-admin-table tbody tr:nth-child(even) { background: rgba(241, 244, 248, 0.5); }
+.nano-cart-admin-table tbody tr:hover { background: var(--nano-cart-admin-accent-soft); }
 .nano-cart-admin-table tr:last-child td { border-bottom: 0; }
-.nano-cart-admin-table a { color: var(--nano-cart-admin-accent); text-decoration: none; }
+.nano-cart-admin-table a {
+  color: var(--nano-cart-admin-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
 .nano-cart-admin-table a:hover { text-decoration: underline; }
+.nano-cart-admin-table code {
+  background: var(--nano-cart-admin-bg);
+  padding: 0.1em 0.4em;
+  border-radius: var(--nano-cart-admin-radius-sm);
+  font-size: 0.85em;
+}
 
 .nano-cart-admin-link-danger { color: var(--nano-cart-admin-danger) !important; }
 
 /* Pills (status, primary marker). */
 .nano-cart-admin-pill {
   display: inline-block;
-  padding: 0.1rem 0.5rem;
-  font-size: 0.75rem;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.72rem;
   font-weight: 600;
   border-radius: 999px;
   background: var(--nano-cart-admin-bg);
   color: var(--nano-cart-admin-muted);
   border: 1px solid var(--nano-cart-admin-border);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .nano-cart-admin-pill-published { background: var(--nano-cart-admin-success-bg); color: var(--nano-cart-admin-success-fg); border-color: var(--nano-cart-admin-success-fg); }
 .nano-cart-admin-pill-draft { background: var(--nano-cart-admin-bg); color: var(--nano-cart-admin-muted); }
 
-/* Markdown editor. */
+/* Markdown editor: framed component with a distinct toolbar band and
+   a preview area that visually separates from the textarea. */
 .nano-cart-admin-markdown-editor {
   border: 1px solid var(--nano-cart-admin-border);
   border-radius: var(--nano-cart-admin-radius);
   overflow: hidden;
   background: var(--nano-cart-admin-panel);
+  box-shadow: inset 0 1px 1px rgba(15, 23, 42, 0.03);
 }
 .nano-cart-admin-md-toolbar {
-  background: var(--nano-cart-admin-bg);
-  padding: 0.35rem 0.5rem;
+  background: linear-gradient(to bottom, var(--nano-cart-admin-bg), #e9eef5);
+  padding: 0.4rem 0.55rem;
   display: flex;
-  gap: 0.25rem;
+  gap: 0.3rem;
   flex-wrap: wrap;
   border-bottom: 1px solid var(--nano-cart-admin-border-soft);
 }
 .nano-cart-admin-md-toolbar button {
   background: var(--nano-cart-admin-panel);
   border: 1px solid var(--nano-cart-admin-border);
-  border-radius: var(--nano-cart-admin-radius);
-  padding: 0.3rem 0.7rem;
+  border-radius: var(--nano-cart-admin-radius-sm);
+  padding: 0.3rem 0.75rem;
   font-family: inherit;
   font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
+  box-shadow: var(--nano-cart-admin-shadow);
+  transition: background-color 80ms ease, border-color 80ms ease;
 }
-.nano-cart-admin-md-toolbar button:hover { background: var(--nano-cart-admin-bg); }
+.nano-cart-admin-md-toolbar button:hover {
+  background: var(--nano-cart-admin-bg);
+  border-color: #b6becc;
+}
 .nano-cart-admin-markdown-editor textarea {
   border: 0 !important;
   border-radius: 0 !important;
   margin: 0 !important;
+  box-shadow: none !important;
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   font-size: 0.92rem;
 }
-.nano-cart-admin-markdown-editor textarea:focus { outline: none; }
+.nano-cart-admin-markdown-editor textarea:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--nano-cart-admin-accent-soft) !important;
+}
 .nano-cart-admin-md-preview {
   border-top: 1px solid var(--nano-cart-admin-border-soft);
-  padding: 0.85rem 1rem;
+  padding: 1rem 1.25rem;
   background: var(--nano-cart-admin-bg);
 }
 
-/* Setup wizard advisory. */
+/* Setup wizard advisory: distinct from sections, signals "read me
+   carefully" with a blue accent rail and a subtle background tint. */
 .nano-cart-admin-advisory {
-  background: var(--nano-cart-admin-panel);
+  background: linear-gradient(to bottom right, var(--nano-cart-admin-accent-soft), var(--nano-cart-admin-panel));
   border: 1px solid var(--nano-cart-admin-border);
   border-left: 4px solid var(--nano-cart-admin-accent);
   border-radius: var(--nano-cart-admin-radius);
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
+  box-shadow: var(--nano-cart-admin-shadow-panel);
 }
-.nano-cart-admin-advisory h2 { margin: 0 0 0.5rem; font-size: 1.05rem; }
-.nano-cart-admin-advisory h3 { margin: 1rem 0 0.5rem; font-size: 1rem; }
+.nano-cart-admin-advisory h2 { margin: 0 0 0.5rem; font-size: 1.1rem; letter-spacing: -0.01em; }
+.nano-cart-admin-advisory h3 { margin: 1rem 0 0.5rem; font-size: 0.95rem; color: var(--nano-cart-admin-muted); text-transform: uppercase; letter-spacing: 0.04em; }
 .nano-cart-admin-advisory ul { margin: 0 0 0.5rem 1.25rem; padding: 0; }
 .nano-cart-admin-advisory-note {
   color: var(--nano-cart-admin-muted);
@@ -379,22 +519,23 @@ body.nano-cart-admin {
   font-style: italic;
 }
 
-/* Login screen. */
+/* Login + setup screens: narrower max-width centres a focused form. */
 .nano-cart-admin-login .nano-cart-admin-main,
 .nano-cart-admin-setup .nano-cart-admin-main {
-  max-width: 520px;
+  max-width: 560px;
 }
 .nano-cart-admin-form-login {
-  max-width: 360px;
-  margin: 0 auto;
+  max-width: 380px;
+  margin: 2rem auto 0;
 }
 
-/* Confirm / danger blocks. */
+/* Confirm / danger blocks (used by delete confirmation pages). */
 .nano-cart-admin-confirm {
   background: var(--nano-cart-admin-panel);
   border: 1px solid var(--nano-cart-admin-border);
   border-radius: var(--nano-cart-admin-radius);
-  padding: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: var(--nano-cart-admin-shadow-panel);
 }
 .nano-cart-admin-image-list {
   list-style: none;
@@ -402,24 +543,74 @@ body.nano-cart-admin {
   margin: 0;
 }
 .nano-cart-admin-image-list li {
-  padding: 0.4rem 0;
+  padding: 0.5rem 0;
   border-bottom: 1px solid var(--nano-cart-admin-border-soft);
 }
+.nano-cart-admin-image-list li:last-child { border-bottom: 0; }
 
+/* Empty-state panel: dashed border signals "nothing here yet", muted
+   colour avoids competing with real content. */
 .nano-cart-admin-empty {
   text-align: center;
   color: var(--nano-cart-admin-muted);
-  padding: 1.5rem;
+  padding: 2rem 1.25rem;
   background: var(--nano-cart-admin-panel);
   border: 1px dashed var(--nano-cart-admin-border);
   border-radius: var(--nano-cart-admin-radius);
+  font-size: 0.95rem;
+}
+.nano-cart-admin-empty a {
+  color: var(--nano-cart-admin-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.nano-cart-admin-empty a:hover { text-decoration: underline; }
+
+/* Inline labels (used inside fieldsets for checkboxes and radios). */
+.nano-cart-admin-inline {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem !important;
+  font-weight: 400;
+  cursor: pointer;
+}
+.nano-cart-admin-inline input[type=checkbox],
+.nano-cart-admin-inline input[type=radio] {
+  width: auto;
+  margin: 0;
+  accent-color: var(--nano-cart-admin-accent);
+}
+.nano-cart-admin-inline:hover { color: var(--nano-cart-admin-accent); }
+
+/* Form actions bar: clear separator above the submit / cancel
+   buttons so they read as the "commit point" of the form. */
+.nano-cart-admin-form-actions {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--nano-cart-admin-border-soft);
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.nano-cart-admin-help {
+  color: var(--nano-cart-admin-muted);
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
 }
 
+/* Mobile: tighten paddings, allow tables to scroll horizontally. */
 @media (max-width: 600px) {
-  .nano-cart-admin-header { padding: 0.65rem 0.85rem; }
+  .nano-cart-admin-header { padding: 0.65rem 1rem; }
   .nano-cart-admin-logout { margin-left: 0; }
-  .nano-cart-admin-main { padding: 0.85rem; }
+  .nano-cart-admin-main { padding: 1rem 0.85rem; }
+  .nano-cart-admin-page-title { font-size: 1.35rem; }
+  .nano-cart-admin-section { padding: 1rem; }
+  .nano-cart-admin-section-title { margin: -1rem -1rem 1rem; padding: 0.65rem 1rem; }
+  .nano-cart-admin-form { padding: 1.25rem; }
   .nano-cart-admin-table { font-size: 0.85rem; }
   .nano-cart-admin-table th,
-  .nano-cart-admin-table td { padding: 0.5rem 0.6rem; }
+  .nano-cart-admin-table td { padding: 0.55rem 0.7rem; }
 }

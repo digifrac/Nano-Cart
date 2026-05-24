@@ -12,12 +12,14 @@
 require __DIR__ . '/../bootstrap.php';
 require __DIR__ . '/auth.php';
 
+// Check config existence FIRST so we don't call nano_cart_shop_path()
+// before config.json exists (it throws when config is missing).
+if (!defined('NANO_CART_CONFIG_PATH') || !is_file(NANO_CART_CONFIG_PATH)) {
+    nano_cart_admin_redirect('setup.php');
+}
+
 $shop_path = nano_cart_shop_path();
 $admin_url = $shop_path . '/admin';
-
-if (!defined('NANO_CART_CONFIG_PATH') || !is_file(NANO_CART_CONFIG_PATH)) {
-    nano_cart_admin_redirect($admin_url . '/setup.php');
-}
 
 if (nano_cart_admin_is_logged_in()) {
     nano_cart_admin_redirect($admin_url . '/');

@@ -15,6 +15,12 @@ if (!defined('NANO_CART_BOOTSTRAPPED')) {
     exit;
 }
 
+/**
+ * Project version. Bumped on every public release alongside the
+ * VERSION file at the repo root. Displayed in the admin footer.
+ */
+const NANO_CART_VERSION = '1.0.0';
+
 require_once __DIR__ . '/lib/Parsedown.php';
 require_once __DIR__ . '/licence.php';
 

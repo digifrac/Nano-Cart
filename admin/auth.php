@@ -461,9 +461,11 @@ function nano_cart_admin_header(string $page_title, string $current_nav = ''): s
 
 function nano_cart_admin_footer(): string
 {
+    $version = defined('NANO_CART_VERSION') ? NANO_CART_VERSION : '';
+    $vstring = $version !== '' ? ' v' . nano_cart_admin_h($version) : '';
     return '</main>'
         . '<footer class="nano-cart-admin-footer">'
-        . '<p>Nano Cart admin. Remove this folder when done editing.</p>'
+        . '<p>Nano Cart' . $vstring . ' admin. Remove this folder when done editing.</p>'
         . '</footer>'
         . '<script src="' . nano_cart_admin_h(nano_cart_shop_path() . '/admin/assets/admin.js') . '" defer></script>'
         . '</body></html>';

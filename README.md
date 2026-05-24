@@ -1,16 +1,16 @@
 # Nano Cart
 
+A flat-file PHP product catalogue framework for static client sites. Sells fixed-price products through hosted checkout links (Stripe Payment Link, PayPal, Square, Gumroad, Ko-fi, or any URL). Drops into existing sites at `/shop/`. No database, no frameworks, no JavaScript checkout flows.
+
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/digitalfracture)
 
-A flat-file PHP product catalogue framework for static client sites. Sells fixed-price products, one item per purchase, with one external checkout URL per product. Drops into existing sites at `/shop/`. No database, no frameworks, no JavaScript checkout flows.
-
-**Status: v1 in development.** Design contracts ([FORMAT.md](FORMAT.md), [ARCHITECTURE.md](ARCHITECTURE.md)) are complete. Frontend, admin, image manager, and licence verification are scheduled for v1.0.0 release. Track progress on the [issues board](https://github.com/digifrac/Nano-Cart/issues).
+> **Status: v1.0.0.** Production-ready. See [INSTALL.md](INSTALL.md) for deployment, [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ---
 
 ## Not for you
 
-Nano Cart is deliberately not a general-purpose e-commerce platform. **It does not support:**
+Nano Cart sells one item, one price, one click. It is deliberately not a general-purpose e-commerce platform. **It does not support:**
 
 - Size, colour, or other product variants
 - Quantity selectors or multi-item shopping carts
@@ -39,9 +39,47 @@ Nano Cart is the right tool for a potter, a print-maker, a jewellery designer, a
 - **External checkout.** Each product links to a Stripe Payment Link, PayPal hosted checkout, Square, Gumroad, Ko-fi, or any processor-hosted URL. Nano Cart renders its own "Buy" button as a plain `<a href>` to that URL. No SDKs, no embed code, no JavaScript on the shop page.
 - **Catalogue mode** alternative: replace the buy button with a site-wide enquiry action (mailto, contact form, Calendly, WhatsApp) for businesses selling through quotes.
 - **Removable admin.** A portable admin folder you upload via SFTP when you want to make changes, then remove. When the admin isn't on the server, it can't be attacked.
-- **SEO as a core output.** Every page renders complete metadata, JSON-LD Product schema, JSON-LD BreadcrumbList, Open Graph and Twitter Card tags, canonical URLs computed at render time. Target Lighthouse SEO score 100.
-- **Mobile-first.** Templates designed for a 375px viewport and progressively enhanced for larger screens. Sticky buy button on mobile. Native scroll-snap image gallery. Tap targets ≥ 44px.
+- **SEO as a core output.** Every page renders complete metadata, JSON-LD Product schema, JSON-LD BreadcrumbList, Open Graph and Twitter Card tags, canonical URLs computed at render time.
+- **Mobile-first.** Templates designed for a 375px viewport and progressively enhanced for larger screens. Sticky buy button on mobile. Native scroll-snap image gallery. Tap targets at least 44px.
 - **No frameworks.** Hand-written PHP, hand-written CSS scoped to `nano-cart-*` class names, minimal vanilla JavaScript. The only vendored dependency is Parsedown (single file, no Composer).
+
+Total size: around 5500 lines of hand-written PHP, CSS, and JS, plus the vendored Parsedown. The whole shop deploys in under 250KB on disk. For comparison, WooCommerce is ~50MB.
+
+---
+
+## Who it's for
+
+Developers and agencies building static sites for clients who need to sell a small, fixed catalogue without taking on a database, a CMS, or a hosted platform.
+
+Suitable shops:
+
+- A potter selling 30 hand-thrown pieces through Stripe Payment Links
+- A jewellery designer with 50 one-off pieces and PayPal checkout
+- An author selling signed editions and merch with Gumroad
+- A consultant offering fixed-price service packages with Calendly enquiry
+- A gallery cataloguing artworks for sale with a contact-form enquiry action
+
+Not suitable: a clothing brand with variants, a marketplace with multiple sellers, anyone needing inventory tracking. See "Not for you" above.
+
+---
+
+## Why not WooCommerce, Shopify, or OpenCart?
+
+All excellent for shops that need them. For a static client site that needs to sell a fixed catalogue:
+
+- **Shopify**: hosted, monthly fee, full e-commerce platform. Right answer for variant retail; overkill for 20 fixed-price items.
+- **WooCommerce**: requires WordPress + MySQL + ongoing security patching. Same overkill for a static client site.
+- **OpenCart**: standalone PHP, requires MySQL and admin maintenance. Same problem.
+
+Nano Cart keeps the host site static. No database to migrate, no plugins to patch, no admin sitting on the server when not in use. When the admin is removed, only flat JSON files and images remain.
+
+---
+
+## Why not similar flat-file shop tools?
+
+There aren't many. The flat-file CMS space (Pico, Bludit, Grav) is mostly oriented at blogs and content sites; the only flat-file shop tools in active use tend to be Shopify themes that backend onto Shopify (which defeats the purpose).
+
+The closest comparison is rolling your own static catalogue in Jekyll or Eleventy and pasting Stripe Buy Buttons. That works for one shop but doesn't scale to "I need to do this for 10 clients." Nano Cart packages the pattern and adds an admin so non-developer operators can make edits.
 
 ---
 
@@ -50,20 +88,20 @@ Nano Cart is the right tool for a potter, a print-maker, a jewellery designer, a
 Three layers:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Frontend (permanent, in webroot)                           │
-│  /shop/  →  core.php, index.php, category.php, product.php  │
-│             template.php, generators.php, .htaccess         │
-│             assets/, lib/, products/, categories/, media/   │
-├─────────────────────────────────────────────────────────────┤
-│  Admin (ephemeral, uploaded when needed)                    │
-│  /shop/admin/  →  login, CRUD, image manager, settings      │
-│                   removed via SFTP after edits              │
-├─────────────────────────────────────────────────────────────┤
-│  Config (outside webroot, not web-accessible)               │
-│  /shop-config/  →  config.json, rate-limit.json             │
-│                    password hash, licence key, settings     │
-└─────────────────────────────────────────────────────────────┘
++-------------------------------------------------------------+
+|  Frontend (permanent, in webroot)                           |
+|  /shop/   core.php, index.php, category.php, product.php    |
+|           template.php, generators.php, .htaccess           |
+|           assets/, lib/, products/, categories/, media/     |
++-------------------------------------------------------------+
+|  Admin (ephemeral, uploaded when needed)                    |
+|  /shop/admin/   login, CRUD, image manager, settings        |
+|                 removed via SFTP after edits                |
++-------------------------------------------------------------+
+|  Config (outside webroot, not web-accessible)               |
+|  /shop-config/   config.json, rate-limit.json               |
+|                  password hash, licence key, settings       |
++-------------------------------------------------------------+
 ```
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design and [FORMAT.md](FORMAT.md) for the on-disk format contract.
@@ -98,7 +136,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design and [FORMAT.md](FORMA
 
 ## Backup
 
-Same `rsync` approach as Nano CMS. The whole shop is a directory of JSON files and images. A daily rsync of `/shop/` and `/shop-config/` to a backup host is sufficient. Example cron:
+The whole shop is a directory of JSON files and images. A daily rsync of `/shop/` and `/shop-config/` to a backup host is sufficient. Example cron:
 
 ```cron
 0 3 * * *  rsync -az --delete /var/www/example.com/shop/ backup@host:/backups/example-shop/
@@ -111,7 +149,9 @@ Restore is `rsync` in the other direction. No database to dump, no migrations to
 
 ## Roadmap
 
-**v1.0.0 (in progress).** Six-session build covering frontend, admin, image manager, licence verification, and release polish.
+**v1.0.0** is the current release: frontend, admin, image manager, licence verification, full documentation.
+
+**v1.x patch releases** will address bug reports and security issues raised by early adopters. No new features.
 
 **v1.1+ (planned, post-launch).** Features will be prioritised based on early-adopter feedback. Likely candidates: optional product collections (cross-category groupings), homepage block layouts, multi-language support via per-locale JSON files.
 
@@ -129,31 +169,15 @@ Restore is `rsync` in the other direction. No database to dump, no migrations to
 |------|-------|-----|
 | Single domain | £29 | One shop on one domain |
 | Agency 3-pack | £69 | Up to three shops |
-| Agency unlimited | £249 | Unlimited domains |
+| Agency unlimited | £249 | Unlimited domains (wildcard) |
 
-Without a licence, Nano Cart displays a small *"Powered by Nano Cart. Developed by Digital Fracture."* footer on the pages it renders. With a valid licence, the footer is hidden.
+Without a licence, Nano Cart displays a small "Powered by Nano Cart. Developed by Digital Fracture." footer on the pages it renders. With a valid licence, the footer is hidden. Localhost, `127.0.0.1`, any host with a non-default port, and `.test` / `.local` zones skip the licence check, so local development is always footer-free.
 
-Localhost and `.test` / `.local` development domains skip the licence check, so local development is always footer-free.
+The check is local: no phone-home, no network calls, no telemetry. Verification uses libsodium's Ed25519 against an embedded Digital Fracture public key.
 
-Buy a licence at [digitalfracture.co.uk/licensing/nano-cart](https://digitalfracture.co.uk/licensing/nano-cart) (available once v1.0.0 ships).
+Paste your licence key into the admin under **Licence**, or directly into `/shop-config/config.json` as the `licence_key` field.
 
----
-
-## Removing the footer attribution
-
-Nano Cart displays a small "Powered by Nano Cart. Developed by Digital Fracture." footer on the pages it renders. To remove this attribution, purchase a perpetual per-domain licence:
-
-| Tier | Price | Covers |
-|------|-------|--------|
-| Single domain | £29 | one domain |
-| Agency 3-pack | £69 | three domains (any combination) |
-| Agency unlimited | £249 | wildcard, any number of domains |
-
-Buy at [digitalfracture.co.uk/licensing/nano-cart](https://digitalfracture.co.uk/licensing/nano-cart).
-
-Paste your licence key into the admin under **Licence**, or directly into `/shop-config/config.json` as the `licence_key` field. The check is local: no phone-home, no network calls, no telemetry. Verification uses libsodium's Ed25519 against an embedded Digital Fracture public key.
-
-Localhost, `127.0.0.1`, any host with a non-default port, and `.test` / `.local` zones skip the licence check entirely so developers can preview locally without seeing the footer.
+Buy a licence at [digitalfracture.co.uk/licensing/nano-cart](https://digitalfracture.co.uk/licensing/nano-cart).
 
 **Testing licence verification:** contributors can use `tests/licence/generate-test-licence.php` to generate a working test licence with a throwaway keypair. Instructions are at the top of the script. After testing, revert `licence.php`'s `NANO_CART_LICENCE_PUBKEY_V1` constant to the real Digital Fracture key.
 
@@ -161,7 +185,7 @@ Localhost, `127.0.0.1`, any host with a non-default port, and `.test` / `.local`
 
 ## Contributing
 
-Nano Cart is early-stage solo development. Bug reports, feature suggestions, and security issues are welcome via [GitHub Issues](https://github.com/digifrac/Nano-Cart/issues). Formal contribution guidelines will be added once the project stabilises after v1.0.0.
+Nano Cart is early-stage solo development. Bug reports, feature suggestions, and security issues are welcome via [GitHub Issues](https://github.com/digifrac/Nano-Cart/issues). See [CONTRIBUTING.md](CONTRIBUTING.md) for full details.
 
 For security issues, please open a private security advisory rather than a public issue.
 
@@ -175,8 +199,11 @@ If Nano Cart saves you time on a client project, consider [buying me a coffee](h
 
 ## See also
 
+- [INSTALL.md](INSTALL.md): step-by-step deployment guide
 - [FORMAT.md](FORMAT.md): on-disk format specification (schemas, paths, URLs)
 - [ARCHITECTURE.md](ARCHITECTURE.md): runtime architecture and design contracts
+- [CHANGELOG.md](CHANGELOG.md): version history
+- [CONTRIBUTING.md](CONTRIBUTING.md): how to report bugs and suggest features
 - [Nano CMS](https://github.com/digifrac/Nano-CMS): sibling project for publishing blog posts on the same philosophy
 - [nanocart.co.uk](https://nanocart.co.uk): marketing site
 - [digitalfracture.co.uk](https://digitalfracture.co.uk): the studio behind Nano Cart

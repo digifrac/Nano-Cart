@@ -52,19 +52,23 @@ ob_start();
 ?>
 <?= nano_cart_breadcrumb_html($crumbs) ?>
 <article class="nano-cart-category">
-  <header class="nano-cart-category-header nano-cart-image-<?= htmlspecialchars($cat_pos) ?>">
-<?php if (!empty($category['image'])): ?>
+  <h1 class="nano-cart-page-title"><?= htmlspecialchars($category['name']) ?></h1>
+<?php
+$has_banner = !empty($category['image']);
+$has_desc   = !empty($category['description']);
+if ($has_banner || $has_desc):
+?>
+  <header class="nano-cart-category-header nano-cart-image-<?= htmlspecialchars($cat_pos) ?> <?= $has_banner ? 'has-banner' : 'no-banner' ?>">
+<?php if ($has_banner): ?>
     <div class="nano-cart-category-banner">
 <?= nano_cart_picture('category-images/' . $category['image'], (string)$category['name'], 'hero', (int)$cat_w, (int)$cat_h, 'nano-cart-category-banner-img', false, $cat_fit) ?>
     </div>
 <?php endif; ?>
-    <div class="nano-cart-category-text">
-      <h1 class="nano-cart-category-title"><?= htmlspecialchars($category['name']) ?></h1>
-<?php if (!empty($category['description'])): ?>
-      <div class="nano-cart-category-description"><?= nano_cart_render_markdown((string)$category['description']) ?></div>
+<?php if ($has_desc): ?>
+    <div class="nano-cart-category-description"><?= nano_cart_render_markdown((string)$category['description']) ?></div>
 <?php endif; ?>
-    </div>
   </header>
+<?php endif; ?>
 
 <?php if (!empty($products)): ?>
   <section class="nano-cart-grid">

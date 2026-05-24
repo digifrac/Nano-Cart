@@ -32,11 +32,12 @@ $nano_cart_jsonld = '';
 ob_start();
 
 $has_any_content = $hero !== null || !empty($categories) || !empty($featured);
+$page_h1 = $site_name !== '' ? $site_name : 'Shop';
 ?>
 <article class="nano-cart-home">
+  <h1 class="nano-cart-page-title"><?= htmlspecialchars($page_h1) ?></h1>
 <?php if (!$has_any_content): ?>
   <section class="nano-cart-empty">
-    <h1>Welcome to <?= htmlspecialchars($site_name !== '' ? $site_name : 'your shop') ?></h1>
     <p>This shop is empty so far. Add your first category and product through the admin to get started.</p>
     <p><a class="nano-cart-empty-link" href="<?= htmlspecialchars($shop_path) ?>/admin/">Open the admin &rarr;</a></p>
   </section>
@@ -54,7 +55,7 @@ $has_any_content = $hero !== null || !empty($categories) || !empty($featured);
       </div>
 <?php endif; ?>
       <div class="nano-cart-hero-body">
-        <h1 class="nano-cart-hero-title"><?= htmlspecialchars($hero['title']) ?></h1>
+        <h2 class="nano-cart-hero-title"><?= htmlspecialchars($hero['title']) ?></h2>
 <?php if (!empty($hero['short_description'])): ?>
         <p class="nano-cart-hero-summary"><?= htmlspecialchars($hero['short_description']) ?></p>
 <?php endif; ?>
@@ -85,9 +86,7 @@ $has_any_content = $hero !== null || !empty($categories) || !empty($featured);
 <?php endforeach; ?>
     </div>
   </section>
-<?php endif; ?>
-
-<?php
+<?php endif;
 $featured_excl_hero = array_values(array_filter($featured, static fn($p) => empty($p['hero_featured'])));
 if (!empty($featured_excl_hero)):
 ?>

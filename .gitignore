@@ -3,6 +3,7 @@ nano/
 web/
 .claude/
 LOCAL-NOTES.md
+TODO.md
 
 # Operating system metadata
 .DS_Store

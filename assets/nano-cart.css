@@ -1,45 +1,124 @@
-/* Nano Cart - default stylesheet.
-   Hand-written, scoped to .nano-cart-* classes. Override the CSS
-   variables below (or this file wholesale) to retheme. */
+/*
+ * Nano Cart - frontend default stylesheet (nano-cart.css)
+ *
+ * Neutral starter, not a design system. Drops in on top of any host
+ * site - every selector is scoped under .nano-cart-main (and its
+ * nano-cart-* children) so the host's own chrome (header, nav, footer)
+ * is never touched. Sibling stylesheet to Nano CMS's nano.css; the two
+ * share the same family palette, type scale, and spacing rhythm so
+ * deployments running both products feel coherent.
+ *
+ * THEMING CONTRACT
+ *   Override any of the custom properties below in a small
+ *   theme-custom.css to re-theme the shop without editing this file.
+ *   See template.php for how to wire the optional theme file in.
+ *
+ *     --nano-cart-font            System font stack (no web fonts)
+ *     --nano-cart-font-size-base  Body font size
+ *     --nano-cart-line-height     Body line height
+ *     --nano-cart-text            Primary text color
+ *     --nano-cart-text-muted      Prices, descriptions, secondary text
+ *     --nano-cart-bg              Page / card background
+ *     --nano-cart-border          Card and divider borders
+ *     --nano-cart-accent          Buy button, links, focus highlights
+ *     --nano-cart-link-hover      Subtle link / title hover colour
+ *     --nano-cart-content-width   Max width of the shop area
+ *     --nano-cart-spacing-unit    Base spacing rhythm
+ *     --nano-cart-radius          Corner radius on cards, code, images
+ *     --nano-cart-gap             Vertical space between grid cards
+ *     --nano-cart-card-image-height  Shop-uniform card thumbnail height
+ *     --nano-cart-card-image-fit     "cover" or "contain"
+ *
+ * Includes a prefers-color-scheme: dark override at the bottom.
+ */
 
-:root {
-  --nano-cart-text:        #1f2328;
-  --nano-cart-text-muted:  #57606a;
-  --nano-cart-bg:          #ffffff;
-  --nano-cart-bg-soft:     #f6f8fa;
-  --nano-cart-border:      #d0d7de;
-  --nano-cart-border-soft: #e6e8eb;
-  --nano-cart-accent:      #1f6feb;
-  --nano-cart-accent-hover:#0a4fc4;
-  --nano-cart-shadow:      0 1px 2px rgba(0,0,0,0.04);
-  --nano-cart-shadow-lift: 0 8px 24px rgba(0,0,0,0.12);
-  --nano-cart-radius:      8px;
-  --nano-cart-radius-sm:   4px;
-  --nano-cart-gap:         1.25rem;
-  --nano-cart-font:        system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+.nano-cart-main {
+  --nano-cart-font:            -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --nano-cart-font-size-base:  1.05rem;
+  --nano-cart-line-height:     1.65;
+  --nano-cart-text:            #1a1a1a;
+  --nano-cart-text-muted:      #666;
+  --nano-cart-bg:              #ffffff;
+  --nano-cart-bg-soft:         #f6f8fa;
+  --nano-cart-border:          #e5e5e5;
+  --nano-cart-border-soft:     #efefef;
+  --nano-cart-accent:          #0066cc;
+  --nano-cart-accent-hover:    #004d99;
+  --nano-cart-link-hover:      #999999;
+  --nano-cart-shadow:          0 2px 4px rgba(0,0,0,0.08);
+  --nano-cart-shadow-lift:     0 12px 28px rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.06);
+  --nano-cart-content-width:   1100px;
+  --nano-cart-spacing-unit:    1rem;
+  --nano-cart-radius:          6px;
+  --nano-cart-radius-sm:       4px;
+  --nano-cart-gap:             1.5rem;
   --nano-cart-card-image-height: 240px;
   --nano-cart-card-image-fit:    cover;
-}
 
-/* Reset within Nano Cart's content area, leaves host site styles alone. */
-.nano-cart-main, .nano-cart-main * {
+  font-family: var(--nano-cart-font);
+  font-size: var(--nano-cart-font-size-base);
+  line-height: var(--nano-cart-line-height);
+  color: var(--nano-cart-text);
+  background: var(--nano-cart-bg);
+  max-width: var(--nano-cart-content-width);
+  margin: 0 auto;
+  padding: calc(var(--nano-cart-spacing-unit) * 2) var(--nano-cart-spacing-unit);
   box-sizing: border-box;
 }
 
-.nano-cart-main {
-  font-family: var(--nano-cart-font);
-  color: var(--nano-cart-text);
-  background: var(--nano-cart-bg);
-  line-height: 1.55;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-}
+.nano-cart-main *,
+.nano-cart-main *::before,
+.nano-cart-main *::after { box-sizing: inherit; }
 
 .nano-cart-main img, .nano-cart-main picture {
   max-width: 100%;
   display: block;
 }
+
+/* Prose styling for markdown-rendered content (product long_description
+ * and category description). Matches Nano CMS's prose pass. */
+.nano-cart-main h1,
+.nano-cart-main h2,
+.nano-cart-main h3,
+.nano-cart-main h4 {
+  line-height: 1.25;
+  margin: calc(var(--nano-cart-spacing-unit) * 1.5) 0 var(--nano-cart-spacing-unit);
+  color: var(--nano-cart-text);
+}
+.nano-cart-product-description h2 { font-size: 1.5rem; }
+.nano-cart-product-description h3 { font-size: 1.25rem; }
+.nano-cart-product-description h4 { font-size: 1.1rem; }
+.nano-cart-product-description blockquote {
+  border-left: 3px solid var(--nano-cart-border);
+  padding: 0 var(--nano-cart-spacing-unit);
+  color: var(--nano-cart-text-muted);
+  margin: 0 0 var(--nano-cart-spacing-unit) 0;
+}
+.nano-cart-product-description hr {
+  border: 0;
+  border-top: 1px solid var(--nano-cart-border);
+  margin: calc(var(--nano-cart-spacing-unit) * 2) 0;
+}
+.nano-cart-product-description code,
+.nano-cart-product-description pre,
+.nano-cart-category-description code,
+.nano-cart-category-description pre {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+.nano-cart-product-description code,
+.nano-cart-category-description code {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.1em 0.35em;
+  border-radius: var(--nano-cart-radius-sm);
+}
+.nano-cart-product-description pre {
+  background: rgba(0, 0, 0, 0.05);
+  padding: var(--nano-cart-spacing-unit);
+  border-radius: var(--nano-cart-radius);
+  overflow-x: auto;
+}
+.nano-cart-product-description pre code { background: none; padding: 0; }
 
 /* Site header / footer (minimal defaults, operator replaces). */
 .nano-cart-site-header,
@@ -56,20 +135,35 @@
   font-size: 1.1rem;
 }
 .nano-cart-footer-attribution {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--nano-cart-border);
+  font-size: 0.8125rem;
   color: var(--nano-cart-text-muted);
-  font-size: 0.85rem;
-  margin: 0;
+  text-align: center;
 }
+.nano-cart-footer-attribution a {
+  color: var(--nano-cart-text-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--nano-cart-border);
+  text-underline-offset: 0.15em;
+}
+.nano-cart-footer-attribution a:hover { color: var(--nano-cart-accent); }
 
-/* Breadcrumb. */
+/* Breadcrumb: contained pill so it reads as a distinct nav row at the
+   top of the page, not loose text floating above the title. */
 .nano-cart-breadcrumb {
   font-size: 0.875rem;
   color: var(--nano-cart-text-muted);
-  margin-bottom: 1rem;
+  margin-bottom: 1.75rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--nano-cart-bg-soft);
+  border: 1px solid var(--nano-cart-border-soft);
+  border-radius: var(--nano-cart-radius);
 }
 .nano-cart-breadcrumb-item {
   color: var(--nano-cart-text-muted);
@@ -86,12 +180,16 @@ a.nano-cart-breadcrumb-item:hover {
 /* Section headings. */
 .nano-cart-section {
   margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--nano-cart-border-soft);
 }
 .nano-cart-section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0 0 1rem;
-  letter-spacing: 0.01em;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.25rem;
+  color: var(--nano-cart-text);
 }
 
 /* Grid + card system. */
@@ -99,6 +197,11 @@ a.nano-cart-breadcrumb-item:hover {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--nano-cart-gap);
+}
+.nano-cart-category > .nano-cart-grid,
+.nano-cart-category > .nano-cart-empty {
+  border-top: 1px solid var(--nano-cart-border-soft);
+  padding-top: 2rem;
 }
 @media (min-width: 560px) {
   .nano-cart-grid { grid-template-columns: repeat(2, 1fr); }
@@ -120,14 +223,14 @@ a.nano-cart-breadcrumb-item:hover {
   border-radius: var(--nano-cart-radius);
   overflow: hidden;
   box-shadow: var(--nano-cart-shadow);
-  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 .nano-cart-card:hover {
   box-shadow: var(--nano-cart-shadow-lift);
   transform: translateY(-2px);
 }
 .nano-cart-card:hover .nano-cart-card-title {
-  color: var(--nano-cart-accent-hover);
+  color: var(--nano-cart-link-hover);
 }
 .nano-cart-card-image {
   overflow: hidden;
@@ -142,6 +245,7 @@ a.nano-cart-breadcrumb-item:hover {
   width: 100%;
   height: 100%;
   object-fit: var(--nano-cart-card-image-fit);
+  object-position: 50% 35%;
   transition: transform 200ms ease-out;
 }
 .nano-cart-card:hover .nano-cart-card-img {
@@ -156,9 +260,9 @@ a.nano-cart-breadcrumb-item:hover {
 }
 .nano-cart-card-title {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.3;
   color: var(--nano-cart-text);
   transition: color 200ms ease-out;
 }
@@ -208,35 +312,57 @@ a.nano-cart-breadcrumb-item:hover {
   .nano-cart-hero-body { flex: 1; align-self: center; }
 }
 
-/* Category page. */
+/* Category page: locked layout with three defined rows.
+   1. Breadcrumb pill (handled above)
+   2. Large H1 title on its own row, full width
+   3. Header: image column + description column in a real CSS grid
+      (stacks on mobile; image-left vs image-right swaps column order)
+   4. Products grid below
+   No floats, no text-wrap-around-image. Each element has its position. */
+
+.nano-cart-page-title,
+.nano-cart-category-title {
+  margin: 0 0 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--nano-cart-text);
+}
+
 .nano-cart-category-header {
-  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 .nano-cart-category-banner {
-  margin-bottom: 1rem;
-}
-.nano-cart-category-banner picture, .nano-cart-category-banner img {
+  margin: 0;
+  border: 1px solid var(--nano-cart-border);
   border-radius: var(--nano-cart-radius);
-  width: 100%; height: auto;
+  box-shadow: var(--nano-cart-shadow);
+  overflow: hidden;
 }
-.nano-cart-category-title {
-  margin: 0 0 0.75rem;
-  font-size: 1.75rem;
-  font-weight: 700;
+.nano-cart-category-banner picture,
+.nano-cart-category-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
-.nano-cart-category-description { color: var(--nano-cart-text); }
+.nano-cart-category-description {
+  color: var(--nano-cart-text);
+  align-self: start;
+}
 .nano-cart-category-description p:first-child { margin-top: 0; }
 .nano-cart-category-description p:last-child { margin-bottom: 0; }
 
 @media (min-width: 768px) {
-  .nano-cart-category-header::after {
-    content: ''; display: table; clear: both;
+  .nano-cart-category-header.has-banner {
+    grid-template-columns: 320px 1fr;
+    gap: 2rem;
   }
-  .nano-cart-category-header.nano-cart-image-left .nano-cart-category-banner {
-    float: left; margin: 0 1.5rem 1rem 0; max-width: 50%;
-  }
-  .nano-cart-category-header.nano-cart-image-right .nano-cart-category-banner {
-    float: right; margin: 0 0 1rem 1.5rem; max-width: 50%;
+  .nano-cart-category-header.has-banner.nano-cart-image-right .nano-cart-category-banner {
+    order: 2;
   }
 }
 
@@ -419,4 +545,22 @@ a.nano-cart-breadcrumb-item:hover {
   background: var(--nano-cart-bg-soft);
   min-height: 60px;
   animation: none;
+}
+
+/* Dark mode. Mirrors the Nano CMS dark override so both products
+   feel consistent for users who run their OS in dark mode. */
+@media (prefers-color-scheme: dark) {
+  .nano-cart-main {
+    --nano-cart-text:        #e8e8e8;
+    --nano-cart-text-muted:  #999;
+    --nano-cart-bg:          #121212;
+    --nano-cart-bg-soft:     #1c1c1c;
+    --nano-cart-border:      #2a2a2a;
+    --nano-cart-border-soft: #232323;
+    --nano-cart-accent:      #5aa8ff;
+    --nano-cart-accent-hover:#88c2ff;
+  }
+  .nano-cart-product-description code,
+  .nano-cart-product-description pre,
+  .nano-cart-category-description code { background: rgba(255, 255, 255, 0.06); }
 }

@@ -65,11 +65,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
+        // Preserve image set by the image manager: if the form's manual
+        // image field is empty AND the loaded category already has an
+        // image (uploaded via image manager), keep that image. Operator
+        // explicitly typing a value still overrides; explicitly clearing
+        // the field on a category with no manager image still clears it.
+        $form_image = $values['image'];
+        $existing_image = $loaded['image'] ?? null;
+        $final_image = $form_image !== ''
+            ? $form_image
+            : ($existing_image !== null ? $existing_image : null);
+
         $to_save = [
             'slug'             => $values['slug'],
             'name'             => $values['name'],
             'description'      => $values['description'],
-            'image'            => $values['image'] !== '' ? $values['image'] : null,
+            'image'            => $final_image,
             'sort_order'       => $values['sort_order'] !== '' ? (int)$values['sort_order'] : null,
             'meta_title'       => $values['meta_title'] !== '' ? $values['meta_title'] : null,
             'meta_description' => $values['meta_description'] !== '' ? $values['meta_description'] : null,

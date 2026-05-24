@@ -1,0 +1,21 @@
+{
+  "site_name": "Demo Pottery Studio",
+  "site_url": "https://example.com",
+  "shop_path": "/shop",
+  "shop_mode": "checkout",
+  "enquiry_action": null,
+  "password_hash": "$2y$10$REPLACE_WITH_BCRYPT_HASH_FROM_ADMIN_SETUP",
+  "licence_key": "",
+  "image_quality_jpeg": 85,
+  "image_quality_webp": 80,
+  "thumbnail_widths": [400, 800, 120],
+  "default_currency": "GBP",
+  "card_image_height": "240",
+  "card_image_fit": "cover",
+  "seo": {
+    "default_meta_description": "Hand-thrown stoneware and porcelain from a small studio.",
+    "og_image": "/shop/media/category-images/pottery-hero-800.jpg",
+    "twitter_handle": "",
+    "brand_name": "Demo Pottery Studio"
+  }
+}

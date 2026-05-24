@@ -1,0 +1,22 @@
+{
+  "sku": "sku-002",
+  "title": "Porcelain pour-over coffee dripper",
+  "short_description": "Wheel-thrown porcelain dripper sized for a single mug. Conical interior with three spiral grooves.",
+  "long_description": "A pour-over dripper thrown in porcelain, fired to a translucent white. The conical interior has three spiral grooves to channel water evenly through the filter.\n\nFits standard #2 paper filters.\n\n## Care\n\nHand wash with warm water; the porcelain is unglazed on the underside so dishwasher detergent can leave marks over time.",
+  "category": "pottery",
+  "price_display": "£48.00",
+  "checkout_url": "https://buy.stripe.com/test_example_sku_002",
+  "images": [
+    { "file": "main",  "alt": "White porcelain pour-over dripper on a wooden surface", "is_primary": true },
+    { "file": "alt-1", "alt": "Detail view of the spiral grooves inside the dripper", "is_primary": false }
+  ],
+  "featured": true,
+  "hero_featured": false,
+  "image_width": "500",
+  "image_height": "auto",
+  "image_fit": "contain",
+  "slug": "sku-002",
+  "created": "2026-05-24T10:00:00Z",
+  "updated": "2026-05-24T10:00:00Z",
+  "status": "published"
+}

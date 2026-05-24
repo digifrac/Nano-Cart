@@ -1,0 +1,13 @@
+{
+  "slug": "pottery",
+  "name": "Pottery",
+  "description": "Hand-thrown stoneware and porcelain pieces, glazed and fired in our studio.\n\nEach piece is one of a kind.",
+  "image": "pottery",
+  "sort_order": 10,
+  "meta_title": null,
+  "meta_description": null,
+  "image_width": "500",
+  "image_height": "auto",
+  "image_fit": "cover",
+  "image_position": "left"
+}

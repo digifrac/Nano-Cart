@@ -1,0 +1,407 @@
+/* Nano Cart - default stylesheet.
+   Hand-written, scoped to .nano-cart-* classes. Override the CSS
+   variables below (or this file wholesale) to retheme. */
+
+:root {
+  --nano-cart-text:        #1f2328;
+  --nano-cart-text-muted:  #57606a;
+  --nano-cart-bg:          #ffffff;
+  --nano-cart-bg-soft:     #f6f8fa;
+  --nano-cart-border:      #d0d7de;
+  --nano-cart-border-soft: #e6e8eb;
+  --nano-cart-accent:      #1f6feb;
+  --nano-cart-accent-hover:#0a4fc4;
+  --nano-cart-shadow:      0 1px 2px rgba(0,0,0,0.04);
+  --nano-cart-shadow-lift: 0 8px 24px rgba(0,0,0,0.12);
+  --nano-cart-radius:      8px;
+  --nano-cart-radius-sm:   4px;
+  --nano-cart-gap:         1.25rem;
+  --nano-cart-font:        system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --nano-cart-card-image-height: 240px;
+  --nano-cart-card-image-fit:    cover;
+}
+
+/* Reset within Nano Cart's content area, leaves host site styles alone. */
+.nano-cart-main, .nano-cart-main * {
+  box-sizing: border-box;
+}
+
+.nano-cart-main {
+  font-family: var(--nano-cart-font);
+  color: var(--nano-cart-text);
+  background: var(--nano-cart-bg);
+  line-height: 1.55;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.nano-cart-main img, .nano-cart-main picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Site header / footer (minimal defaults, operator replaces). */
+.nano-cart-site-header,
+.nano-cart-site-footer {
+  font-family: var(--nano-cart-font);
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.nano-cart-site-header a {
+  color: var(--nano-cart-text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.nano-cart-footer-attribution {
+  color: var(--nano-cart-text-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Breadcrumb. */
+.nano-cart-breadcrumb {
+  font-size: 0.875rem;
+  color: var(--nano-cart-text-muted);
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.nano-cart-breadcrumb-item {
+  color: var(--nano-cart-text-muted);
+  text-decoration: none;
+}
+a.nano-cart-breadcrumb-item:hover {
+  color: var(--nano-cart-accent);
+  text-decoration: underline;
+}
+.nano-cart-breadcrumb-separator {
+  color: var(--nano-cart-border);
+}
+
+/* Section headings. */
+.nano-cart-section {
+  margin-top: 2.5rem;
+}
+.nano-cart-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  letter-spacing: 0.01em;
+}
+
+/* Grid + card system. */
+.nano-cart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--nano-cart-gap);
+}
+@media (min-width: 560px) {
+  .nano-cart-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .nano-cart-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1200px) {
+  .nano-cart-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.nano-cart-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  background: var(--nano-cart-bg);
+  border: 1px solid var(--nano-cart-border);
+  border-radius: var(--nano-cart-radius);
+  overflow: hidden;
+  box-shadow: var(--nano-cart-shadow);
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+.nano-cart-card:hover {
+  box-shadow: var(--nano-cart-shadow-lift);
+  transform: translateY(-2px);
+}
+.nano-cart-card:hover .nano-cart-card-title {
+  color: var(--nano-cart-accent-hover);
+}
+.nano-cart-card-image {
+  overflow: hidden;
+  background: var(--nano-cart-bg-soft);
+  height: var(--nano-cart-card-image-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nano-cart-card-image picture,
+.nano-cart-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: var(--nano-cart-card-image-fit);
+  transition: transform 200ms ease-out;
+}
+.nano-cart-card:hover .nano-cart-card-img {
+  transform: scale(1.02);
+}
+.nano-cart-card-body {
+  padding: 0.85rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+.nano-cart-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--nano-cart-text);
+  transition: color 200ms ease-out;
+}
+.nano-cart-card-price {
+  margin: 0;
+  color: var(--nano-cart-text-muted);
+  font-size: 0.95rem;
+}
+
+/* Hero featured. */
+.nano-cart-hero { margin-bottom: 2rem; }
+.nano-cart-hero-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  background: var(--nano-cart-bg);
+  border: 1px solid var(--nano-cart-border);
+  border-radius: var(--nano-cart-radius);
+  overflow: hidden;
+  box-shadow: var(--nano-cart-shadow);
+}
+.nano-cart-hero-image { background: var(--nano-cart-bg-soft); }
+.nano-cart-hero-image picture, .nano-cart-hero-image img {
+  width: 100%; height: auto; display: block;
+}
+.nano-cart-hero-body {
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+.nano-cart-hero-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.nano-cart-hero-summary {
+  margin: 0 0 0.75rem;
+  color: var(--nano-cart-text-muted);
+}
+.nano-cart-hero-price {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+@media (min-width: 768px) {
+  .nano-cart-hero-link { flex-direction: row; }
+  .nano-cart-hero-image { flex: 0 0 55%; }
+  .nano-cart-hero-body { flex: 1; align-self: center; }
+}
+
+/* Category page. */
+.nano-cart-category-header {
+  margin-bottom: 1.5rem;
+}
+.nano-cart-category-banner {
+  margin-bottom: 1rem;
+}
+.nano-cart-category-banner picture, .nano-cart-category-banner img {
+  border-radius: var(--nano-cart-radius);
+  width: 100%; height: auto;
+}
+.nano-cart-category-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.nano-cart-category-description { color: var(--nano-cart-text); }
+.nano-cart-category-description p:first-child { margin-top: 0; }
+.nano-cart-category-description p:last-child { margin-bottom: 0; }
+
+@media (min-width: 768px) {
+  .nano-cart-category-header::after {
+    content: ''; display: table; clear: both;
+  }
+  .nano-cart-category-header.nano-cart-image-left .nano-cart-category-banner {
+    float: left; margin: 0 1.5rem 1rem 0; max-width: 50%;
+  }
+  .nano-cart-category-header.nano-cart-image-right .nano-cart-category-banner {
+    float: right; margin: 0 0 1rem 1.5rem; max-width: 50%;
+  }
+}
+
+.nano-cart-empty {
+  text-align: center;
+  color: var(--nano-cart-text-muted);
+  padding: 2rem;
+  background: var(--nano-cart-bg-soft);
+  border-radius: var(--nano-cart-radius);
+}
+
+/* Product page. */
+.nano-cart-product { display: block; }
+.nano-cart-gallery { margin-bottom: 1.5rem; }
+.nano-cart-gallery-main picture, .nano-cart-gallery-main-img {
+  width: 100%; height: auto;
+  border-radius: var(--nano-cart-radius);
+  background: var(--nano-cart-bg-soft);
+}
+.nano-cart-gallery-thumbs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.75rem 0;
+  margin: 0 -1rem;
+  padding-left: 1rem; padding-right: 1rem;
+}
+.nano-cart-gallery-thumb {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  margin: 0;
+}
+.nano-cart-gallery-thumb-img {
+  width: 80px; height: 80px;
+  object-fit: cover;
+  border-radius: var(--nano-cart-radius-sm);
+  border: 1px solid var(--nano-cart-border-soft);
+  background: var(--nano-cart-bg-soft);
+  cursor: pointer;
+}
+@media (min-width: 768px) {
+  .nano-cart-gallery {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    gap: 1rem;
+  }
+  .nano-cart-gallery-thumbs {
+    flex-direction: column;
+    overflow-x: visible;
+    padding: 0; margin: 0;
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .nano-cart-gallery-thumb-img {
+    width: 100px; height: 100px;
+  }
+}
+
+.nano-cart-product-meta {
+  margin-bottom: 1.5rem;
+}
+.nano-cart-product-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.nano-cart-product-price {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--nano-cart-text);
+}
+
+/* Buy button. */
+.nano-cart-buy-button {
+  display: inline-block;
+  background: var(--nano-cart-accent);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--nano-cart-radius);
+  min-height: 44px;
+  line-height: 1.4;
+  transition: background-color 150ms ease-out, transform 100ms ease-out;
+}
+.nano-cart-buy-button:hover {
+  background: var(--nano-cart-accent-hover);
+}
+.nano-cart-buy-button:active {
+  transform: translateY(1px);
+}
+
+/* Sticky buy button on mobile. Activated by JS adding .nano-cart-sticky. */
+@media (max-width: 767px) {
+  .nano-cart-buy-button.nano-cart-sticky {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    border-radius: 0;
+    text-align: center;
+    z-index: 100;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.15);
+    margin: 0;
+  }
+}
+
+/* Long description (markdown-rendered). */
+.nano-cart-product-description {
+  margin-top: 1.5rem;
+}
+.nano-cart-product-description p { margin: 0 0 1rem; }
+.nano-cart-product-description h2 {
+  font-size: 1.25rem; margin: 1.5rem 0 0.75rem; font-weight: 600;
+}
+.nano-cart-product-description h3 {
+  font-size: 1.1rem; margin: 1.25rem 0 0.5rem; font-weight: 600;
+}
+.nano-cart-product-description ul,
+.nano-cart-product-description ol {
+  margin: 0 0 1rem; padding-left: 1.5rem;
+}
+.nano-cart-product-description li { margin-bottom: 0.25rem; }
+.nano-cart-product-description a {
+  color: var(--nano-cart-accent);
+  text-decoration: underline;
+}
+.nano-cart-product-description a:hover { color: var(--nano-cart-accent-hover); }
+.nano-cart-product-description strong { font-weight: 600; }
+.nano-cart-product-description code {
+  background: var(--nano-cart-bg-soft);
+  padding: 0.1em 0.3em;
+  border-radius: var(--nano-cart-radius-sm);
+  font-size: 0.92em;
+}
+
+/* Lazy-load shimmer. JS sets data-src then swaps to src and adds
+   .nano-cart-loaded; CSS handles the fade. */
+.nano-cart-main img[data-src]:not(.nano-cart-loaded) {
+  opacity: 0;
+}
+.nano-cart-main img.nano-cart-loaded {
+  opacity: 1;
+  transition: opacity 250ms ease-out;
+}
+
+@keyframes nano-cart-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+.nano-cart-card-image:has(img[data-src]:not(.nano-cart-loaded)),
+.nano-cart-gallery-main:has(img[data-src]:not(.nano-cart-loaded)) {
+  background:
+    linear-gradient(90deg,
+      var(--nano-cart-bg-soft) 25%,
+      var(--nano-cart-border-soft) 50%,
+      var(--nano-cart-bg-soft) 75%);
+  background-size: 800px 100%;
+  animation: nano-cart-shimmer 1.4s infinite linear;
+}
+
+/* Broken-image fallback (JS adds .nano-cart-error). */
+.nano-cart-main img.nano-cart-error {
+  background: var(--nano-cart-bg-soft);
+  min-height: 60px;
+  animation: none;
+}

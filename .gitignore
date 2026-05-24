@@ -30,6 +30,13 @@ php_errors.log
 config.json
 bootstrap.php
 
+# Operator-populated content directories (only ship as seed-data/).
+# Admin uploads write here in production; never commit operator data.
+/products/
+/categories/
+/media/
+/sitemap.xml
+
 # Build / dependency caches (defensive — Nano Cart has none, but guards against
 # accidental npm/composer introduction polluting the repo)
 node_modules/

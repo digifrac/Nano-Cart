@@ -1,0 +1,22 @@
+{
+  "sku": "sku-001",
+  "title": "Hand-thrown stoneware mug",
+  "short_description": "Deep cobalt glaze on natural stoneware, 350ml capacity. Dishwasher safe.",
+  "long_description": "Each mug is thrown on the wheel and glazed by hand. The deep cobalt glaze pools naturally in the throwing lines, so no two mugs are identical.\n\n## Care\n\nDishwasher safe. Microwave safe. Avoid sudden temperature changes (do not pour boiling water into a cold mug).\n\n## Specifications\n\n- Capacity: 350ml\n- Material: stoneware\n- Glaze: cobalt blue, food-safe\n- Fired to cone 10",
+  "category": "pottery",
+  "price_display": "£32.00",
+  "checkout_url": "https://buy.stripe.com/test_example_sku_001",
+  "images": [
+    { "file": "main",  "alt": "Cobalt blue stoneware mug, side view", "is_primary": true },
+    { "file": "alt-1", "alt": "Cobalt blue stoneware mug, top view showing glaze pooling", "is_primary": false }
+  ],
+  "featured": true,
+  "hero_featured": true,
+  "image_width": "500",
+  "image_height": "auto",
+  "image_fit": "contain",
+  "slug": "sku-001",
+  "created": "2026-05-24T10:00:00Z",
+  "updated": "2026-05-24T10:00:00Z",
+  "status": "published"
+}

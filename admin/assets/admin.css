@@ -1,0 +1,425 @@
+/* Nano Cart admin - scoped stylesheet, all classes nano-cart-admin- prefix.
+   Clean, form-heavy, not flashy. Designed to look credible on small
+   screens too: emergency edits from a phone should be tolerable. */
+
+:root {
+  --nano-cart-admin-text:   #1f2328;
+  --nano-cart-admin-muted:  #57606a;
+  --nano-cart-admin-bg:     #f6f8fa;
+  --nano-cart-admin-panel:  #ffffff;
+  --nano-cart-admin-border: #d0d7de;
+  --nano-cart-admin-border-soft: #e6e8eb;
+  --nano-cart-admin-accent: #1f6feb;
+  --nano-cart-admin-accent-hover: #0a4fc4;
+  --nano-cart-admin-danger: #cf222e;
+  --nano-cart-admin-danger-hover: #a30c1c;
+  --nano-cart-admin-success-bg: #dafbe1;
+  --nano-cart-admin-success-fg: #1a7f37;
+  --nano-cart-admin-error-bg:   #ffebe9;
+  --nano-cart-admin-error-fg:   #82071e;
+  --nano-cart-admin-radius:    6px;
+  --nano-cart-admin-font:      system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body.nano-cart-admin {
+  margin: 0;
+  font-family: var(--nano-cart-admin-font);
+  color: var(--nano-cart-admin-text);
+  background: var(--nano-cart-admin-bg);
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+.nano-cart-admin * { box-sizing: border-box; }
+
+/* Header / nav. */
+.nano-cart-admin-header {
+  background: var(--nano-cart-admin-panel);
+  border-bottom: 1px solid var(--nano-cart-admin-border);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+.nano-cart-admin-brand {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--nano-cart-admin-text);
+  text-decoration: none;
+  margin-right: 1rem;
+}
+.nano-cart-admin-nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.nano-cart-admin-nav-link {
+  color: var(--nano-cart-admin-muted);
+  text-decoration: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--nano-cart-admin-radius);
+  font-weight: 500;
+}
+.nano-cart-admin-nav-link:hover { color: var(--nano-cart-admin-text); background: var(--nano-cart-admin-bg); }
+.nano-cart-admin-nav-current {
+  color: var(--nano-cart-admin-accent);
+  background: var(--nano-cart-admin-bg);
+}
+.nano-cart-admin-logout {
+  margin-left: auto;
+  color: var(--nano-cart-admin-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.nano-cart-admin-logout:hover { color: var(--nano-cart-admin-danger); }
+
+/* Main layout. */
+.nano-cart-admin-main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.25rem;
+}
+.nano-cart-admin-page-title {
+  margin: 0 0 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.nano-cart-admin-section {
+  background: var(--nano-cart-admin-panel);
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.nano-cart-admin-section-title {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.nano-cart-admin-actions {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.nano-cart-admin-footer {
+  text-align: center;
+  padding: 1.5rem 1rem 2rem;
+  color: var(--nano-cart-admin-muted);
+  font-size: 0.85rem;
+}
+
+/* Flash messages. */
+.nano-cart-admin-flash {
+  padding: 0.75rem 1rem;
+  border-radius: var(--nano-cart-admin-radius);
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+.nano-cart-admin-flash-success {
+  background: var(--nano-cart-admin-success-bg);
+  color: var(--nano-cart-admin-success-fg);
+  border-color: var(--nano-cart-admin-success-fg);
+}
+.nano-cart-admin-flash-error {
+  background: var(--nano-cart-admin-error-bg);
+  color: var(--nano-cart-admin-error-fg);
+  border-color: var(--nano-cart-admin-error-fg);
+}
+.nano-cart-admin-flash ul { margin: 0.25rem 0 0 1.25rem; padding: 0; }
+
+/* Stats grid (dashboard). */
+.nano-cart-admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.nano-cart-admin-stat {
+  background: var(--nano-cart-admin-panel);
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+  padding: 1rem;
+  text-align: center;
+}
+.nano-cart-admin-stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+.nano-cart-admin-stat-label {
+  color: var(--nano-cart-admin-muted);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.nano-cart-admin-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Forms. */
+.nano-cart-admin-form {
+  background: var(--nano-cart-admin-panel);
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+  padding: 1.25rem;
+}
+.nano-cart-admin-form h2 {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--nano-cart-admin-border-soft);
+}
+.nano-cart-admin-form h2:first-of-type { margin-top: 0; }
+.nano-cart-admin-form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.nano-cart-admin-form input[type=text],
+.nano-cart-admin-form input[type=url],
+.nano-cart-admin-form input[type=email],
+.nano-cart-admin-form input[type=password],
+.nano-cart-admin-form input[type=number],
+.nano-cart-admin-form select,
+.nano-cart-admin-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.55rem 0.7rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--nano-cart-admin-text);
+  background: var(--nano-cart-admin-panel);
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+}
+.nano-cart-admin-form input:focus,
+.nano-cart-admin-form select:focus,
+.nano-cart-admin-form textarea:focus {
+  outline: 2px solid var(--nano-cart-admin-accent);
+  outline-offset: 1px;
+  border-color: var(--nano-cart-admin-accent);
+}
+.nano-cart-admin-form input[readonly] {
+  background: var(--nano-cart-admin-bg);
+  color: var(--nano-cart-admin-muted);
+}
+.nano-cart-admin-form textarea { resize: vertical; min-height: 6rem; }
+
+.nano-cart-admin-fieldset {
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+  padding: 0.85rem 1rem;
+  margin: 0 0 1rem;
+}
+.nano-cart-admin-fieldset legend {
+  padding: 0 0.5rem;
+  font-weight: 600;
+}
+.nano-cart-admin-inline {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.35rem;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem !important;
+  font-weight: 400;
+}
+.nano-cart-admin-inline input[type=checkbox],
+.nano-cart-admin-inline input[type=radio] {
+  width: auto;
+  margin: 0;
+}
+
+.nano-cart-admin-form-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.nano-cart-admin-help {
+  color: var(--nano-cart-admin-muted);
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+}
+
+/* Buttons. */
+.nano-cart-admin-button {
+  display: inline-block;
+  padding: 0.55rem 1.1rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--nano-cart-admin-text);
+  background: var(--nano-cart-admin-panel);
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 40px;
+  line-height: 1.4;
+  transition: background-color 100ms ease-out;
+}
+.nano-cart-admin-button:hover { background: var(--nano-cart-admin-bg); }
+.nano-cart-admin-button-primary {
+  background: var(--nano-cart-admin-accent);
+  border-color: var(--nano-cart-admin-accent);
+  color: #fff;
+}
+.nano-cart-admin-button-primary:hover { background: var(--nano-cart-admin-accent-hover); border-color: var(--nano-cart-admin-accent-hover); }
+.nano-cart-admin-button-secondary { color: var(--nano-cart-admin-muted); }
+.nano-cart-admin-button-danger {
+  background: var(--nano-cart-admin-danger);
+  border-color: var(--nano-cart-admin-danger);
+  color: #fff;
+}
+.nano-cart-admin-button-danger:hover { background: var(--nano-cart-admin-danger-hover); border-color: var(--nano-cart-admin-danger-hover); }
+
+/* Tables. */
+.nano-cart-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--nano-cart-admin-panel);
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+  overflow: hidden;
+}
+.nano-cart-admin-table th,
+.nano-cart-admin-table td {
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--nano-cart-admin-border-soft);
+  vertical-align: top;
+}
+.nano-cart-admin-table th {
+  background: var(--nano-cart-admin-bg);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--nano-cart-admin-muted);
+}
+.nano-cart-admin-table tr:last-child td { border-bottom: 0; }
+.nano-cart-admin-table a { color: var(--nano-cart-admin-accent); text-decoration: none; }
+.nano-cart-admin-table a:hover { text-decoration: underline; }
+
+.nano-cart-admin-link-danger { color: var(--nano-cart-admin-danger) !important; }
+
+/* Pills (status, primary marker). */
+.nano-cart-admin-pill {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  background: var(--nano-cart-admin-bg);
+  color: var(--nano-cart-admin-muted);
+  border: 1px solid var(--nano-cart-admin-border);
+}
+.nano-cart-admin-pill-published { background: var(--nano-cart-admin-success-bg); color: var(--nano-cart-admin-success-fg); border-color: var(--nano-cart-admin-success-fg); }
+.nano-cart-admin-pill-draft { background: var(--nano-cart-admin-bg); color: var(--nano-cart-admin-muted); }
+
+/* Markdown editor. */
+.nano-cart-admin-markdown-editor {
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+  overflow: hidden;
+  background: var(--nano-cart-admin-panel);
+}
+.nano-cart-admin-md-toolbar {
+  background: var(--nano-cart-admin-bg);
+  padding: 0.35rem 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--nano-cart-admin-border-soft);
+}
+.nano-cart-admin-md-toolbar button {
+  background: var(--nano-cart-admin-panel);
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+  padding: 0.3rem 0.7rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.nano-cart-admin-md-toolbar button:hover { background: var(--nano-cart-admin-bg); }
+.nano-cart-admin-markdown-editor textarea {
+  border: 0 !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.92rem;
+}
+.nano-cart-admin-markdown-editor textarea:focus { outline: none; }
+.nano-cart-admin-md-preview {
+  border-top: 1px solid var(--nano-cart-admin-border-soft);
+  padding: 0.85rem 1rem;
+  background: var(--nano-cart-admin-bg);
+}
+
+/* Setup wizard advisory. */
+.nano-cart-admin-advisory {
+  background: var(--nano-cart-admin-panel);
+  border: 1px solid var(--nano-cart-admin-border);
+  border-left: 4px solid var(--nano-cart-admin-accent);
+  border-radius: var(--nano-cart-admin-radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.nano-cart-admin-advisory h2 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+.nano-cart-admin-advisory h3 { margin: 1rem 0 0.5rem; font-size: 1rem; }
+.nano-cart-admin-advisory ul { margin: 0 0 0.5rem 1.25rem; padding: 0; }
+.nano-cart-admin-advisory-note {
+  color: var(--nano-cart-admin-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Login screen. */
+.nano-cart-admin-login .nano-cart-admin-main,
+.nano-cart-admin-setup .nano-cart-admin-main {
+  max-width: 520px;
+}
+.nano-cart-admin-form-login {
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+/* Confirm / danger blocks. */
+.nano-cart-admin-confirm {
+  background: var(--nano-cart-admin-panel);
+  border: 1px solid var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+  padding: 1.25rem;
+}
+.nano-cart-admin-image-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.nano-cart-admin-image-list li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--nano-cart-admin-border-soft);
+}
+
+.nano-cart-admin-empty {
+  text-align: center;
+  color: var(--nano-cart-admin-muted);
+  padding: 1.5rem;
+  background: var(--nano-cart-admin-panel);
+  border: 1px dashed var(--nano-cart-admin-border);
+  border-radius: var(--nano-cart-admin-radius);
+}
+
+@media (max-width: 600px) {
+  .nano-cart-admin-header { padding: 0.65rem 0.85rem; }
+  .nano-cart-admin-logout { margin-left: 0; }
+  .nano-cart-admin-main { padding: 0.85rem; }
+  .nano-cart-admin-table { font-size: 0.85rem; }
+  .nano-cart-admin-table th,
+  .nano-cart-admin-table td { padding: 0.5rem 0.6rem; }
+}

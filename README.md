@@ -139,6 +139,26 @@ Buy a licence at [digitalfracture.co.uk/licensing/nano-cart](https://digitalfrac
 
 ---
 
+## Removing the footer attribution
+
+Nano Cart displays a small "Powered by Nano Cart. Developed by Digital Fracture." footer on the pages it renders. To remove this attribution, purchase a perpetual per-domain licence:
+
+| Tier | Price | Covers |
+|------|-------|--------|
+| Single domain | £29 | one domain |
+| Agency 3-pack | £69 | three domains (any combination) |
+| Agency unlimited | £249 | wildcard, any number of domains |
+
+Buy at [digitalfracture.co.uk/licensing/nano-cart](https://digitalfracture.co.uk/licensing/nano-cart).
+
+Paste your licence key into the admin under **Licence**, or directly into `/shop-config/config.json` as the `licence_key` field. The check is local: no phone-home, no network calls, no telemetry. Verification uses libsodium's Ed25519 against an embedded Digital Fracture public key.
+
+Localhost, `127.0.0.1`, any host with a non-default port, and `.test` / `.local` zones skip the licence check entirely so developers can preview locally without seeing the footer.
+
+**Testing licence verification:** contributors can use `tests/licence/generate-test-licence.php` to generate a working test licence with a throwaway keypair. Instructions are at the top of the script. After testing, revert `licence.php`'s `NANO_CART_LICENCE_PUBKEY_V1` constant to the real Digital Fracture key.
+
+---
+
 ## Contributing
 
 Nano Cart is early-stage solo development. Bug reports, feature suggestions, and security issues are welcome via [GitHub Issues](https://github.com/digifrac/Nano-Cart/issues). Formal contribution guidelines will be added once the project stabilises after v1.0.0.

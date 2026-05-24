@@ -16,6 +16,7 @@ if (!defined('NANO_CART_BOOTSTRAPPED')) {
 }
 
 require_once __DIR__ . '/lib/Parsedown.php';
+require_once __DIR__ . '/licence.php';
 
 /* ----------------------------------------------------------------------- */
 /* Configuration                                                            */
@@ -548,10 +549,16 @@ function nano_cart_buy_button(array $product): string
 }
 
 /* ----------------------------------------------------------------------- */
-/* Footer attribution (licence integration is Session 5)                     */
+/* Footer attribution                                                        */
 /* ----------------------------------------------------------------------- */
 
+/**
+ * Public hook for template.php. Delegates to licence.php which decides
+ * whether to show the attribution based on dev-host detection and
+ * licence verification. Returns empty string when the footer should
+ * be suppressed.
+ */
 function nano_cart_footer_attribution(): string
 {
-    return '<p class="nano-cart-footer-attribution">Powered by Nano Cart. Developed by Digital Fracture.</p>';
+    return nano_cart_render_licence_footer();
 }

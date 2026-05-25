@@ -336,6 +336,11 @@ function nano_cart_admin_delete_product(string $sku): bool
     if (is_dir($image_dir)) {
         nano_cart_admin_rmtree($image_dir);
     }
+    // Cached on-demand variants mirror the source tree under /media/img/.
+    $cache_dir = NANO_CART_MEDIA_PATH . '/img/product-images/' . $sku;
+    if (is_dir($cache_dir)) {
+        nano_cart_admin_rmtree($cache_dir);
+    }
     nano_cart_admin_regenerate_sitemap();
     return true;
 }
@@ -365,9 +370,13 @@ function nano_cart_admin_delete_category(string $slug): bool
     }
     @unlink($real);
 
-    // Banner image and its variants under category-images/.
-    $banner_dir = NANO_CART_MEDIA_PATH . '/category-images';
-    if (is_dir($banner_dir)) {
+    // Banner source file under category-images/, plus any cached on-demand
+    // variants under img/category-images/.
+    foreach ([
+        NANO_CART_MEDIA_PATH . '/category-images',
+        NANO_CART_MEDIA_PATH . '/img/category-images',
+    ] as $banner_dir) {
+        if (!is_dir($banner_dir)) continue;
         foreach (glob($banner_dir . '/' . $slug . '*') ?: [] as $f) {
             if (is_file($f)) @unlink($f);
         }

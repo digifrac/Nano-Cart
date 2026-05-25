@@ -12,10 +12,15 @@ Options -Indexes -MultiViews
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
   # Skip rewriting for files and directories that actually exist
-  # (assets/, media/, lib/, sitemap.xml, .htaccess, admin/).
+  # (assets/, media/, lib/, sitemap.xml, .htaccess, admin/). A cached
+  # image variant already on disk is served here without touching PHP.
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
+
+  # On-demand image variants: /media/img/<path>-<width>.<fmt>. Reached
+  # only on a cache miss (the rule above serves cached files directly).
+  RewriteRule ^media/img/(.+)-([0-9]+)\.(jpg|webp)$ image.php?path=$1&w=$2&fmt=$3 [QSA,L]
 
   # Trailing-slash canonicalisation for category and product URLs.
   RewriteRule ^([a-z0-9][a-z0-9-]*[a-z0-9])/([a-z0-9][a-z0-9-]*[a-z0-9])$ /$1/$2/ [R=301,L]

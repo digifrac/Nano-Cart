@@ -8,13 +8,14 @@
   "licence_key": "",
   "image_quality_jpeg": 85,
   "image_quality_webp": 80,
-  "thumbnail_widths": [400, 800, 120],
+  "source_max_width": 1600,
+  "image_widths": [120, 400, 800],
   "default_currency": "GBP",
   "card_image_height": "240",
   "card_image_fit": "cover",
   "seo": {
     "default_meta_description": "Hand-thrown stoneware and porcelain from a small studio.",
-    "og_image": "/shop/media/category-images/pottery-hero-800.jpg",
+    "og_image": "/shop/media/img/category-images/pottery-800.jpg",
     "twitter_handle": "",
     "brand_name": "Demo Pottery Studio"
   }

@@ -2,10 +2,13 @@
 /**
  * Nano Cart - seed image generator.
  *
- * Generates ~35 placeholder image files for the minimal seed-data/
- * directory. Run once from the command line:
+ * Generates one placeholder source image per entry for the minimal
+ * seed-data/ directory. Run once from the command line:
  *
  *   php seed-data/generate-seed-images.php
+ *
+ * Sized variants are no longer pre-generated: image.php builds them on
+ * demand at request time. This script only writes the source JPEGs.
  *
  * Idempotent: re-running overwrites existing files. Safe to delete this
  * script and the generated media/ folder before deploying a real shop.
@@ -18,10 +21,6 @@ if (PHP_SAPI !== 'cli') {
 if (!extension_loaded('gd')) {
     fwrite(STDERR, "PHP GD extension required.\n");
     exit(1);
-}
-$can_webp = function_exists('imagewebp');
-if (!$can_webp) {
-    fwrite(STDERR, "Note: WebP support not available in this PHP build. JPEG variants only.\n");
 }
 
 $seed_root = __DIR__;
@@ -53,12 +52,9 @@ $jobs = [
     ],
 ];
 
-$sizes = [
-    'original' => [1600, 1200],
-    'hero-800' => [800,  600],
-    'thumb-400'=> [400,  300],
-    'thumb-120'=> [120,  90],
-];
+// Source dimensions. The resizer caps to config.source_max_width (1600 by
+// default) anyway, so 1600x1200 is a representative source size.
+[$w, $h] = [1600, 1200];
 
 $written = 0;
 foreach ($jobs as $job) {
@@ -67,36 +63,26 @@ foreach ($jobs as $job) {
         fwrite(STDERR, "Could not create $dir\n");
         exit(1);
     }
-    foreach ($sizes as $variant => [$w, $h]) {
-        $img = imagecreatetruecolor($w, $h);
-        $bg  = imagecolorallocate($img, $job['color'][0], $job['color'][1], $job['color'][2]);
-        $fg  = imagecolorallocate($img, 255, 255, 255);
-        imagefilledrectangle($img, 0, 0, $w, $h, $bg);
-        // Draw label centered (built-in font 5 is widest available).
-        $lines = explode("\n", $job['label']);
-        $font  = $w >= 400 ? 5 : ($w >= 200 ? 4 : 3);
-        $line_h = imagefontheight($font);
-        $total_h = $line_h * count($lines);
-        $y = (int)(($h - $total_h) / 2);
-        foreach ($lines as $line) {
-            $tw = imagefontwidth($font) * strlen($line);
-            $x = (int)(($w - $tw) / 2);
-            imagestring($img, $font, $x, $y, $line, $fg);
-            $y += $line_h;
-        }
-
-        $suffix = ($variant === 'original') ? '' : '-' . $variant;
-        $base = $seed_root . '/' . $job['path'] . $suffix;
-        imagejpeg($img, $base . '.jpg', 85);
-        $written++;
-        // Original is kept as JPEG only per FORMAT.md; WebP is for sized variants only.
-        if ($can_webp && $variant !== 'original') {
-            imagewebp($img, $base . '.webp', 85);
-            $written++;
-        }
-        imagedestroy($img);
+    $img = imagecreatetruecolor($w, $h);
+    $bg  = imagecolorallocate($img, $job['color'][0], $job['color'][1], $job['color'][2]);
+    $fg  = imagecolorallocate($img, 255, 255, 255);
+    imagefilledrectangle($img, 0, 0, $w, $h, $bg);
+    // Draw label centered (built-in font 5 is the widest available).
+    $lines = explode("\n", $job['label']);
+    $font  = 5;
+    $line_h = imagefontheight($font);
+    $total_h = $line_h * count($lines);
+    $y = (int)(($h - $total_h) / 2);
+    foreach ($lines as $line) {
+        $tw = imagefontwidth($font) * strlen($line);
+        $x = (int)(($w - $tw) / 2);
+        imagestring($img, $font, $x, $y, $line, $fg);
+        $y += $line_h;
     }
-    echo "  generated " . $job['path'] . " (all variants)\n";
+    imagejpeg($img, $seed_root . '/' . $job['path'] . '.jpg', 85);
+    imagedestroy($img);
+    $written++;
+    echo "  generated " . $job['path'] . ".jpg\n";
 }
 
-echo "\nDone. $written files written.\n";
+echo "\nDone. $written source files written.\n";

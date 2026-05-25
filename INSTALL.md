@@ -168,7 +168,7 @@ From the dashboard:
 1. Click **Categories**, then **Add category**. Fill in slug, name, optional banner image and description.
 2. Click **Products**, then **Add product**. Fill in SKU, title, descriptions, price (free-form text like `£25.00`), the checkout URL, and the category you just created.
 3. Save. The image manager appears on the product edit page once the product exists.
-4. Drop one or more images into the upload zone. Three size variants (JPEG + WebP) are generated automatically.
+4. Drop one or more images into the upload zone. Each is saved as a single source image; sized variants (JPEG + WebP) are generated on demand the first time a page requests them.
 5. Set alt text for each image (required for SEO and accessibility).
 
 Visit `https://example.com/shop/` to see the homepage, your category, and your product. The sitemap is at `https://example.com/shop/sitemap.xml`.

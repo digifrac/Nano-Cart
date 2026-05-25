@@ -220,7 +220,8 @@
     }
 
     function thumbUrl(file) {
-      return mediaBase + '/' + relRoot + '/' + file + '-thumb-120.jpg';
+      // On-demand 120px variant; generated and cached on first request.
+      return mediaBase + '/img/' + relRoot + '/' + file + '-120.jpg';
     }
 
     function render() {
@@ -326,7 +327,7 @@
       +     '<p>Drop ' + (single ? 'an image' : 'images') + ' here or '
       +       '<button type="button" class="nano-cart-admin-browse-btn nano-cart-admin-link">browse</button>'
       +     '</p>'
-      +     '<p class="nano-cart-admin-help">JPEG, PNG, or WebP. Up to 10 MB per file. Variants in 3 sizes (JPEG + WebP) generated automatically.</p>'
+      +     '<p class="nano-cart-admin-help">JPEG, PNG, or WebP. Up to 10 MB per file. Saved as a single source image; sized variants are generated on demand.</p>'
       +     '<input type="file" accept="image/jpeg,image/png,image/webp"' + (single ? '' : ' multiple') + ' hidden>'
       +   '</div>'
       +   '<div class="nano-cart-admin-upload-progress" aria-live="polite"></div>'

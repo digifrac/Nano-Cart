@@ -191,26 +191,56 @@ function nano_cart_canonical_url(?array $entity = null): string
 }
 
 /**
+ * Pixel widths the resizer is allowed to produce. Operators may override
+ * via config.image_widths, but the named variants below pin the widths
+ * the templates actually request, so the default is what matters in
+ * practice. Used by image.php to reject arbitrary widths.
+ *
+ * @return list<int>
+ */
+function nano_cart_image_widths(): array
+{
+    $cfg = nano_cart_load_config();
+    $raw = $cfg['image_widths'] ?? null;
+    if (is_array($raw)) {
+        $out = array_values(array_unique(array_filter(
+            array_map('intval', $raw),
+            static fn(int $w) => $w >= 16 && $w <= 4000
+        )));
+        if (!empty($out)) return $out;
+    }
+    return [120, 400, 800];
+}
+
+/**
  * Resolve an image path (no extension, no variant suffix) plus a variant
  * and format into a public URL. Variants: hero, thumb, gallery-thumb,
  * original. Formats: jpg, webp.
  *
+ * Sized variants point at /media/img/, which image.php generates on the
+ * first request and caches to disk. The "original" variant points at the
+ * stored source file, which is always a JPEG.
+ *
  * Examples:
  *   nano_cart_image_url('product-images/sku-001/main')
- *     -> /shop/media/product-images/sku-001/main-hero-800.jpg
+ *     -> /shop/media/img/product-images/sku-001/main-800.jpg
  *   nano_cart_image_url('category-images/pottery', 'thumb', 'webp')
- *     -> /shop/media/category-images/pottery-thumb-400.webp
+ *     -> /shop/media/img/category-images/pottery-400.webp
+ *   nano_cart_image_url('product-images/sku-001/main', 'original')
+ *     -> /shop/media/product-images/sku-001/main.jpg
  */
 function nano_cart_image_url(string $path, string $variant = 'hero', string $format = 'jpg'): string
 {
-    $suffix = match ($variant) {
-        'thumb'         => '-thumb-400',
-        'hero'          => '-hero-800',
-        'gallery-thumb' => '-thumb-120',
-        'original'      => '',
-        default         => '-hero-800',
+    if ($variant === 'original') {
+        return nano_cart_shop_path() . '/media/' . $path . '.jpg';
+    }
+    $width = match ($variant) {
+        'thumb'         => 400,
+        'hero'          => 800,
+        'gallery-thumb' => 120,
+        default         => 800,
     };
-    return nano_cart_shop_path() . '/media/' . $path . $suffix . '.' . $format;
+    return nano_cart_shop_path() . '/media/img/' . $path . '-' . $width . '.' . $format;
 }
 
 function nano_cart_absolute_url(string $url): string

@@ -244,7 +244,7 @@ echo '<script src="' . $h($admin_url . '/image-manager.js') . '" defer></script>
 
   <fieldset class="nano-cart-admin-fieldset">
     <legend>Images</legend>
-    <p class="nano-cart-admin-help">Drop one or more images below. Variants in three sizes (JPEG + WebP) are generated on upload. Drag thumbnails to reorder; first in order is the primary unless you set the star explicitly.</p>
+    <p class="nano-cart-admin-help">Drop one or more images below. Each is saved as a single source image; sized variants (JPEG + WebP) are generated on demand. Drag thumbnails to reorder; first in order is the primary unless you set the star explicitly.</p>
 <?php if ($is_edit): ?>
     <div class="nano-cart-admin-image-manager"
          data-endpoint="<?= $h($admin_url . '/upload.php') ?>"

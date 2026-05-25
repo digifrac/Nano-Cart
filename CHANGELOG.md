@@ -9,7 +9,7 @@ Initial public release.
 ### Frontend
 
 - Flat-file PHP renderers: `index.php` (homepage), `category.php` (category page), `product.php` (product page)
-- `core.php` loader and helper library: config, product/category JSON loaders with filtering, markdown rendering via vendored Parsedown, canonical URL construction, image URL builder with variant suffix, breadcrumb data and HTML, SEO metadata block, JSON-LD Product and BreadcrumbList builders, buy/enquiry button, `nano_cart_image_set()` structured-variant view
+- `core.php` loader and helper library: config, product/category JSON loaders with filtering, markdown rendering via vendored Parsedown, canonical URL construction, on-demand image URL builder (`/media/img/<path>-<width>.<fmt>`), breadcrumb data and HTML, SEO metadata block, JSON-LD Product and BreadcrumbList builders, buy/enquiry button, `nano_cart_image_set()` structured-variant view
 - `template.php` per-site HTML wrapper that operators customise to match host site chrome
 - `generators.php` sitemap generator (XML, regenerated on every admin save)
 - `install.php` web-based first-time installer: detects whether `bootstrap.php` exists, prompts for an outside-webroot config directory, creates it (`chmod 0750`), writes `bootstrap.php` with absolute paths, hands off to the admin setup wizard. Refuses to run once `bootstrap.php` exists, so a forgotten `install.php` cannot reconfigure a live shop. Operator deletes it after install, same pattern as the admin folder.
@@ -42,8 +42,8 @@ Initial public release.
 - Per-file mime + magic-byte validation via finfo
 - EXIF orientation applied to JPEGs (phone portraits no longer display sideways)
 - Source dimension cap (default 1600px wide, configurable via `source_max_width`)
-- Re-encode through GD to strip embedded payloads
-- Three width variants generated in JPEG and WebP: thumb-400 (cards), hero-800 (main/banner), thumb-120 (gallery)
+- Re-encode through GD to strip embedded payloads; one source JPEG saved per upload
+- On-demand width variants generated and cached by `image.php` on first request (120px gallery, 400px cards, 800px main/banner), in JPEG and WebP, served thereafter as static files
 - Gallery UI with drag-to-reorder, inline alt-text editor saved on blur, primary-image star, delete with confirmation
 - Subfolder support (one level deep) for organising product images
 - Configurable JPEG and WebP quality (60-95, default 85)
@@ -69,6 +69,6 @@ Initial public release.
 
 ### Seed data
 
-A minimal `seed-data/` directory ships with the repo containing one category, two products, and approximately 35 placeholder image files (3 size variants in JPEG and WebP per source). Intentionally disposable: operators delete the directory before deploying their own shop. Generator script (`seed-data/generate-seed-images.php`) is included for regeneration if image sizes are changed.
+A minimal `seed-data/` directory ships with the repo containing one category, two products, and five placeholder source images (one JPEG each; the resizer derives every width on demand). Intentionally disposable: operators delete the directory before deploying their own shop. Generator script (`seed-data/generate-seed-images.php`) is included for regeneration.
 
 [1.0.0]: https://github.com/digifrac/Nano-Cart/releases/tag/v1.0.0

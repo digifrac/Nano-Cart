@@ -157,27 +157,32 @@ Card thumbnails are deliberately not per-item — uniform thumbnail framing acro
 
 ## 8. Image pipeline
 
-Every upload runs through a six-step pipeline. The pipeline is built in Session 4 with about 80-100 lines of PHP — matches Nano CMS's image manager density.
+Uploads are sanitised on the way in; sizing happens on demand on the way out.
+
+**On upload** (`admin/upload.php`):
 
 1. **Receive upload.** Validate mime type AND image header bytes (not just extension — a `.jpg` extension on a PHP file is rejected by checking the magic bytes).
-2. **EXIF strip.** Privacy: prevents leaking camera details, GPS coordinates, embedded thumbnails of unrelated photos.
-3. **Re-encode through GD or Imagick.** Security hardening: kills any embedded payload (steganographic PHP, malformed structures targeting image-parser vulnerabilities). The decoded pixel data is re-encoded as a clean image.
-4. **Generate three size variants plus WebP equivalents.** Six output files per upload (3 sizes × 2 formats), plus the cleaned-and-re-encoded original.
-5. **Store with suffix naming.** See FORMAT.md §5 for the exact convention.
-6. **Save metadata.** Alt text (operator-provided), dimensions, paths into the product JSON.
+2. **EXIF orientation + strip.** Apply the orientation tag, then drop metadata. Privacy: prevents leaking camera details, GPS coordinates, embedded thumbnails of unrelated photos.
+3. **Re-encode through GD.** Security hardening: kills any embedded payload (steganographic PHP, malformed structures targeting image-parser vulnerabilities). The decoded pixel data is re-encoded as a clean image.
+4. **Cap and save one source JPEG.** Downscale to `source_max_width` if larger, then write exactly one file: `<basename>.jpg`. No variant files.
+5. **Save metadata.** Alt text (operator-provided), dimensions, paths into the product JSON.
 
-GD is built into PHP — no external dependencies. Imagick is available as a fallback for environments where GD is missing or restricted.
+**On request** (`image.php`): the first request for a given width/format resizes the source, caches the result under `/media/img/`, and serves it with a one-year `Cache-Control`. Every subsequent request is served straight from disk by the web server (the `.htaccess` skip-if-exists rule), so PHP runs once per variant, not once per view. Widths are restricted to the `image_widths` whitelist and the resizer never upscales.
+
+This is the pattern Shopify and Squarespace use: store one master, derive sizes lazily. It writes 1 file per upload instead of 7, and a width or quality change is just a cache delete rather than a bulk re-thumbnail.
+
+GD is built into PHP — no external dependencies.
 
 Templates use the `<picture>` element with the WebP source listed first and the JPEG as fallback:
 
 ```html
 <picture>
-  <source type="image/webp" srcset="...-hero-800.webp">
-  <img src="...-hero-800.jpg" alt="..." loading="lazy" width="800" height="600">
+  <source type="image/webp" srcset="/shop/media/img/product-images/sku-001/main-800.webp">
+  <img src="/shop/media/img/product-images/sku-001/main-800.jpg" alt="..." loading="lazy" width="800" height="600">
 </picture>
 ```
 
-Browsers that support WebP load the smaller WebP file; legacy browsers fall back to JPEG automatically.
+Browsers that support WebP load the smaller WebP file; legacy browsers fall back to JPEG automatically. If the PHP build lacks WebP support the WebP URL 404s and the browser uses the JPEG `<img>`.
 
 ---
 
@@ -290,15 +295,15 @@ The repository ships with a minimal `seed-data/` directory containing:
 - 1 category (`pottery`) with banner image and description.
 - 2 products with full metadata and image references.
 - A complete `config.json` example.
-- Pre-generated placeholder images at all three variant sizes (`-thumb-400`, `-hero-800`, `-thumb-120`) in both JPEG and WebP. Approximately 35 image files total.
+- One placeholder source JPEG per image (5 files total). The on-demand resizer derives every width from these.
 
 This is intentionally minimal. It is not v1 demo content. Its purpose is single:
 
-**Frontend testability before the image pipeline exists.** Session 2 builds the frontend before Session 4 builds the image-upload pipeline. Without pre-generated image variants, the frontend's `<picture>` element would reference variant files (`-hero-800.jpg`, `-thumb-400.webp`) that don't exist yet, breaking gallery and OG image rendering during Session 2 testing. Shipping minimal pre-generated variants unblocks frontend verification across Sessions 2 and 3.
+**Frontend testability.** The seed source images let the frontend's `<picture>` element resolve to real files through `image.php` (which generates the requested widths on first request), so gallery and OG image rendering can be verified without an operator first uploading anything.
 
 The seed data is **disposable**. Operators delete the `seed-data/` folder before deploying their own shop. There is no `admin/load-demo.php` script, no first-impression demo, no polished example content shipped in v1. Real shops are built from real products the operator creates through the admin.
 
-Seed images are hand-made placeholders (solid colour rectangles with text overlay) generated via GD during Session 2, committed to the repo so a fresh clone immediately has working frontend tests. Small file size, descriptive alt text.
+Seed images are hand-made placeholders (solid colour rectangles with text overlay) generated via GD by `seed-data/generate-seed-images.php`, committed to the repo so a fresh clone immediately has working frontend tests. Small file size, descriptive alt text.
 
 If a richer demo experience is wanted for v1.1 or later, it can be added as a separate `demo-content/` directory with proper marketing-quality content — but that is out of scope for v1.
 
@@ -311,9 +316,9 @@ Nano Cart is built across six Claude Code sessions. Each session has a standalon
 | Session | Output | Notes |
 |---------|--------|-------|
 | 1 | FORMAT.md and ARCHITECTURE.md | This session. Pure documentation. |
-| 2 | Frontend rendering (PHP, CSS, JS) + seed data with pre-generated image variants | Substantial; natural split point is frontend PHP first, then CSS+JS+seed |
+| 2 | Frontend rendering (PHP, CSS, JS) + seed data with placeholder source images | Substantial; natural split point is frontend PHP first, then CSS+JS+seed |
 | 3 | Admin core (login with exponential backoff, CRUD, settings, advisory setup wizard) | Substantial; natural split point is auth+setup+products first, then categories+settings+upload |
-| 4 | Image manager (full multi-image, drag-reorder, alt text, three-size pipeline) | Natural split: backend pipeline first, then frontend gallery UI |
+| 4 | Image manager (full multi-image, drag-reorder, alt text, on-demand resizing) | Natural split: backend pipeline first, then frontend gallery UI |
 | 5 | Licence verification (mirrors Nano CMS, `product=nano-cart`, includes test licence generator) | Adapt Nano CMS licence.php, add admin licence page |
 | 6 | Documentation polish, demo content load script, README, INSTALL, CHANGELOG, version stamp, tag v1.0.0 | Release prep |
 

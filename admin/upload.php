@@ -4,18 +4,20 @@
  *
  * Multi-purpose JSON API serving the admin/image-manager.js front-end.
  * Actions:
- *   upload      One or more files, generates full 3-size pipeline + WebP
+ *   upload      One or more files, each saved as a single sanitised JPEG
  *   update      Persist images[] array to product or category JSON
- *   delete      Remove an image (all 7 variant files + array entry)
+ *   delete      Remove an image (source file + cached variants + array entry)
  *   subfolders  List existing subfolders for a target
  *
  * Pipeline per upload, per file:
  *   1. Validate mime + magic bytes via finfo.
  *   2. Decode via GD (auto-detect by extension).
  *   3. Apply EXIF orientation (JPEG only).
- *   4. Re-encode the cleaned canvas at original (or capped) size.
- *   5. Generate three width variants, each in JPEG and WebP.
- *   6. Return all paths and dimensions.
+ *   4. Re-encode the cleaned canvas at original (or capped) size as JPEG.
+ *   5. Return the saved path and dimensions.
+ *
+ * Width variants are not produced here. image.php builds and caches them
+ * on demand from this single source file (see core.php / .htaccess).
  */
 
 require __DIR__ . '/../bootstrap.php';
@@ -24,11 +26,6 @@ nano_cart_admin_auth_check();
 
 header('Content-Type: application/json');
 
-const NANO_CART_ADMIN_VARIANTS = [
-    'thumb-400' => 400,
-    'hero-800'  => 800,
-    'thumb-120' => 120,
-];
 const NANO_CART_ADMIN_UPLOAD_MIME = [
     'jpg'  => 'image/jpeg',
     'png'  => 'image/png',
@@ -221,33 +218,16 @@ function nano_cart_admin_process_one_upload(array $file, string $dir, string $re
         $base = $base . '-' . bin2hex(random_bytes(2));
     }
 
-    $q_jpg  = max(60, min(95, (int)($cfg['image_quality_jpeg'] ?? 85)));
-    $q_webp = max(60, min(95, (int)($cfg['image_quality_webp'] ?? 80)));
-    $can_webp = function_exists('imagewebp');
+    $q_jpg = max(60, min(95, (int)($cfg['image_quality_jpeg'] ?? 85)));
 
-    // Save original (re-encoded canvas).
+    // Save the single source file (re-encoded canvas). Width variants are
+    // generated on demand by image.php, not here.
     $orig_path = $dir . '/' . $base . '.jpg';
     if (!@imagejpeg($img, $orig_path, $q_jpg)) {
         imagedestroy($img);
         return ['ok' => false, 'name' => $orig, 'error' => 'Could not write image.'];
     }
     @chmod($orig_path, 0644);
-
-    // Generate three width variants in JPEG and WebP.
-    $variants = [];
-    foreach (NANO_CART_ADMIN_VARIANTS as $name => $width) {
-        $v = nano_cart_admin_resize_width($img, $width);
-        $vjpg = $dir . '/' . $base . '-' . $name . '.jpg';
-        @imagejpeg($v, $vjpg, $q_jpg);
-        @chmod($vjpg, 0644);
-        $variants[$name] = ['width' => imagesx($v), 'height' => imagesy($v)];
-        if ($can_webp) {
-            $vweb = $dir . '/' . $base . '-' . $name . '.webp';
-            @imagewebp($v, $vweb, $q_webp);
-            @chmod($vweb, 0644);
-        }
-        if ($v !== $img) imagedestroy($v);
-    }
 
     $width  = imagesx($img);
     $height = imagesy($img);
@@ -260,7 +240,6 @@ function nano_cart_admin_process_one_upload(array $file, string $dir, string $re
         'rel_path' => $rel_root . '/' . $base,
         'width'    => $width,
         'height'   => $height,
-        'variants' => $variants,
     ];
 }
 
@@ -397,16 +376,32 @@ function nano_cart_admin_action_delete(): void
     if ($expected_root === false) nano_cart_admin_api_fail('Target directory missing.', 404);
 
     $removed = 0;
+    // The source file, plus legacy source extensions and any pre-generated
+    // variant files left behind by the old (pre-on-demand) pipeline.
     $candidates = [$base . '.jpg', $base . '.png', $base . '.webp'];
-    foreach (array_keys(NANO_CART_ADMIN_VARIANTS) as $variant) {
-        $candidates[] = $base . '-' . $variant . '.jpg';
-        $candidates[] = $base . '-' . $variant . '.webp';
+    foreach (['thumb-400', 'hero-800', 'thumb-120'] as $legacy) {
+        $candidates[] = $base . '-' . $legacy . '.jpg';
+        $candidates[] = $base . '-' . $legacy . '.webp';
     }
     foreach ($candidates as $path) {
         $real = is_file($path) ? realpath($path) : false;
         if ($real === false) continue;
         if (!str_starts_with($real, $expected_root)) continue;
         if (@unlink($real)) $removed++;
+    }
+
+    // Cached on-demand variants under /media/img/, one per whitelisted width.
+    $cache_root = realpath(NANO_CART_MEDIA_PATH . '/img');
+    if ($cache_root !== false) {
+        $cache_base = NANO_CART_MEDIA_PATH . '/img/' . $target['rel_root'] . '/' . $file;
+        foreach (nano_cart_image_widths() as $w) {
+            foreach (['jpg', 'webp'] as $ext) {
+                $cp = $cache_base . '-' . $w . '.' . $ext;
+                $real = is_file($cp) ? realpath($cp) : false;
+                if ($real === false || !str_starts_with($real, $cache_root)) continue;
+                if (@unlink($real)) $removed++;
+            }
+        }
     }
 
     // Remove from product/category JSON's images array.

@@ -46,6 +46,11 @@ $values = [
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     nano_cart_admin_csrf_require();
 
+    // A draft save needs only a valid SKU so the operator can save partway
+    // through (and get the product on disk so its images can be added in the
+    // picker), then come back to complete and publish it later.
+    $is_draft = !empty($_POST['save_draft']);
+
     $values['sku']               = strtolower(trim((string)($_POST['sku'] ?? '')));
     $values['title']             = trim((string)($_POST['title'] ?? ''));
     $values['short_description'] = trim((string)($_POST['short_description'] ?? ''));
@@ -58,28 +63,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $values['image_width']       = (string)($_POST['image_width'] ?? '400');
     $values['image_height']      = (string)($_POST['image_height'] ?? 'auto');
     $values['image_fit']         = ($_POST['image_fit'] ?? 'contain') === 'cover' ? 'cover' : 'contain';
-    $values['status']            = ($_POST['status'] ?? 'published') === 'draft' ? 'draft' : 'published';
+    $values['status']            = ($is_draft || ($_POST['status'] ?? 'published') === 'draft') ? 'draft' : 'published';
 
     if (!nano_cart_slug_ok($values['sku'])) {
         $errors[] = 'SKU must be lowercase alphanumeric and hyphens only, 2+ characters.';
     }
-    if (mb_strlen($values['title']) < 1 || mb_strlen($values['title']) > 200) {
-        $errors[] = 'Title is required, max 200 characters.';
-    }
-    if (mb_strlen($values['short_description']) < 1 || mb_strlen($values['short_description']) > 300) {
-        $errors[] = 'Short description is required, max 300 characters.';
-    }
-    if ($values['long_description'] === '') {
-        $errors[] = 'Long description is required.';
-    }
-    if (nano_cart_load_category($values['category']) === null) {
-        $errors[] = 'Category must reference an existing category.';
-    }
-    if ($values['price_display'] === '' || mb_strlen($values['price_display']) > 50) {
-        $errors[] = 'Price display is required, max 50 characters.';
-    }
-    if ($is_checkout && !preg_match('#^https://#i', $values['checkout_url'])) {
-        $errors[] = 'Checkout URL is required in checkout mode and must use https://.';
+    // The fields below are only required to PUBLISH. A draft skips them.
+    if (!$is_draft) {
+        if (mb_strlen($values['title']) < 1 || mb_strlen($values['title']) > 200) {
+            $errors[] = 'Title is required, max 200 characters.';
+        }
+        if (mb_strlen($values['short_description']) < 1 || mb_strlen($values['short_description']) > 300) {
+            $errors[] = 'Short description is required, max 300 characters.';
+        }
+        if ($values['long_description'] === '') {
+            $errors[] = 'Long description is required.';
+        }
+        if (nano_cart_load_category($values['category']) === null) {
+            $errors[] = 'Category must reference an existing category.';
+        }
+        if ($values['price_display'] === '' || mb_strlen($values['price_display']) > 50) {
+            $errors[] = 'Price display is required, max 50 characters.';
+        }
+        if ($is_checkout && !preg_match('#^https://#i', $values['checkout_url'])) {
+            $errors[] = 'Checkout URL is required in checkout mode and must use https://.';
+        }
     }
     $allowed_widths = ['300','400','500','600','full'];
     if (!in_array($values['image_width'], $allowed_widths, true)) {
@@ -106,7 +114,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'category'          => $values['category'],
             'price_display'     => $values['price_display'],
             'checkout_url'      => $values['checkout_url'],
-            'images'            => $values['images'],
+            // Images are managed by the picker over AJAX (upload.php), not this
+            // form, so re-read them from disk at save time. Otherwise the stale
+            // set from page load clobbers any alt text, reorder, or selection
+            // change made in the picker after the page loaded.
+            'images'            => $is_edit ? (nano_cart_load_product($existing_sku)['images'] ?? []) : [],
             'featured'          => $values['featured'],
             'hero_featured'     => $values['hero_featured'],
             'image_width'       => $values['image_width'],
@@ -118,6 +130,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $to_save['created'] = $loaded['created'] ?? null;
         }
         if (nano_cart_admin_save_product($to_save)) {
+            if ($is_draft) {
+                // Stay on the editor so images can be added (the picker needs
+                // the product to exist on disk) and the rest filled in.
+                nano_cart_admin_flash_set('success', 'Draft saved. Add images and the remaining details, then Save to publish.');
+                nano_cart_admin_redirect($admin_url . '/product-edit.php?sku=' . urlencode($values['sku']));
+            }
             nano_cart_admin_flash_set('success', 'Product saved.');
             nano_cart_admin_redirect($admin_url . '/products.php');
         }
@@ -144,7 +162,7 @@ echo '<script src="' . $h($admin_url . '/editor-images.js' . $v) . '" defer></sc
 
   <label>
     SKU (used as filename and URL slug; cannot change later)
-    <input type="text" name="sku" required pattern="[a-z0-9][a-z0-9-]*[a-z0-9]" maxlength="64"
+    <input type="text" name="sku" required pattern="[a-z0-9][a-z0-9\-]*[a-z0-9]" maxlength="64"
            value="<?= $h($values['sku']) ?>" <?= $is_edit ? 'readonly' : '' ?>>
   </label>
 
@@ -262,8 +280,10 @@ echo '<script src="' . $h($admin_url . '/editor-images.js' . $v) . '" defer></sc
 <?php endif; ?>
   </fieldset>
 
+  <p class="nano-cart-admin-help"><strong>Save</strong> publishes (all fields required). <strong>Save draft</strong> needs only a valid SKU, so you can save now, add images, and finish later.</p>
   <div class="nano-cart-admin-form-actions">
     <button type="submit" class="nano-cart-admin-button nano-cart-admin-button-primary">Save</button>
+    <button type="submit" name="save_draft" value="1" formnovalidate class="nano-cart-admin-button nano-cart-admin-button-secondary">Save draft</button>
     <a class="nano-cart-admin-button nano-cart-admin-button-secondary" href="<?= $h($admin_url) ?>/products.php">Cancel</a>
   </div>
 </form>

@@ -2,6 +2,28 @@
 
 All notable changes to Nano Cart are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] - 2026-05-25
+
+### Added
+
+- **Save draft** on the product editor. A draft save requires only a valid SKU,
+  so an operator can save partway through, get the product on disk, add images
+  in the picker (which needs the product to exist), and complete and publish it
+  later. Publishing still runs the full field validation.
+- README links to the live demo at nanocart.co.uk/shop.
+
+### Fixed
+
+- Product and category create/edit forms could fail to save in current browsers:
+  the SKU/slug field's `pattern` (`[a-z0-9-]`) is rejected under the regex `v`
+  flag that browsers now use for HTML pattern validation. The hyphen is now
+  escaped, so the forms validate and save again.
+- Product image alt text and selection no longer get clobbered on Save: the
+  editor re-reads images from disk at save time instead of writing back the
+  stale page-load snapshot.
+- Image alt text now auto-saves while typing (and on Enter), not only when the
+  field loses focus, so it can't be lost by saving before clicking away.
+
 ## [1.2.0] - 2026-05-25
 
 Unified image handling: one media manager, and editors that select rather

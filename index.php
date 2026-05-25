@@ -58,7 +58,7 @@ $page_h1 = $site_name !== '' ? $site_name : 'Shop';
 <?php if (!empty($hero['short_description'])): ?>
         <p class="nano-cart-hero-summary"><?= htmlspecialchars($hero['short_description']) ?></p>
 <?php endif; ?>
-        <p class="nano-cart-hero-price"><?= htmlspecialchars($hero['price_display']) ?></p>
+        <p class="nano-cart-hero-price"><?= (($cfg['shop_mode'] ?? 'checkout') === 'checkout') ? 'Buy now &middot; ' : '' ?><?= htmlspecialchars($hero['price_display']) ?></p>
       </div>
     </a>
   </section>

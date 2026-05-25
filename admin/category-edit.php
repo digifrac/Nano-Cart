@@ -110,7 +110,7 @@ echo '<script src="' . $h($admin_url . '/editor-images.js' . $v) . '" defer></sc
 
   <label>
     Slug (URL segment; cannot change later)
-    <input type="text" name="slug" required pattern="[a-z0-9][a-z0-9-]*[a-z0-9]" maxlength="64"
+    <input type="text" name="slug" required pattern="[a-z0-9][a-z0-9\-]*[a-z0-9]" maxlength="64"
            value="<?= $h($values['slug']) ?>" <?= $is_edit ? 'readonly' : '' ?>>
   </label>
 

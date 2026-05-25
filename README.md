@@ -2,9 +2,11 @@
 
 A flat-file PHP product catalogue framework for static client sites. Sells fixed-price products through hosted checkout links (Stripe Payment Link, PayPal, Square, Gumroad, Ko-fi, or any URL). Drops into existing sites at `/shop/`. No database, no frameworks, no JavaScript checkout flows.
 
+**Live demo: [nanocart.co.uk/shop](https://nanocart.co.uk/shop/)**
+
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/digitalfracture)
 
-> **Status: v1.0.0.** Production-ready. See [INSTALL.md](INSTALL.md) for deployment, [CHANGELOG.md](CHANGELOG.md) for release notes.
+> **Status: v1.3.0.** Production-ready. See [INSTALL.md](INSTALL.md) for deployment, [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ---
 
@@ -29,7 +31,7 @@ Nano Cart is the right tool for a potter, a print-maker, a jewellery designer, a
 ## How it works
 
 - **Flat-file JSON.** One JSON file per product, one per category. No database. Edit by hand or through the admin.
-- **External checkout.** Each product links to a Stripe Payment Link, PayPal hosted checkout, Square, Gumroad, Ko-fi, or any processor-hosted URL. Nano Cart renders its own "Buy" button as a plain `<a href>` to that URL. No SDKs, no embed code, no JavaScript on the shop page.
+- **External checkout.** Each product links to a Stripe Payment Link, PayPal hosted checkout, Square, Gumroad, Ko-fi, or any processor-hosted URL. Nano Cart renders its own "Buy" button as a plain `<a href>` to that URL. No SDKs, no embed code, no JavaScript on the shop page. A "Secure checkout" trust notice under the button names the provider (auto-detected from the checkout URL's host) and notes it opens in a new tab; toggle it in Settings.
 - **Catalogue mode** alternative: replace the buy button with a site-wide enquiry action (mailto, contact form, Calendly, WhatsApp) for businesses selling through quotes.
 - **Removable admin.** A portable admin folder you upload via SFTP when you want to make changes, then remove. When the admin isn't on the server, it can't be attacked.
 - **Web installer.** A small `install.php` script auto-detects your hosting layout (cPanel, addon domains, standard), creates the outside-webroot config directory, writes `bootstrap.php` for you, and hands off to the setup wizard. One-click delete from the admin dashboard after setup. No SFTP-and-edit-bootstrap-by-hand required.

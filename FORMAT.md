@@ -232,6 +232,7 @@ One category = one JSON file under `categories/`. Filename is `<slug>.json`.
 | `shop_path` | string | no | `"/shop"` | Path under `site_url` where Nano Cart is mounted. Leading slash, no trailing slash. |
 | `shop_mode` | string | yes | `"checkout"` | `"checkout"` or `"catalogue"`. Changes how the buy button renders. |
 | `enquiry_action` | string | conditional | `null` | Required in catalogue mode. Either `mailto:address@example.com` or an `https://` URL to a contact form. Product name and SKU appended as query string for mailto. |
+| `show_checkout_notice` | bool | no | `true` | Checkout mode only. Shows a "Secure checkout" notice under the buy button naming the payment provider (auto-detected from the product's `checkout_url` host) and noting it opens in a new tab. |
 | `password_hash` | string | yes | — | bcrypt hash of admin password. Written by setup wizard, never read in plaintext. |
 | `licence_key` | string | no | `""` | Signed Ed25519 licence in `base64(payload).base64(signature)` form. Empty means unlicensed (footer attribution shows). |
 | `image_quality_jpeg` | integer | no | `85` | JPEG encode quality, 60-95. |

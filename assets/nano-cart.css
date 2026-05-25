@@ -296,7 +296,8 @@ a.nano-cart-breadcrumb-item:hover {
   width: 100%; height: auto; display: block;
 }
 .nano-cart-hero-body {
-  padding: 1.25rem 1.25rem 1.5rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--nano-cart-bg-soft, #f6f8fa);
 }
 .nano-cart-hero-title {
   margin: 0 0 0.5rem;
@@ -308,14 +309,37 @@ a.nano-cart-breadcrumb-item:hover {
   color: var(--nano-cart-text-muted);
 }
 .nano-cart-hero-price {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  margin: 1rem 0 0;
+  padding: 1.35rem 1.5rem;
+  min-height: 66px;
+  background: var(--nano-cart-button);
+  color: #fff;
+  border-radius: var(--nano-cart-radius);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 16px rgba(255, 77, 0, 0.3);
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.nano-cart-hero-link:hover .nano-cart-hero-price {
+  background: var(--nano-cart-button-hover);
+  box-shadow: 0 6px 20px rgba(255, 77, 0, 0.36);
 }
 @media (min-width: 768px) {
   .nano-cart-hero-link { flex-direction: row; }
   .nano-cart-hero-image { flex: 0 0 55%; }
-  .nano-cart-hero-body { flex: 1; align-self: center; }
+  .nano-cart-hero-body {
+    flex: 1;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 2.5rem 2rem 2rem;
+  }
 }
 
 /* Category page: locked layout with three defined rows.

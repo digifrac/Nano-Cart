@@ -19,7 +19,7 @@ if (!defined('NANO_CART_BOOTSTRAPPED')) {
  * Project version. Bumped on every public release alongside the
  * VERSION file at the repo root. Displayed in the admin footer.
  */
-const NANO_CART_VERSION = '1.2.0';
+const NANO_CART_VERSION = '1.3.0';
 
 // Register the failsafe before loading anything else, so that a missing
 // required file or an unloadable config below degrades to a clean page

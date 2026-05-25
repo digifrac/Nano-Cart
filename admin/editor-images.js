@@ -71,7 +71,10 @@
         if (star) star.addEventListener('click', function () { images.forEach(function (x, n) { x.is_primary = (n === idx); }); render(); persist(); });
         item.querySelector('.nce-del').addEventListener('click', function () { images.splice(idx, 1); ensurePrimary(); render(); persist(); });
         var alt = item.querySelector('.nce-alt');
-        alt.addEventListener('blur', function () { images[idx].alt = alt.value.trim(); persist(); });
+        function saveAlt() { images[idx].alt = alt.value.trim(); persist(); }
+        alt.addEventListener('input', saveAlt);   // auto-save while typing (persist is debounced)
+        alt.addEventListener('blur', saveAlt);     // and when leaving the field
+        alt.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); alt.blur(); } });
         if (!single) {
           item.addEventListener('dragstart', onDragStart); item.addEventListener('dragover', onDragOver);
           item.addEventListener('drop', onDrop); item.addEventListener('dragend', onDragEnd);

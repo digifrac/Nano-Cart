@@ -20,14 +20,7 @@ Nano Cart sells one item, one price, one click. It is deliberately not a general
 - Subscriptions or recurring billing
 - Catalogues larger than around 150 SKUs
 
-If your shop needs any of these, **use the right tool instead:**
-
-| Need | Use |
-|------|-----|
-| Variant-heavy retail (clothing, sized goods) | [Shopify](https://shopify.com) |
-| Larger catalogues over 150 SKUs | [WooCommerce](https://woocommerce.com) |
-| Simple shops with multi-item cart | [Big Cartel](https://bigcartel.com) or [Gumroad](https://gumroad.com) |
-| Subscriptions or recurring billing | [Lemon Squeezy](https://lemonsqueezy.com) |
+If your shop needs any of these, a full database-backed e-commerce platform is the better fit.
 
 Nano Cart is the right tool for a potter, a print-maker, a jewellery designer, an author, a consultant, or a gallery: anyone selling 20-50 distinct items at fixed prices through hosted checkout links.
 

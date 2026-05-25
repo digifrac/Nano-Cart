@@ -38,11 +38,10 @@ $page_h1 = $site_name !== '' ? $site_name : 'Shop';
   <h1 class="nano-cart-page-title"><?= htmlspecialchars($page_h1) ?></h1>
 <?php if (!$has_any_content): ?>
   <section class="nano-cart-empty">
-    <p>This shop is empty so far. Add your first category and product through the admin to get started.</p>
-    <p><a class="nano-cart-empty-link" href="<?= htmlspecialchars($shop_path) ?>/admin/">Open the admin &rarr;</a></p>
+    <p>This shop has no products yet. Please check back soon.</p>
   </section>
 <?php endif; ?>
-<?php if ($hero !== null):
+<?php if ($hero !== null && !empty($hero['category']) && !empty($hero['sku'])):
     $primary = nano_cart_primary_image($hero);
     $hero_cat = $cats_by_slug[$hero['category']] ?? null;
     $hero_url = nano_cart_shop_path() . '/' . $hero['category'] . '/' . $hero['sku'] . '/';
@@ -76,7 +75,7 @@ $page_h1 = $site_name !== '' ? $site_name : 'Shop';
       <a class="nano-cart-card" href="<?= htmlspecialchars($cat_url) ?>">
 <?php if ($has_img): ?>
         <div class="nano-cart-card-image">
-<?= nano_cart_picture('category-images/' . $cat['image'], (string)$cat['name'], 'thumb', 0, (int)($cfg['card_image_height'] ?? 240), 'nano-cart-card-img', true, (string)($cfg['card_image_fit'] ?? 'cover')) ?>
+<?= nano_cart_picture('category-images/' . $cat['image'], (string)$cat['name'], 'thumb', 0, 0, 'nano-cart-card-img', true, '') ?>
         </div>
 <?php endif; ?>
         <div class="nano-cart-card-body">
@@ -100,7 +99,7 @@ if (!empty($featured_excl_hero)):
       <a class="nano-cart-card" href="<?= htmlspecialchars($p_url) ?>">
 <?php if ($primary !== null): ?>
         <div class="nano-cart-card-image">
-<?= nano_cart_picture('product-images/' . $p['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'thumb', 0, (int)($cfg['card_image_height'] ?? 240), 'nano-cart-card-img', true, (string)($cfg['card_image_fit'] ?? 'cover')) ?>
+<?= nano_cart_picture('product-images/' . $p['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'thumb', 0, 0, 'nano-cart-card-img', true, '') ?>
         </div>
 <?php endif; ?>
         <div class="nano-cart-card-body">

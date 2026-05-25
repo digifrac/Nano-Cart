@@ -33,8 +33,18 @@ $h = static fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
 $install_php = dirname(__DIR__) . '/install.php';
 $install_exists = is_file($install_php);
 
+$health = nano_cart_admin_health_checks();
+$health_problems = array_values(array_filter($health, static fn($c) => !$c['ok']));
+
 echo nano_cart_admin_header('Dashboard', 'dashboard');
 echo nano_cart_admin_flash_html();
+
+if (!empty($health_problems)):
+?>
+<div class="nano-cart-admin-flash nano-cart-admin-flash-error">
+  <p><strong>Installation health check found <?= count($health_problems) ?> problem<?= count($health_problems) === 1 ? '' : 's' ?>.</strong> See the Health check panel below. This usually means an upgrade did not finish: re-upload the affected files.</p>
+</div>
+<?php endif;
 
 if ($install_exists):
 ?>
@@ -64,6 +74,22 @@ if ($install_exists):
     <div class="nano-cart-admin-stat-value"><?= $h((string)($cfg['shop_mode'] ?? 'checkout')) ?></div>
     <div class="nano-cart-admin-stat-label">Shop mode</div>
   </div>
+</section>
+
+<section class="nano-cart-admin-section">
+  <h2 class="nano-cart-admin-section-title">Health check</h2>
+  <table class="nano-cart-admin-table">
+    <tbody>
+<?php foreach ($health as $c): ?>
+    <tr>
+      <td style="width:1%;white-space:nowrap"><span style="color:<?= $c['ok'] ? '#2c7a2c' : '#b00020' ?>;font-weight:600"><?= $c['ok'] ? 'OK' : 'CHECK' ?></span></td>
+      <td style="width:1%;white-space:nowrap"><?= $h($c['label']) ?></td>
+      <td><?= $h($c['detail']) ?></td>
+    </tr>
+<?php endforeach; ?>
+    </tbody>
+  </table>
+  <p class="nano-cart-admin-help">Nano Cart <?= $h('v' . (defined('NANO_CART_VERSION') ? NANO_CART_VERSION : '?')) ?> &middot; running PHP <?= $h(PHP_VERSION) ?>. Check this panel after every upgrade.</p>
 </section>
 
 <section class="nano-cart-admin-section">

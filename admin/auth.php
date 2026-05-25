@@ -130,14 +130,23 @@ function nano_cart_admin_csrf_require(): void
 
 function nano_cart_admin_client_ip(): string
 {
-    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-        return (string)$_SERVER['HTTP_CF_CONNECTING_IP'];
+    $remote = (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+    // Proxy headers are attacker-spoofable on a direct-connected host, which
+    // would let a brute-forcer rotate the rate-limit bucket on every request.
+    // Only honour them when the operator has set "trust_proxy": true (i.e. the
+    // shop genuinely sits behind Cloudflare or a known reverse proxy).
+    $trust = false;
+    try { $trust = !empty(nano_cart_load_config()['trust_proxy']); } catch (\Throwable $e) { $trust = false; }
+    if ($trust) {
+        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            return (string)$_SERVER['HTTP_CF_CONNECTING_IP'];
+        }
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $parts = explode(',', (string)$_SERVER['HTTP_X_FORWARDED_FOR']);
+            return trim($parts[0]);
+        }
     }
-    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $parts = explode(',', (string)$_SERVER['HTTP_X_FORWARDED_FOR']);
-        return trim($parts[0]);
-    }
-    return (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+    return $remote;
 }
 
 function nano_cart_admin_rate_limit_load(): array
@@ -301,6 +310,13 @@ function nano_cart_admin_save_product(array $product): bool
     if ($json === false) return false;
     if (!nano_cart_admin_atomic_write(nano_cart_admin_product_path($sku), $json)) return false;
 
+    // Ensure the product's media folder exists so its images can be uploaded
+    // and managed in the media manager.
+    $image_dir = NANO_CART_MEDIA_PATH . '/product-images/' . $sku;
+    if (!is_dir($image_dir)) {
+        @mkdir($image_dir, 0755, true);
+    }
+
     nano_cart_admin_regenerate_sitemap();
     return true;
 }
@@ -428,6 +444,59 @@ function nano_cart_admin_regenerate_sitemap(): void
 }
 
 /* ----------------------------------------------------------------------- */
+/* Health checks (surfaced on the dashboard after an upgrade)                */
+/* ----------------------------------------------------------------------- */
+
+/**
+ * Verify the installation is intact: PHP version, GD, every required
+ * front-end file present, config loadable, media writable. Run on the
+ * dashboard so a half-finished upgrade (a file that did not upload) is
+ * caught here instead of via a dead public site.
+ *
+ * @return list<array{label:string, ok:bool, detail:string}>
+ */
+function nano_cart_admin_health_checks(): array
+{
+    $root = dirname(__DIR__); // shop root
+    $checks = [];
+
+    $php_ok = version_compare(PHP_VERSION, '8.0', '>=');
+    $checks[] = ['label' => 'PHP version', 'ok' => $php_ok,
+        'detail' => $php_ok ? PHP_VERSION : PHP_VERSION . ' - 8.0 or newer required'];
+
+    $gd = extension_loaded('gd');
+    $checks[] = ['label' => 'GD image extension', 'ok' => $gd,
+        'detail' => $gd ? 'available' : 'missing - image resizing will not work'];
+
+    $required = [
+        'core.php', 'index.php', 'category.php', 'product.php', 'template.php',
+        'nano-preflight.php', 'generators.php', 'licence.php', 'image.php',
+        'lib/Parsedown.php', '.htaccess',
+    ];
+    $missing = [];
+    foreach ($required as $f) {
+        if (!is_file($root . '/' . $f)) $missing[] = $f;
+    }
+    $checks[] = ['label' => 'Required shop files', 'ok' => empty($missing),
+        'detail' => empty($missing) ? 'all present' : 'missing: ' . implode(', ', $missing)];
+
+    $cfg_ok = defined('NANO_CART_CONFIG_PATH') && is_file(NANO_CART_CONFIG_PATH);
+    if ($cfg_ok) {
+        $cfg_ok = is_array(json_decode((string)@file_get_contents(NANO_CART_CONFIG_PATH), true));
+    }
+    $checks[] = ['label' => 'Configuration', 'ok' => $cfg_ok,
+        'detail' => $cfg_ok ? 'config.json loaded' : 'config.json missing or invalid'];
+
+    $media = defined('NANO_CART_MEDIA_PATH') ? NANO_CART_MEDIA_PATH : $root . '/media';
+    $media_target = is_dir($media) ? $media : dirname($media);
+    $media_ok = is_writable($media_target);
+    $checks[] = ['label' => 'Media folder writable', 'ok' => $media_ok,
+        'detail' => $media_ok ? 'writable' : 'not writable - uploads and the image cache will fail'];
+
+    return $checks;
+}
+
+/* ----------------------------------------------------------------------- */
 /* Layout helpers                                                            */
 /* ----------------------------------------------------------------------- */
 
@@ -444,6 +513,7 @@ function nano_cart_admin_header(string $page_title, string $current_nav = ''): s
         'dashboard'  => ['Dashboard',  $admin . '/'],
         'products'   => ['Products',   $admin . '/products.php'],
         'categories' => ['Categories', $admin . '/categories.php'],
+        'media'      => ['Media',      $admin . '/media.php'],
         'settings'   => ['Settings',   $admin . '/settings.php'],
         'licence'    => ['Licence',    $admin . '/licence.php'],
     ];
@@ -457,7 +527,7 @@ function nano_cart_admin_header(string $page_title, string $current_nav = ''): s
         . '<meta name="viewport" content="width=device-width,initial-scale=1">'
         . '<meta name="robots" content="noindex,nofollow">'
         . '<title>' . $title . '</title>'
-        . '<link rel="stylesheet" href="' . nano_cart_admin_h($admin . '/assets/admin.css') . '">'
+        . '<link rel="stylesheet" href="' . nano_cart_admin_h($admin . '/assets/admin.css?v=' . NANO_CART_VERSION) . '">'
         . '</head><body class="nano-cart-admin">'
         . '<header class="nano-cart-admin-header">'
         . '<a class="nano-cart-admin-brand" href="' . nano_cart_admin_h($admin . '/') . '">Nano Cart</a>'
@@ -479,7 +549,7 @@ function nano_cart_admin_footer(): string
         . '<a href="https://github.com/digifrac/Nano-Cart" target="_blank" rel="noopener">GitHub</a> &middot; '
         . '<a href="https://buymeacoffee.com/digitalfracture" target="_blank" rel="noopener">Buy me a coffee</a></p>'
         . '</footer>'
-        . '<script src="' . nano_cart_admin_h(nano_cart_shop_path() . '/admin/assets/admin.js') . '" defer></script>'
+        . '<script src="' . nano_cart_admin_h(nano_cart_shop_path() . '/admin/assets/admin.js?v=' . NANO_CART_VERSION) . '" defer></script>'
         . '</body></html>';
 }
 

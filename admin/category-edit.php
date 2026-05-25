@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $values['slug']             = strtolower(trim((string)($_POST['slug'] ?? '')));
     $values['name']             = trim((string)($_POST['name'] ?? ''));
     $values['description']      = (string)($_POST['description'] ?? '');
-    $values['image']            = trim((string)($_POST['image'] ?? ''));
     $values['sort_order']       = trim((string)($_POST['sort_order'] ?? ''));
     $values['meta_title']       = trim((string)($_POST['meta_title'] ?? ''));
     $values['meta_description'] = trim((string)($_POST['meta_description'] ?? ''));
@@ -65,16 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        // Preserve image set by the image manager: if the form's manual
-        // image field is empty AND the loaded category already has an
-        // image (uploaded via image manager), keep that image. Operator
-        // explicitly typing a value still overrides; explicitly clearing
-        // the field on a category with no manager image still clears it.
-        $form_image = $values['image'];
-        $existing_image = $loaded['image'] ?? null;
-        $final_image = $form_image !== ''
-            ? $form_image
-            : ($existing_image !== null ? $existing_image : null);
+        // The banner is owned by the image picker (saved over AJAX), not this
+        // form. Re-read it from disk so a banner just selected or removed in
+        // the picker is preserved, never resurrected from a stale page load.
+        $final_image = $is_edit ? (nano_cart_load_category($existing_slug)['image'] ?? null) : null;
 
         $to_save = [
             'slug'             => $values['slug'],
@@ -101,8 +94,9 @@ $h = static fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
 
 $shop_path = nano_cart_shop_path();
 echo nano_cart_admin_header($is_edit ? 'Edit category' : 'Add category', 'categories');
-echo '<link rel="stylesheet" href="' . $h($admin_url . '/image-manager.css') . '">';
-echo '<script src="' . $h($admin_url . '/image-manager.js') . '" defer></script>';
+$v = '?v=' . (defined('NANO_CART_VERSION') ? NANO_CART_VERSION : '');
+echo '<link rel="stylesheet" href="' . $h($admin_url . '/editor-images.css' . $v) . '">';
+echo '<script src="' . $h($admin_url . '/editor-images.js' . $v) . '" defer></script>';
 ?>
 
 <?php if (!empty($errors)): ?>
@@ -157,6 +151,8 @@ if ($values['image'] !== '') {
 <?php if ($is_edit): ?>
     <div class="nano-cart-admin-image-manager"
          data-endpoint="<?= $h($admin_url . '/upload.php') ?>"
+         data-media-endpoint="<?= $h($admin_url . '/media.php') ?>"
+         data-media-url="<?= $h($admin_url . '/media.php') ?>"
          data-csrf="<?= $h(nano_cart_admin_csrf_token()) ?>"
          data-target-type="category"
          data-target-id="<?= $h($values['slug']) ?>"
@@ -164,14 +160,10 @@ if ($values['image'] !== '') {
          data-rel-root="category-images"
          data-single-image="1"
          data-images='<?= $h(json_encode($cat_images, JSON_UNESCAPED_SLASHES)) ?>'></div>
-    <p class="nano-cart-admin-help">Only one banner per category; uploading a new one replaces the previous reference.</p>
+    <p class="nano-cart-admin-help">One banner per category. Select it from the media library; upload and organise images in the Media tab.</p>
 <?php else: ?>
-    <p class="nano-cart-admin-empty">Save the category first; the image manager opens once the slug exists on disk.</p>
+    <p class="nano-cart-admin-empty">Save the category first; image selection opens once the slug exists on disk.</p>
 <?php endif; ?>
-    <label>
-      Or set the image path manually (under media/category-images/, optional one-level subfolder)
-      <input type="text" name="image" maxlength="200" placeholder="e.g. pottery or pottery/banner" value="<?= $h($values['image']) ?>">
-    </label>
     <label>
       Width
       <select name="image_width">

@@ -184,6 +184,31 @@ Templates use the `<picture>` element with the WebP source listed first and the 
 
 Browsers that support WebP load the smaller WebP file; legacy browsers fall back to JPEG automatically. If the PHP build lacks WebP support the WebP URL 404s and the browser uses the JPEG `<img>`.
 
+### Media manager and image selection
+
+Image handling is one subsystem with two non-overlapping jobs.
+
+**`admin/media.php` owns the filesystem.** It is the single uploader and
+organiser: a two-pane browser (`media.js` / `media.css`) with a folder tree of
+`category-images/` and `product-images/<sku>/` on the left and a thumbnail grid
+on the right. It uploads (the one sanitise pipeline: EXIF, magic-byte check,
+source cap, single JPEG), creates and removes one-level subfolders, renames,
+deletes, and moves files (drag a thumbnail onto a folder). The structural rules
+from FORMAT.md §5 are enforced server-side: a file only moves within its own
+owner, subfolders are one level deep, names are duplicate-guarded, and paths
+are `realpath`-contained. Because product and category JSON store references
+relative to the owner root, every move/rename/delete rewrites the referencing
+JSON and purges the file's cached variants, so links never dangle.
+
+**The product and category editors own the relationship, not the files.** They
+are selection-only: a "Select image(s)" button opens the media browser in
+*select* mode (`editor-images.js` calls `NanoCartMedia.openPicker`), the
+operator picks from the library, and the editor sets the metadata the library
+can't know — primary image, gallery order, alt text. It persists references via
+`upload.php`'s `update` action. Removing an image unreferences it; the file
+stays in the library. There is exactly one uploader in the product, which is
+what keeps the two surfaces from drifting.
+
 ---
 
 ## 9. Admin authentication and rate limiting
@@ -272,13 +297,7 @@ The first-time setup wizard shows an advisory panel listing the use cases Nano C
 > - You don't need quantity selectors or a multi-item shopping cart
 > - Checkout happens via Stripe Payment Link, PayPal, Square, Gumroad, Ko-fi, or similar
 >
-> If your shop needs are different:
-> - Variant-heavy retail → Shopify
-> - Larger catalogues over 150 SKUs → WooCommerce
-> - Simple shops with multi-item cart → Big Cartel or Gumroad
-> - Subscriptions or recurring billing → Lemon Squeezy
->
-> You can still use Nano Cart if some of these don't quite match. This is guidance, not a restriction.
+> This is guidance, not a restriction. If your needs don't quite match, Nano Cart still installs and runs.
 >
 > **[I understand, continue setup →]**
 

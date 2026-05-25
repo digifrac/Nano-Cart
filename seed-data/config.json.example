@@ -4,6 +4,7 @@
   "shop_path": "/shop",
   "shop_mode": "checkout",
   "enquiry_action": null,
+  "show_checkout_notice": true,
   "password_hash": "$2y$10$REPLACE_WITH_BCRYPT_HASH_FROM_ADMIN_SETUP",
   "licence_key": "",
   "image_quality_jpeg": 85,
@@ -13,6 +14,7 @@
   "default_currency": "GBP",
   "card_image_height": "240",
   "card_image_fit": "cover",
+  "card_image_position": "center",
   "seo": {
     "default_meta_description": "Hand-thrown stoneware and porcelain from a small studio.",
     "og_image": "/shop/media/img/category-images/pottery-800.jpg",

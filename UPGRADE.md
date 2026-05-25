@@ -1,40 +1,125 @@
 # Upgrading Nano Cart
 
-v1.0.0 is the first release, so there is no upgrade path yet. This document records the upgrade philosophy so it is in place when v1.0.1, v1.1, and later versions land.
+Nano Cart is flat-file: the code is PHP files on disk, your data is JSON and
+images on disk, and your configuration lives outside the webroot. Upgrading is
+replacing the **code** with a new release and leaving your **data and config**
+untouched. Done the way below, an upgrade cannot lose your products, images, or
+settings.
 
 ---
 
-## Philosophy
+## The one rule that prevents broken sites
 
-Nano Cart is flat-file by design. The data is JSON files on disk, the code is PHP files on disk. Upgrading is mostly:
+**Deploy the official release zips. Do not upload a folder of hand-picked
+files, and do not upload your own working copy of the project.**
 
-1. Back up the current `/shop/` and `/shop-config/` directories.
-2. Replace the framework files (`core.php`, `index.php`, `category.php`, `product.php`, `template.php`, `generators.php`, `licence.php`, `nano-preflight.php`, `.htaccess`, `assets/`, `lib/`) with the new release.
-3. Leave the data directories alone (`products/`, `categories/`, `media/`, `bootstrap.php`).
-4. Read the [CHANGELOG.md](CHANGELOG.md) entry for the new version to confirm whether any data-format changes need attention.
+Two things go wrong when people cherry-pick files or copy a development folder
+over a live shop:
 
-The admin folder (`admin/`) follows the same rule: upload the new release's `admin/` when you need to make edits, remove it afterwards.
+1. **A required file gets missed.** If even one front-end file (for example
+   `nano-preflight.php`) is absent, every public page fails. The complete zip
+   can never miss a file.
+2. **`bootstrap.php` or `config.json` gets overwritten.** `bootstrap.php` holds
+   the absolute path to your config directory and is unique to your server. A
+   development copy points somewhere else, so overwriting it breaks the link to
+   your configuration and takes the whole shop down. The release zips contain
+   `bootstrap.example.php`, never `bootstrap.php`, and never `config.json`, so
+   they cannot clobber it.
+
+If you only remember one thing: **extract the zip, never overwrite
+`bootstrap.php`, config, or your content folders.**
 
 ---
 
-## Before upgrading
+## Files: what a release replaces, and what it must never touch
 
-**Back up** with rsync, the same approach documented in the [README backup section](README.md#backup). Restore is trivial if anything goes wrong:
+**Replaced by the release (safe to overwrite):**
 
-```bash
-rsync -az --delete /var/www/example.com/shop/ /var/backups/example-shop-$(date +%Y-%m-%d)/
-rsync -az --delete /etc/shop-config/        /var/backups/example-config-$(date +%Y-%m-%d)/
-```
+- Front end: `core.php`, `index.php`, `category.php`, `product.php`,
+  `template.php`, `generators.php`, `licence.php`, `nano-preflight.php`,
+  `image.php`, `.htaccess`, `assets/`, `lib/`
+- Admin (when present): everything under `admin/`
 
-Test the new release on a staging copy first if possible.
+**Never overwritten or deleted by you during an upgrade (your data and config):**
+
+- `bootstrap.php` (your server's config path; generated once by `install.php`)
+- Your config directory outside the webroot (holds `config.json`)
+- `products/`, `categories/`, `media/`
+- `sitemap.xml` (regenerated automatically)
+
+The release zips are built to respect this: the front-end zip ships empty
+`.gitkeep` placeholders for `products/`, `categories/`, and `media/`, so
+extracting it adds nothing to those folders and removes nothing from them.
+
+---
+
+## Safe upgrade, step by step
+
+1. **Back up first.** Restore is trivial if anything goes wrong:
+
+   ```bash
+   rsync -az --delete /var/www/example.com/shop/ /var/backups/example-shop-$(date +%Y-%m-%d)/
+   rsync -az --delete /path/to/your-config-dir/ /var/backups/example-config-$(date +%Y-%m-%d)/
+   ```
+
+2. **Read the [CHANGELOG.md](CHANGELOG.md) entry** for the new version to see
+   whether anything beyond a file replacement is needed.
+
+3. **Download the release zips** for the new version (`nano-cart-frontend.zip`
+   and, if you are editing content, `nano-cart-admin.zip`).
+
+4. **Extract over your shop.** Unzip the front-end zip into the directory that
+   contains your shop (it writes into `shop/`), then unzip the admin zip into
+   `shop/` (it writes into `shop/admin/`). Upload in **binary** mode if your
+   client asks. Because the zips contain no `bootstrap.php`, no config, and no
+   content, your data is left exactly as it was.
+
+5. **Confirm health.** Log into the admin dashboard and check the **Health
+   check** panel (added in 1.2.0). It verifies PHP version, the GD extension,
+   that every required file is present, that config loads, and that `media/` is
+   writable. All green means the upgrade landed cleanly. If a required file is
+   missing it is named here, so you can re-extract.
+
+6. **Remove the admin folder** when you have finished editing, the same as
+   after first install.
+
+If something is wrong, you will see a tidy "temporarily unavailable" page
+(added in 1.2.0), not a blank error, and the cause is written to your server's
+error log. Restoring the backup from step 1 reverts cleanly.
 
 ---
 
 ## Version-specific notes
 
-Per-version upgrade notes are appended to this file as releases happen, plus mirrored in [CHANGELOG.md](CHANGELOG.md).
+### v1.2.0
 
-### v1.0.0 (current)
+Unified image handling. No data migration. After upgrading:
+
+- A new **Media** tab is the single place to upload and organise images.
+- The product and category editors are now **selection-only**: they pick images
+  from the media library rather than uploading. Existing image references are
+  unchanged and continue to work.
+- Removing an image from a product or category now unreferences it; the file
+  stays in the library (delete it in the Media tab if you want it gone).
+
+### v1.1.0
+
+Image pipeline changed from pre-generated variants to on-demand resizing.
+
+- No data migration. Existing products and categories work unchanged.
+- After upgrading, the old pre-generated variant files
+  (`*-thumb-400`, `*-hero-800`, `*-thumb-120`, in JPEG and WebP) are no longer
+  used. They are harmless dead weight and can be deleted to reclaim space:
+
+  ```bash
+  find /path/to/shop/media -type f \
+    \( -name '*-thumb-400.*' -o -name '*-hero-800.*' -o -name '*-thumb-120.*' \) -delete
+  ```
+
+- If you had set `thumbnail_widths` in `config.json`, rename it to
+  `image_widths`. Otherwise the default `[120, 400, 800]` applies.
+
+### v1.0.0
 
 Initial release. No upgrade path applies.
 
@@ -42,9 +127,13 @@ Initial release. No upgrade path applies.
 
 ## When a release changes the on-disk format
 
-If a future release bumps the `format_version` in `config.json`, the release notes will spell out exactly what needs to change in your JSON files. The flat-file design means migrations are usually one of:
+If a future release bumps the `format_version` in `config.json`, the release
+notes will spell out exactly what changes in your JSON files. The flat-file
+design keeps migrations small, usually one of:
 
-- A small `migrate.php` script you run once to rewrite affected JSON
-- A field rename or addition you can do by hand on a small catalogue
+- A one-time `migrate.php` script you run once to rewrite affected JSON, or
+- A field rename or addition you can do by hand on a small catalogue.
 
-Major format changes are deliberately rare. The contracts in [FORMAT.md](FORMAT.md) and [ARCHITECTURE.md](ARCHITECTURE.md) are designed to be stable.
+Major format changes are deliberately rare. The contracts in
+[FORMAT.md](FORMAT.md) and [ARCHITECTURE.md](ARCHITECTURE.md) are designed to be
+stable.

@@ -1,0 +1,48 @@
+/* Nano Cart admin - editor image selection (pairs with editor-images.js).
+   The editors select images from the media library; uploading/organising
+   lives in the Media tab. */
+
+.nano-cart-admin-image-manager {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 0.85rem 1rem 1rem;
+}
+.nce-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.nce-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.85rem; margin-top: 0.85rem; }
+.nce-empty { grid-column: 1 / -1; color: #888; font-style: italic; margin: 0.25rem 0; }
+
+.nce-item { position: relative; background: #fff; border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; cursor: grab; }
+.nce-item[draggable="true"]:active { cursor: grabbing; }
+.nce-dragging { opacity: 0.4; }
+.nce-drop { outline: 2px solid #0066cc; outline-offset: -2px; }
+.nce-thumb { background: #eef0f3; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.nce-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.nce-broken img { display: none; }
+.nce-broken::after { content: 'source missing'; color: #b00020; font-size: 0.75rem; }
+.nce-star, .nce-del { position: absolute; top: 0.35rem; width: 28px; height: 28px; background: rgba(255,255,255,0.92); border: 1px solid #e5e5e5; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.95rem; line-height: 1; padding: 0; }
+.nce-star { left: 0.35rem; }
+.nce-del { right: 0.35rem; color: #b00020; }
+.nce-star-on { background: #0066cc; color: #fff; border-color: #0066cc; }
+.nce-alt { width: 100%; border: 0; border-top: 1px solid #eee; padding: 0.45rem 0.55rem; font: inherit; font-size: 0.8rem; }
+.nce-alt::placeholder { color: #b00020; font-style: italic; }
+.nce-path { padding: 0.25rem 0.55rem 0.45rem; font-size: 0.7rem; color: #888; font-family: ui-monospace, Menlo, Consolas, monospace; word-break: break-all; }
+
+/* picker modal */
+.nce-mbg { position: fixed; inset: 0; background: rgba(20,24,31,0.55); display: flex; align-items: center; justify-content: center; z-index: 1200; padding: 1.5rem; }
+.nce-modal { background: #fff; border-radius: 8px; width: min(56rem, 100%); max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+.nce-mhead { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e5e5; }
+.nce-mclose { background: none; border: 0; font-size: 1.5rem; line-height: 1; cursor: pointer; color: #666; }
+.nce-mclose:hover { color: #000; }
+.nce-mcrumb { padding: 0.5rem 1rem; font-size: 0.9rem; border-bottom: 1px solid #f0f0f0; }
+.nce-cl { background: none; border: 0; color: #0066cc; cursor: pointer; font: inherit; padding: 0.1rem 0.3rem; border-radius: 4px; }
+.nce-cl:hover { background: #eef2f7; text-decoration: underline; }
+.nce-mstatus { padding: 0 1rem; font-size: 0.85rem; color: #666; }
+.nce-mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.6rem; padding: 0.75rem 1rem; overflow: auto; align-content: start; }
+.nce-mfolder { display: flex; align-items: center; gap: 0.35rem; border: 1px solid #d9dde3; background: #fff; border-radius: 6px; padding: 0.5rem 0.6rem; cursor: pointer; font: inherit; align-self: start; }
+.nce-mfolder:hover { background: #f0f3f7; }
+.nce-mcell { border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; background: #fff; cursor: pointer; padding: 0; font: inherit; text-align: center; }
+.nce-mcell span { display: block; font-size: 0.75rem; padding: 0.25rem; word-break: break-all; }
+.nce-mcell-on { outline: 3px solid #0066cc; outline-offset: -1px; }
+.nce-mfoot { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem 1rem; border-top: 1px solid #e5e5e5; }
+.nce-mhint { color: #888; font-size: 0.85rem; }

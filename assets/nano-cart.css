@@ -13,7 +13,8 @@
  *   theme-custom.css to re-theme the shop without editing this file.
  *   See template.php for how to wire the optional theme file in.
  *
- *     --nano-cart-font            System font stack (no web fonts)
+ *     --nano-cart-font            Body font (Inter, system fallback)
+ *     --nano-cart-font-display    Heading/title font (Inter, system fallback)
  *     --nano-cart-font-size-base  Body font size
  *     --nano-cart-line-height     Body line height
  *     --nano-cart-text            Primary text color
@@ -33,7 +34,8 @@
  */
 
 .nano-cart-main {
-  --nano-cart-font:            -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --nano-cart-font:            "Inter", system-ui, sans-serif;
+  --nano-cart-font-display:    "Inter", system-ui, sans-serif;
   --nano-cart-font-size-base:  1.05rem;
   --nano-cart-line-height:     1.65;
   --nano-cart-text:            #1a1a1a;
@@ -45,6 +47,8 @@
   --nano-cart-accent:          #0066cc;
   --nano-cart-accent-hover:    #004d99;
   --nano-cart-link-hover:      #999999;
+  --nano-cart-button:          #ff4d00;
+  --nano-cart-button-hover:    #e64500;
   --nano-cart-shadow:          0 2px 4px rgba(0,0,0,0.08);
   --nano-cart-shadow-lift:     0 12px 28px rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.06);
   --nano-cart-content-width:   1100px;
@@ -170,7 +174,7 @@
   text-decoration: none;
 }
 a.nano-cart-breadcrumb-item:hover {
-  color: var(--nano-cart-accent);
+  color: var(--nano-cart-text);
   text-decoration: underline;
 }
 .nano-cart-breadcrumb-separator {
@@ -234,7 +238,6 @@ a.nano-cart-breadcrumb-item:hover {
 }
 .nano-cart-card-image {
   overflow: hidden;
-  background: var(--nano-cart-bg-soft);
   height: var(--nano-cart-card-image-height);
   display: flex;
   align-items: center;
@@ -245,7 +248,7 @@ a.nano-cart-breadcrumb-item:hover {
   width: 100%;
   height: 100%;
   object-fit: var(--nano-cart-card-image-fit);
-  object-position: 50% 35%;
+  object-position: var(--nano-cart-card-image-position, 50% 50%);
   transition: transform 200ms ease-out;
 }
 .nano-cart-card:hover .nano-cart-card-img {
@@ -257,19 +260,22 @@ a.nano-cart-breadcrumb-item:hover {
   flex-direction: column;
   gap: 0.25rem;
   flex: 1;
+  text-align: center;
 }
 .nano-cart-card-title {
   margin: 0;
-  font-size: 1.25rem;
+  font-family: var(--nano-cart-font-display);
+  font-size: 1.3rem;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.25;
   color: var(--nano-cart-text);
   transition: color 200ms ease-out;
 }
 .nano-cart-card-price {
-  margin: 0;
-  color: var(--nano-cart-text-muted);
-  font-size: 0.95rem;
+  margin: 0.15rem 0 0;
+  color: var(--nano-cart-text);
+  font-size: 1.15rem;
+  font-weight: 600;
 }
 
 /* Hero featured. */
@@ -323,6 +329,7 @@ a.nano-cart-breadcrumb-item:hover {
 .nano-cart-page-title,
 .nano-cart-category-title {
   margin: 0 0 1.5rem;
+  font-family: var(--nano-cart-font-display);
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1.1;
@@ -391,83 +398,168 @@ a.nano-cart-breadcrumb-item:hover {
 
 /* Product page. */
 .nano-cart-product { display: block; }
-.nano-cart-gallery { margin-bottom: 1.5rem; }
-.nano-cart-gallery-main picture, .nano-cart-gallery-main-img {
-  width: 100%; height: auto;
+
+/* Classic product layout: image left, details right; description below.
+   Flex with wrap so it stacks on narrow screens with no media queries. */
+.nano-cart-product-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+.nano-cart-product-layout > .nano-cart-gallery {
+  flex: 0 1 auto;       /* width follows the image (its image_width setting) */
+  min-width: 200px;
+}
+.nano-cart-product-layout > .nano-cart-product-meta {
+  flex: 1 1 280px;      /* flexes to fill whatever space the image leaves */
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.nano-cart-gallery { margin: 0; }
+.nano-cart-gallery-main { margin: 0; }
+.nano-cart-gallery-main picture { display: block; }
+.nano-cart-gallery-main-img {
+  max-width: 100%;       /* the image_width setting drives the width; this only caps overflow */
+  height: auto;          /* full image, no fixed-height box, no letterbox */
+  display: block;
   border-radius: var(--nano-cart-radius);
-  background: var(--nano-cart-bg-soft);
+  border: 1px solid var(--nano-cart-border);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 .nano-cart-gallery-thumbs {
   display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 0.75rem 0;
-  margin: 0 -1rem;
-  padding-left: 1rem; padding-right: 1rem;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2.5rem;
 }
-.nano-cart-gallery-thumb {
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-  margin: 0;
-}
+.nano-cart-gallery-thumb { flex: 0 0 auto; margin: 0; }
 .nano-cart-gallery-thumb-img {
-  width: 80px; height: 80px;
+  width: 72px; height: 72px;
   object-fit: cover;
   border-radius: var(--nano-cart-radius-sm);
   border: 1px solid var(--nano-cart-border-soft);
   background: var(--nano-cart-bg-soft);
   cursor: pointer;
 }
-@media (min-width: 768px) {
-  .nano-cart-gallery {
-    display: grid;
-    grid-template-columns: 1fr 100px;
-    gap: 1rem;
-  }
-  .nano-cart-gallery-thumbs {
-    flex-direction: column;
-    overflow-x: visible;
-    padding: 0; margin: 0;
-    grid-column: 2;
-    grid-row: 1;
-  }
-  .nano-cart-gallery-thumb-img {
-    width: 100px; height: 100px;
-  }
+.nano-cart-product-summary {
+  margin: 0 0 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--nano-cart-border-soft, #eee);
+  color: var(--nano-cart-text-soft, #555);
+  line-height: 1.55;
+}
+
+/* Lightbox for gallery images */
+.nano-cart-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+.nano-cart-lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+.nano-cart-lightbox-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1.25rem;
+  background: none;
+  border: 0;
+  color: #fff;
+  font-size: 2.5rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .nano-cart-product-meta {
   margin-bottom: 1.5rem;
 }
 .nano-cart-product-title {
-  margin: 0 0 0.5rem;
-  font-size: 1.75rem;
+  margin: 0 0 1.5rem;
+  font-family: var(--nano-cart-font-display);
+  font-size: 2.4rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 .nano-cart-product-price {
-  margin: 0 0 1rem;
-  font-size: 1.4rem;
-  font-weight: 600;
+  margin: 0 0 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--nano-cart-border-soft, #eee);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--nano-cart-text);
+}
+
+/* Buy panel: groups the price and CTA together, close to each other. */
+.nano-cart-buy-panel {
+  margin-top: 1.75rem;
+  padding: 1.5rem;
+  border: 1px solid var(--nano-cart-border-soft, #eee);
+  border-radius: var(--nano-cart-radius);
+  background: var(--nano-cart-bg-soft, #f7f8fa);
+}
+.nano-cart-buy-panel .nano-cart-product-price { margin: 0 0 1.1rem; }
+
+/* Trust line under the buy button: who handles checkout + new-tab notice. */
+.nano-cart-checkout-notice {
+  margin: 0.85rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--nano-cart-text-muted, #666);
+}
+.nano-cart-lock-icon {
+  display: inline-block;
+  vertical-align: -2px;
+  margin: 0 0.15rem;
+  opacity: 0.85;
 }
 
 /* Buy button. */
 .nano-cart-buy-button {
   display: inline-block;
-  background: var(--nano-cart-accent);
+  background: var(--nano-cart-button);
   color: #fff;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   padding: 0.85rem 1.5rem;
   border-radius: var(--nano-cart-radius);
   min-height: 44px;
   line-height: 1.4;
-  transition: background-color 150ms ease-out, transform 100ms ease-out;
+  transition: background-color 150ms ease-out, transform 100ms ease-out, box-shadow 150ms ease-out;
+}
+/* On the product page the CTA is full-width and prominent. */
+.nano-cart-product .nano-cart-buy-button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 1.35rem 1.5rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  min-height: 66px;
+  box-shadow: 0 4px 16px rgba(255, 77, 0, 0.3);
 }
 .nano-cart-buy-button:hover {
-  background: var(--nano-cart-accent-hover);
+  background: var(--nano-cart-button-hover);
+}
+.nano-cart-product .nano-cart-buy-button:hover {
+  box-shadow: 0 4px 14px rgba(255, 77, 0, 0.32);
+  transform: translateY(-1px);
 }
 .nano-cart-buy-button:active {
   transform: translateY(1px);
@@ -488,7 +580,9 @@ a.nano-cart-breadcrumb-item:hover {
 
 /* Long description (markdown-rendered). */
 .nano-cart-product-description {
-  margin-top: 1.5rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--nano-cart-border-soft, #eee);
 }
 .nano-cart-product-description p { margin: 0 0 1rem; }
 .nano-cart-product-description h2 {

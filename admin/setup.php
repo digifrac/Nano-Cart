@@ -70,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'shop_path'          => $shop_path,
             'shop_mode'          => $values['shop_mode'],
             'enquiry_action'     => $values['shop_mode'] === 'catalogue' ? $values['enquiry_action'] : null,
+            'show_checkout_notice' => true,
             'password_hash'      => password_hash($password, PASSWORD_BCRYPT),
             'licence_key'        => '',
             'image_quality_jpeg' => 85,
@@ -79,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'default_currency'   => $values['currency'],
             'card_image_height'  => '240',
             'card_image_fit'     => 'cover',
+            'card_image_position'=> 'center',
             'seo' => [
                 'default_meta_description' => '',
                 'og_image'                 => '',
@@ -119,14 +121,7 @@ $h = static fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
     <li>You don't need quantity selectors or a multi-item shopping cart</li>
     <li>Checkout happens via Stripe Payment Link, PayPal hosted checkout, Square, Gumroad, Ko-fi, or similar hosted checkout URL</li>
   </ul>
-  <h3>If your shop needs are different</h3>
-  <ul>
-    <li>Variant-heavy retail (clothing in sizes/colours): try Shopify</li>
-    <li>Larger catalogues over 150 SKUs: try WooCommerce</li>
-    <li>Simple shops with multi-item cart: try Big Cartel or Gumroad</li>
-    <li>Subscriptions or recurring billing: try Lemon Squeezy</li>
-  </ul>
-  <p class="nano-cart-admin-advisory-note">You can still use Nano Cart if some of these don't quite match your needs. This is guidance, not a restriction.</p>
+  <p class="nano-cart-admin-advisory-note">This is guidance, not a restriction. If your needs don't quite match, Nano Cart still installs and runs.</p>
 </section>
 
 <?php if (!empty($errors)): ?>

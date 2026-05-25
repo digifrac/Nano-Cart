@@ -19,10 +19,87 @@ if (!defined('NANO_CART_BOOTSTRAPPED')) {
  * Project version. Bumped on every public release alongside the
  * VERSION file at the repo root. Displayed in the admin footer.
  */
-const NANO_CART_VERSION = '1.1.0';
+const NANO_CART_VERSION = '1.2.0';
+
+// Register the failsafe before loading anything else, so that a missing
+// required file or an unloadable config below degrades to a clean page
+// rather than a blank "Internal Server Error".
+nano_cart_failsafe_register();
 
 require_once __DIR__ . '/lib/Parsedown.php';
 require_once __DIR__ . '/licence.php';
+
+/* ----------------------------------------------------------------------- */
+/* Failsafe: graceful failure instead of a white 500                        */
+/* ----------------------------------------------------------------------- */
+
+/**
+ * Turn fatal errors (a required file that was not uploaded) and uncaught
+ * exceptions (a missing or invalid config.json) into a tidy 503 page. Full
+ * detail is written to the server error log; the public page stays generic
+ * so server paths are never exposed. This is what stops a half-finished
+ * upgrade from taking the whole shop down with a blank error.
+ */
+function nano_cart_failsafe_register(): void
+{
+    set_exception_handler(static function (\Throwable $e): void {
+        nano_cart_failsafe_render($e->getMessage());
+    });
+    register_shutdown_function(static function (): void {
+        $err = error_get_last();
+        if ($err === null) return;
+        if (!in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) return;
+        nano_cart_failsafe_render($err['message']);
+    });
+}
+
+function nano_cart_failsafe_render(string $detail): void
+{
+    static $done = false;
+    if ($done || headers_sent()) return;
+    $done = true;
+
+    error_log('Nano Cart failsafe: ' . $detail);
+    while (ob_get_level() > 0) { @ob_end_clean(); }
+
+    // If the endpoint was already answering in JSON (an admin AJAX action),
+    // reply in JSON so the client shows the real error instead of choking on
+    // an HTML page.
+    foreach (headers_list() as $hh) {
+        if (stripos($hh, 'content-type:') === 0 && stripos($hh, 'application/json') !== false) {
+            http_response_code(500);
+            echo json_encode(['ok' => false, 'error' => 'Server error: ' . $detail]);
+            return;
+        }
+    }
+
+    if (stripos($detail, 'required') !== false
+        || stripos($detail, 'No such file') !== false
+        || stripos($detail, 'open_basedir') !== false) {
+        $hint = 'A core file appears to be missing from this installation.';
+    } elseif (stripos($detail, 'config.json') !== false
+        || stripos($detail, 'NANO_CART_CONFIG') !== false) {
+        $hint = 'The shop configuration could not be loaded.';
+    } else {
+        $hint = 'An unexpected error occurred.';
+    }
+
+    http_response_code(503);
+    header('Content-Type: text/html; charset=utf-8');
+    header('Retry-After: 120');
+    echo '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+       . '<meta name="viewport" content="width=device-width,initial-scale=1">'
+       . '<title>Temporarily unavailable</title>'
+       . '<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:34em;'
+       . 'margin:4em auto;padding:0 1.25em;color:#222;line-height:1.6}'
+       . 'h1{font-size:1.4em;margin-bottom:.3em}p{margin:.5em 0}'
+       . '.hint{color:#666;font-size:.95em}</style></head><body>'
+       . '<h1>This shop is temporarily unavailable</h1>'
+       . '<p>Please try again in a few minutes.</p>'
+       . '<p class="hint">' . htmlspecialchars($hint)
+       . ' If you are the site operator, open the admin dashboard health check or your server error log for details.</p>'
+       . '</body></html>';
+}
 
 /* ----------------------------------------------------------------------- */
 /* Configuration                                                            */
@@ -153,6 +230,10 @@ function nano_cart_render_markdown(string $text): string
     static $parser = null;
     if ($parser === null) {
         $parser = new Parsedown();
+        // Escape raw HTML and filter dangerous link/image URLs (javascript:,
+        // data:). Descriptions are admin-authored, but safe mode means a
+        // pasted or imported payload can never become stored XSS for visitors.
+        $parser->setSafeMode(true);
     }
     return $parser->text($text);
 }
@@ -580,8 +661,79 @@ function nano_cart_buy_button(array $product): string
     }
 
     $url = (string)($product['checkout_url'] ?? '');
+    // Only ever emit an http(s) checkout link. Blocks a javascript:/data: URL
+    // from becoming a clickable href if a non-https value ever lands in the
+    // stored JSON (e.g. saved in catalogue mode, then switched to checkout).
+    if ($url === '' || !preg_match('#^https?://#i', $url)) return '';
+    $price = trim((string)($product['price_display'] ?? ''));
+    $label = 'Buy now' . ($price !== '' ? ' &middot; ' . htmlspecialchars($price) : '');
+    return '<a class="nano-cart-buy-button" href="' . htmlspecialchars($url) . '" target="_blank" rel="noopener">' . $label . '</a>';
+}
+
+/**
+ * Maps a checkout URL's host to a recognised payment-provider name. Returns
+ * an empty string for unrecognised hosts so callers can fall back to generic
+ * wording rather than printing a raw domain.
+ */
+function nano_cart_checkout_provider(string $url): string
+{
+    $host = strtolower((string)parse_url($url, PHP_URL_HOST));
+    if ($host === '') return '';
+    $host = preg_replace('/^www\./', '', $host);
+
+    $map = [
+        'paypal'       => 'PayPal',
+        'stripe'       => 'Stripe',
+        'gumroad'      => 'Gumroad',
+        'etsy'         => 'Etsy',
+        'squareup'     => 'Square',
+        'square.link'  => 'Square',
+        'myshopify'    => 'Shopify',
+        'shopify'      => 'Shopify',
+        'ko-fi'        => 'Ko-fi',
+        'lemonsqueezy' => 'Lemon Squeezy',
+        'payhip'       => 'Payhip',
+        'sumup'        => 'SumUp',
+        'gocardless'   => 'GoCardless',
+        'bigcartel'    => 'Big Cartel',
+        'sellfy'       => 'Sellfy',
+        'bandcamp'     => 'Bandcamp',
+    ];
+    foreach ($map as $needle => $name) {
+        if (str_contains($host, $needle)) return $name;
+    }
+    return '';
+}
+
+/**
+ * Trust line shown under the buy button in checkout mode: tells the customer
+ * which payment provider handles checkout and that it opens in a new tab.
+ * Auto-detects the provider from the product's checkout_url; falls back to
+ * generic wording for unrecognised hosts. Suppressed in catalogue mode and
+ * when the operator sets show_checkout_notice to false.
+ */
+function nano_cart_checkout_notice(array $product): string
+{
+    $cfg = nano_cart_load_config();
+    if ((string)($cfg['shop_mode'] ?? 'checkout') !== 'checkout') return '';
+    if (!($cfg['show_checkout_notice'] ?? true)) return '';
+
+    $url = trim((string)($product['checkout_url'] ?? ''));
     if ($url === '') return '';
-    return '<a class="nano-cart-buy-button" href="' . htmlspecialchars($url) . '" target="_blank" rel="noopener">Buy</a>';
+
+    $provider = nano_cart_checkout_provider($url);
+    $where = $provider !== ''
+        ? 'you will be taken to ' . htmlspecialchars($provider)
+        : 'you will be taken to our secure payment provider';
+
+    $lock = '<svg class="nano-cart-lock-icon" width="13" height="13" viewBox="0 0 24 24"'
+        . ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"'
+        . ' stroke-linejoin="round" aria-hidden="true" focusable="false">'
+        . '<rect x="3" y="11" width="18" height="11" rx="2"></rect>'
+        . '<path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+
+    return '<p class="nano-cart-checkout-notice">Secure checkout: ' . $lock
+        . ' ' . $where . ' to complete your purchase. Opens in a new tab.</p>';
 }
 
 /* ----------------------------------------------------------------------- */
@@ -597,4 +749,29 @@ function nano_cart_buy_button(array $product): string
 function nano_cart_footer_attribution(): string
 {
     return nano_cart_render_licence_footer();
+}
+
+/* ----------------------------------------------------------------------- */
+/* Runtime styles (shop-wide card image controls, driven by config)         */
+/* ----------------------------------------------------------------------- */
+
+/**
+ * Inline <style> emitting the card-image custom properties from config, so
+ * the category/home product and category cards render at the operator's
+ * chosen height, fit, and crop position. Output in <head> by template.php.
+ */
+function nano_cart_runtime_styles(): string
+{
+    $cfg = nano_cart_load_config();
+    $h   = max(80, min(800, (int)($cfg['card_image_height'] ?? 240)));
+    $fit = ($cfg['card_image_fit'] ?? 'cover') === 'contain' ? 'contain' : 'cover';
+    $pos = (string)($cfg['card_image_position'] ?? 'center');
+    $map = ['top' => '50% 0%', 'center' => '50% 50%', 'bottom' => '50% 100%',
+            'left' => '0% 50%', 'right' => '100% 50%'];
+    $posval = $map[$pos] ?? '50% 50%';
+    return '<style>:root{'
+        . '--nano-cart-card-image-height:' . $h . 'px;'
+        . '--nano-cart-card-image-fit:' . $fit . ';'
+        . '--nano-cart-card-image-position:' . $posval . ';'
+        . '}</style>';
 }

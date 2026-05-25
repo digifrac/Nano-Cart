@@ -23,11 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $next['site_url']          = rtrim(trim((string)($_POST['site_url'] ?? '')), '/');
     $next['shop_mode']         = ($_POST['shop_mode'] ?? 'checkout') === 'catalogue' ? 'catalogue' : 'checkout';
     $next['enquiry_action']    = trim((string)($_POST['enquiry_action'] ?? '')) ?: null;
+    $next['show_checkout_notice'] = isset($_POST['show_checkout_notice']);
     $next['default_currency']  = strtoupper(trim((string)($_POST['default_currency'] ?? 'GBP')));
     $next['image_quality_jpeg']= (int)($_POST['image_quality_jpeg'] ?? 85);
     $next['image_quality_webp']= (int)($_POST['image_quality_webp'] ?? 80);
-    $next['card_image_height'] = (string)($_POST['card_image_height'] ?? '240');
-    $next['card_image_fit']    = ($_POST['card_image_fit'] ?? 'cover') === 'contain' ? 'contain' : 'cover';
+    $next['card_image_height']   = (string)($_POST['card_image_height'] ?? '240');
+    $next['card_image_fit']      = ($_POST['card_image_fit'] ?? 'cover') === 'contain' ? 'contain' : 'cover';
+    $card_pos = (string)($_POST['card_image_position'] ?? 'center');
+    $next['card_image_position'] = in_array($card_pos, ['top', 'center', 'bottom', 'left', 'right'], true) ? $card_pos : 'center';
     $next['seo'] = [
         'default_meta_description' => trim((string)($_POST['seo_default_meta_description'] ?? '')),
         'og_image'                 => trim((string)($_POST['seo_og_image'] ?? '')),
@@ -133,8 +136,14 @@ echo nano_cart_admin_flash_html();
     Enquiry action (required in catalogue mode)
     <input type="text" name="enquiry_action" placeholder="mailto:hello@example.com or https://example.com/contact" value="<?= $h((string)($cfg['enquiry_action'] ?? '')) ?>">
   </label>
+  <label class="nano-cart-admin-inline">
+    <input type="checkbox" name="show_checkout_notice" value="1" <?= ($cfg['show_checkout_notice'] ?? true) ? 'checked' : '' ?>>
+    Show a "secure checkout" notice under the buy button (checkout mode only)
+  </label>
+  <p class="nano-cart-admin-help">Tells the customer which payment provider handles checkout and that it
+    opens in a new tab. The provider name is detected automatically from each product's checkout URL.</p>
 
-  <h2>Images</h2>
+  <h2>Image quality</h2>
   <label>
     JPEG quality (60-95)
     <input type="number" name="image_quality_jpeg" min="60" max="95" value="<?= (int)($cfg['image_quality_jpeg'] ?? 85) ?>">
@@ -143,21 +152,35 @@ echo nano_cart_admin_flash_html();
     WebP quality (60-95)
     <input type="number" name="image_quality_webp" min="60" max="95" value="<?= (int)($cfg['image_quality_webp'] ?? 80) ?>">
   </label>
+
+  <h2>Grid card thumbnails</h2>
+  <p class="nano-cart-admin-help">These control the small product and category image thumbnails shown in the
+    <strong>category and home grids</strong> only. They do <strong>not</strong> affect the large image on the
+    product page (that is set per product, under each product's Image fields).</p>
   <label>
-    Card image height (pixels, 100-600)
+    Card thumbnail height (pixels, 100-600)
     <input type="number" name="card_image_height" min="100" max="600" value="<?= (int)($cfg['card_image_height'] ?? 240) ?>">
   </label>
   <fieldset class="nano-cart-admin-fieldset">
-    <legend>Card image fit (applies to all category-page cards)</legend>
+    <legend>Card thumbnail fit</legend>
     <label class="nano-cart-admin-inline">
       <input type="radio" name="card_image_fit" value="cover" <?= ($cfg['card_image_fit'] ?? 'cover') === 'cover' ? 'checked' : '' ?>>
-      Cover (fill the card)
+      Cover (crop to fill the card, uniform look)
     </label>
     <label class="nano-cart-admin-inline">
       <input type="radio" name="card_image_fit" value="contain" <?= ($cfg['card_image_fit'] ?? 'cover') === 'contain' ? 'checked' : '' ?>>
-      Contain (full image visible)
+      Contain (show the whole image, may leave space)
     </label>
   </fieldset>
+  <label>
+    Card thumbnail crop position (used when fit is Cover)
+    <?php $cpos = (string)($cfg['card_image_position'] ?? 'center'); ?>
+    <select name="card_image_position">
+<?php foreach (['top' => 'Top', 'center' => 'Center', 'bottom' => 'Bottom', 'left' => 'Left', 'right' => 'Right'] as $val => $lbl): ?>
+      <option value="<?= $h($val) ?>" <?= $cpos === $val ? 'selected' : '' ?>><?= $h($lbl) ?></option>
+<?php endforeach; ?>
+    </select>
+  </label>
 
   <h2>SEO defaults</h2>
   <label>

@@ -2,6 +2,66 @@
 
 All notable changes to Nano Cart are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-05-25
+
+Unified image handling: one media manager, and editors that select rather
+than upload. This replaces the previous split where the product/category
+editor and a separate browser both uploaded images.
+
+### Added
+
+- **Media manager** (`admin/media.php`, `media.js`, `media.css`): a two-pane
+  browser over the `/media` folder. A folder **tree** of `category-images/`
+  and `product-images/<sku>/` with their subfolders; a **thumbnail grid** of
+  the selected folder; a real **uploader** (drop or browse) into the current
+  folder; **create/remove** subfolders (one level, duplicate-guarded);
+  **rename**, **delete**, and **drag a thumbnail onto a folder to move** it.
+  Moving/renaming/deleting a file rewrites the referencing product/category
+  JSON and purges its cached variants, so links never dangle. An in-use /
+  unused badge flags orphans. Reached from the new **Media** nav item.
+- Failsafe handler in `core.php`: a missing required file or unloadable config
+  renders a clean 503 page instead of a blank 500.
+- Dashboard **health check**: verifies PHP version, GD, required files, config,
+  and media writability, so a half-finished upgrade is caught immediately.
+- **Checkout trust notice**: in checkout mode a short "Secure checkout" line
+  under the buy button names the payment provider (auto-detected from the
+  product's checkout URL: PayPal, Stripe, Gumroad, Square, Shopify, and more)
+  and notes that it opens in a new tab. Unknown hosts fall back to generic
+  wording. New `show_checkout_notice` config flag (default on) with a toggle
+  in Settings.
+
+### Changed
+
+- **Product page** refreshed: clearer hierarchy (image, title, price, buy
+  button, then full-width description), a larger bordered price, a full-width
+  dominant call-to-action carrying the price, more space around the gallery
+  thumbnails, and a single shop font (Inter). Breadcrumb hover is now neutral
+  rather than the link colour.
+
+- **Product and category editors are now selection-only.** They pick images
+  from the media library via a popup picker (the media browser in select mode)
+  and set primary, gallery order, and alt text. They no longer upload or manage
+  folders. Removing an image from a product/category unreferences it; the file
+  stays in the library.
+- `admin/upload.php` reduced to the single `update` action (persist image
+  references). The upload, subfolder, and file-delete actions moved to the
+  media manager.
+- Saving a product ensures its `media/product-images/<sku>/` folder exists so
+  its images can be uploaded in the manager.
+
+### Security
+
+- Markdown rendering (`Parsedown`) now runs in safe mode: raw HTML is escaped
+  and `javascript:` / `data:` link and image URLs are filtered, so admin-authored
+  descriptions can never become stored XSS for visitors.
+- The buy button only emits `http(s)` checkout URLs, blocking any non-http
+  scheme from reaching the link's `href`.
+
+### Removed
+
+- `admin/image-manager.js` and `admin/image-manager.css` (replaced by the media
+  manager plus `editor-images.js` / `editor-images.css`).
+
 ## [1.1.0] - 2026-05-25
 
 ### Added
@@ -87,5 +147,6 @@ Initial public release.
 
 A minimal `seed-data/` directory ships with the repo containing one category, two products, and approximately 35 placeholder image files (3 size variants in JPEG and WebP per source). Intentionally disposable: operators delete the directory before deploying their own shop. Generator script (`seed-data/generate-seed-images.php`) is included for regeneration if image sizes are changed.
 
+[1.2.0]: https://github.com/digifrac/Nano-Cart/releases/tag/v1.2.0
 [1.1.0]: https://github.com/digifrac/Nano-Cart/releases/tag/v1.1.0
 [1.0.0]: https://github.com/digifrac/Nano-Cart/releases/tag/v1.0.0

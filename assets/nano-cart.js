@@ -60,6 +60,47 @@
     });
   }
 
+  /* --- Lightbox: click a gallery image to view it full size -------- */
+
+  function setupLightbox() {
+    var imgs = document.querySelectorAll('.nano-cart-gallery-thumb-img, .nano-cart-gallery-main-img');
+    if (!imgs.length) return;
+
+    // Turn an on-demand thumbnail URL into the full source image:
+    //   /shop/media/img/<path>-120.jpg  ->  /shop/media/<path>.jpg
+    function fullSrc(src) {
+      return src.replace('/media/img/', '/media/').replace(/-\d+\.(jpg|webp)$/i, '.jpg');
+    }
+
+    function open(src) {
+      var box = document.createElement('div');
+      box.className = 'nano-cart-lightbox';
+      box.innerHTML = '<button type="button" class="nano-cart-lightbox-close" aria-label="Close">&times;</button>'
+        + '<img alt="">';
+      box.querySelector('img').src = src;
+      document.body.appendChild(box);
+      document.body.style.overflow = 'hidden';
+      function close() {
+        if (!box.parentNode) return;
+        box.parentNode.removeChild(box);
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', onKey);
+      }
+      function onKey(e) { if (e.key === 'Escape') close(); }
+      box.addEventListener('click', close);
+      document.addEventListener('keydown', onKey);
+    }
+
+    imgs.forEach(function (img) {
+      img.style.cursor = 'zoom-in';
+      img.tabIndex = img.tabIndex || 0;
+      img.addEventListener('click', function () { open(fullSrc(img.currentSrc || img.src)); });
+      img.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(fullSrc(img.currentSrc || img.src)); }
+      });
+    });
+  }
+
   /* --- Sticky buy button on mobile --------------------------------- */
 
   function setupStickyBuy() {
@@ -89,6 +130,7 @@
     var root = document.querySelector('.nano-cart-main') || document.body;
     setupLazyLoading(root);
     setupGalleryKeyboardNav();
+    setupLightbox();
     setupStickyBuy();
   }
 

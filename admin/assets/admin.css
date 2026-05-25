@@ -366,14 +366,14 @@ body.nano-cart-admin {
 }
 .nano-cart-admin-button:active { transform: translateY(1px); box-shadow: none; }
 .nano-cart-admin-button-primary {
-  background: var(--nano-cart-admin-accent);
-  border-color: var(--nano-cart-admin-accent);
+  background: #ff4d00;
+  border-color: #ff4d00;
   color: #fff;
-  box-shadow: 0 1px 2px rgba(31, 111, 235, 0.25), var(--nano-cart-admin-shadow);
+  box-shadow: 0 1px 2px rgba(255, 77, 0, 0.3), var(--nano-cart-admin-shadow);
 }
 .nano-cart-admin-button-primary:hover {
-  background: var(--nano-cart-admin-accent-hover);
-  border-color: var(--nano-cart-admin-accent-hover);
+  background: #e64500;
+  border-color: #e64500;
 }
 .nano-cart-admin-button-secondary { color: var(--nano-cart-admin-muted); }
 .nano-cart-admin-button-danger {

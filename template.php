@@ -35,8 +35,14 @@ $assets    = $shop_path . '/assets';
       C) Default + custom    - uncomment both
     Adjust paths if the shop is installed somewhere other than /shop/.
   -->
+  <!-- Default shop font (Inter). Remove these three lines to fall back to the
+       host site's own fonts. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="<?= htmlspecialchars($assets) ?>/nano-cart.css">
   <!-- <link rel="stylesheet" href="<?= htmlspecialchars($assets) ?>/theme-custom.css" /> -->
+  <?= nano_cart_runtime_styles() ?>
 
   <?= $nano_cart_jsonld ?? '' ?>
 

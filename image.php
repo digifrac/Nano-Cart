@@ -49,8 +49,10 @@ if (!in_array($width, nano_cart_image_widths(), true)) {
 if ($path === '' || str_contains($path, '..') || str_contains($path, "\0")) {
     nano_cart_image_fail(400);
 }
-// Path must sit under one of the two media roots, every segment slug-like.
-if (!preg_match('#^(product-images|category-images)(/([a-z0-9]|[a-z0-9][a-z0-9-]*[a-z0-9]))+$#', $path)) {
+// Any source under /media: 1 to 3 slug-like segments (home, folder, or one
+// subfolder). The img/ variant cache is never a source.
+if (str_starts_with($path, 'img/') || $path === 'img'
+    || !preg_match('#^([a-z0-9]([a-z0-9-]*[a-z0-9])?)(/[a-z0-9]([a-z0-9-]*[a-z0-9])?){0,3}$#', $path)) {
     nano_cart_image_fail(400);
 }
 

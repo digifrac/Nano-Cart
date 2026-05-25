@@ -79,7 +79,7 @@ if ($has_banner || $has_desc):
     <a class="nano-cart-card" href="<?= htmlspecialchars($p_url) ?>">
 <?php if ($primary !== null): ?>
       <div class="nano-cart-card-image">
-<?= nano_cart_picture('product-images/' . $p['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'thumb', 0, (int)($cfg['card_image_height'] ?? 240), 'nano-cart-card-img', true, (string)($cfg['card_image_fit'] ?? 'cover')) ?>
+<?= nano_cart_picture('product-images/' . $p['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'thumb', 0, 0, 'nano-cart-card-img', true, '') ?>
       </div>
 <?php endif; ?>
       <div class="nano-cart-card-body">

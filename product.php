@@ -61,28 +61,39 @@ ob_start();
 ?>
 <?= nano_cart_breadcrumb_html($crumbs) ?>
 <article class="nano-cart-product">
-  <div class="nano-cart-gallery">
+  <h1 class="nano-cart-product-title"><?= htmlspecialchars($product['title']) ?></h1>
+
+  <div class="nano-cart-product-layout">
+    <div class="nano-cart-gallery">
 <?php if ($primary !== null): ?>
-    <figure class="nano-cart-gallery-main">
-<?= nano_cart_picture('product-images/' . $product['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'hero', (int)$img_w, (int)$img_h, 'nano-cart-gallery-main-img', false, $img_fit) ?>
-    </figure>
+      <figure class="nano-cart-gallery-main">
+<?= nano_cart_picture('product-images/' . $product['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'hero', (int)$img_w, 0, 'nano-cart-gallery-main-img', false, '') ?>
+      </figure>
 <?php endif; ?>
 <?php if (!empty($gallery)): ?>
-    <div class="nano-cart-gallery-thumbs" role="list">
+      <div class="nano-cart-gallery-thumbs" role="list">
 <?php foreach ($gallery as $img): ?>
-      <figure class="nano-cart-gallery-thumb" role="listitem">
+        <figure class="nano-cart-gallery-thumb" role="listitem">
 <?= nano_cart_picture('product-images/' . $product['sku'] . '/' . $img['file'], (string)$img['alt'], 'gallery-thumb', 120, 120, 'nano-cart-gallery-thumb-img', true, 'cover') ?>
-      </figure>
+        </figure>
 <?php endforeach; ?>
-    </div>
+      </div>
 <?php endif; ?>
-  </div>
+    </div>
 
-  <header class="nano-cart-product-meta">
-    <h1 class="nano-cart-product-title"><?= htmlspecialchars($product['title']) ?></h1>
-    <p class="nano-cart-product-price"><?= htmlspecialchars($product['price_display']) ?></p>
+    <div class="nano-cart-product-meta">
+<?php if (!empty($product['short_description'])): ?>
+      <p class="nano-cart-product-summary"><?= htmlspecialchars((string)$product['short_description']) ?></p>
+<?php endif; ?>
+      <div class="nano-cart-buy-panel">
+<?php if (($cfg['shop_mode'] ?? 'checkout') !== 'checkout'): ?>
+        <p class="nano-cart-product-price"><?= htmlspecialchars($product['price_display']) ?></p>
+<?php endif; ?>
 <?= nano_cart_buy_button($product) ?>
-  </header>
+<?= nano_cart_checkout_notice($product) ?>
+      </div>
+    </div>
+  </div>
 
 <?php if (!empty($product['long_description'])): ?>
   <div class="nano-cart-product-description">

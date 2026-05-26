@@ -1,6 +1,6 @@
 # Contributing to Nano Cart
 
-Nano Cart is early-stage solo development. Bug reports and feedback are very welcome. Formal contribution guidelines (PR templates, code review process, branching strategy) are deferred until the project stabilises after v1.0.0 has been live on a few real deployments.
+Nano Cart is solo development and, as of v1.5.0, **feature-complete and feature-locked**: ongoing work is limited to bug fixes, security patches, code cleanup, and documentation. Bug reports and feedback are very welcome. Formal contribution guidelines (PR templates, code review process, branching strategy) stay lightweight by design.
 
 ---
 
@@ -22,9 +22,9 @@ Helpful bug reports include:
 
 ### Feature suggestions
 
-Open an issue with the `feature` label. Be specific: who is the operator, what are they trying to do, what would the proposed feature change about their workflow. Suggestions that align with Nano Cart's "deliberately not a general-purpose e-commerce platform" stance are more likely to land.
+The feature set is locked as of v1.5.0, so new features are not being accepted: keeping the surface small is the point of the product. You are still welcome to open an issue to discuss an idea, but the honest default answer is "out of scope." Read the "Not for you" and "Roadmap" sections of [README.md](README.md) first.
 
-Read the "Not for you" and "Roadmap" sections of [README.md](README.md) first to see whether your feature is already explicitly out of scope.
+What is always useful: ideas that make the *existing* code smaller, clearer, faster, or safer without adding surface area.
 
 ### Security issues
 

@@ -6,7 +6,7 @@ A flat-file PHP product catalogue framework for static client sites. Sells fixed
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/digitalfracture)
 
-> **Status: v1.5.0.** Production-ready. See [INSTALL.md](INSTALL.md) for deployment, [CHANGELOG.md](CHANGELOG.md) for release notes.
+> **Status: v1.5.0, feature-complete.** Production-ready and feature-locked: future releases are bug fixes, security, and documentation only. See [INSTALL.md](INSTALL.md) for deployment, [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ---
 
@@ -38,9 +38,9 @@ Nano Cart is the right tool for a potter, a print-maker, a jewellery designer, a
 - **SEO as a core output.** Every page renders complete metadata, JSON-LD Product schema, JSON-LD BreadcrumbList, Open Graph and Twitter Card tags, canonical URLs computed at render time.
 - **Mobile-first.** Templates designed for a 375px viewport and progressively enhanced for larger screens. Sticky buy button on mobile. Native scroll-snap image gallery. Tap targets at least 44px.
 - **No frameworks.** Hand-written PHP, hand-written CSS scoped to `nano-cart-*` class names, minimal vanilla JavaScript. The only vendored dependency is Parsedown (single file, no Composer).
-- **Tiny on purpose.** Around 7,500 lines of code total, deploys in under 250KB on disk. For comparison, WooCommerce is ~50MB and a single one of its bundled JavaScript files is often larger than the whole of Nano Cart.
+- **Tiny on purpose.** Around 8,800 lines of code total, deploys in under 250KB on disk. For comparison, WooCommerce is ~50MB and a single one of its bundled JavaScript files is often larger than the whole of Nano Cart.
 
-Total size: around 7,500 lines of code (about 5,750 hand-written PHP / CSS / JS, plus the 1,700-line vendored Parsedown). The whole shop deploys in under 250KB on disk.
+Total size: around 8,800 lines of code (about 7,100 hand-written PHP / CSS / JS, plus the 1,700-line vendored Parsedown). The whole shop deploys in under 250KB on disk.
 
 ---
 
@@ -146,13 +146,11 @@ Restore is `rsync` in the other direction. No database to dump, no migrations to
 
 ## Roadmap
 
-**v1.0.0** is the current release: frontend, admin, image manager, licence verification, full documentation.
+**v1.5.0 is the current release, and Nano Cart is feature-complete.** Frontend, admin, media manager, on-demand image pipeline, transparency-aware images, manual product ordering, licence verification, and full documentation are all in place. See [CHANGELOG.md](CHANGELOG.md) for the full history.
 
-**v1.x patch releases** will address bug reports and security issues raised by early adopters. No new features.
+**The feature set is now locked.** Future releases are limited to bug fixes, security patches, code cleanup, and documentation. No new features will be added: a small, fixed surface is the point of the product, not a stage it is passing through.
 
-**v1.1+ (planned, post-launch).** Features will be prioritised based on early-adopter feedback. Likely candidates: optional product collections (cross-category groupings), homepage block layouts, multi-language support via per-locale JSON files.
-
-**Explicitly not planned.** Variants, quantity selectors, multi-item carts, inventory, search, tax/shipping engines, subscriptions. These are out of scope by design. See "Not for you" above.
+**Explicitly out of scope.** Variants, quantity selectors, multi-item carts, inventory, search, tax/shipping engines, subscriptions. These will not be added. See "Not for you" above.
 
 ---
 

@@ -67,14 +67,14 @@ ob_start();
     <div class="nano-cart-gallery">
 <?php if ($primary !== null): ?>
       <figure class="nano-cart-gallery-main">
-<?= nano_cart_picture('product-images/' . $product['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'hero', (int)$img_w, 0, 'nano-cart-gallery-main-img', false, '') ?>
+<?= nano_cart_picture('product-images/' . $product['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'hero', (int)$img_w, 0, 'nano-cart-gallery-main-img', false, '', (string)($product['image_bg'] ?? '')) ?>
       </figure>
 <?php endif; ?>
 <?php if (!empty($gallery)): ?>
       <div class="nano-cart-gallery-thumbs" role="list">
 <?php foreach ($gallery as $img): ?>
         <figure class="nano-cart-gallery-thumb" role="listitem">
-<?= nano_cart_picture('product-images/' . $product['sku'] . '/' . $img['file'], (string)$img['alt'], 'gallery-thumb', 120, 120, 'nano-cart-gallery-thumb-img', true, 'cover') ?>
+<?= nano_cart_picture('product-images/' . $product['sku'] . '/' . $img['file'], (string)$img['alt'], 'gallery-thumb', 120, 120, 'nano-cart-gallery-thumb-img', true, 'cover', (string)($product['image_bg'] ?? '')) ?>
         </figure>
 <?php endforeach; ?>
       </div>

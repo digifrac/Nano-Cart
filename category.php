@@ -61,7 +61,7 @@ if ($has_banner || $has_desc):
   <header class="nano-cart-category-header nano-cart-image-<?= htmlspecialchars($cat_pos) ?> <?= $has_banner ? 'has-banner' : 'no-banner' ?>">
 <?php if ($has_banner): ?>
     <div class="nano-cart-category-banner">
-<?= nano_cart_picture('category-images/' . $category['image'], (string)$category['name'], 'hero', (int)$cat_w, (int)$cat_h, 'nano-cart-category-banner-img', false, $cat_fit) ?>
+<?= nano_cart_picture('category-images/' . $category['image'], (string)$category['name'], 'hero', (int)$cat_w, (int)$cat_h, 'nano-cart-category-banner-img', false, $cat_fit, (string)($category['image_bg'] ?? '')) ?>
     </div>
 <?php endif; ?>
 <?php if ($has_desc): ?>
@@ -79,7 +79,7 @@ if ($has_banner || $has_desc):
     <a class="nano-cart-card" href="<?= htmlspecialchars($p_url) ?>">
 <?php if ($primary !== null): ?>
       <div class="nano-cart-card-image">
-<?= nano_cart_picture('product-images/' . $p['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'thumb', 0, 0, 'nano-cart-card-img', true, '') ?>
+<?= nano_cart_picture('product-images/' . $p['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'thumb', 0, 0, 'nano-cart-card-img', true, '', (string)($p['image_bg'] ?? '')) ?>
       </div>
 <?php endif; ?>
       <div class="nano-cart-card-body">

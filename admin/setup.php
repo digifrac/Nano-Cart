@@ -81,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'card_image_height'  => '240',
             'card_image_fit'     => 'cover',
             'card_image_position'=> 'center',
+            'card_image_bg'      => '',
             'seo' => [
                 'default_meta_description' => '',
                 'og_image'                 => '',

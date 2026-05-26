@@ -20,7 +20,7 @@ Options -Indexes -MultiViews
 
   # On-demand image variants: /media/img/<path>-<width>.<fmt>. Reached
   # only on a cache miss (the rule above serves cached files directly).
-  RewriteRule ^media/img/(.+)-([0-9]+)\.(jpg|webp)$ image.php?path=$1&w=$2&fmt=$3 [QSA,L]
+  RewriteRule ^media/img/(.+)-([0-9]+)\.(jpg|webp|png)$ image.php?path=$1&w=$2&fmt=$3 [QSA,L]
 
   # Trailing-slash canonicalisation for category and product URLs.
   RewriteRule ^([a-z0-9][a-z0-9-]*[a-z0-9])/([a-z0-9][a-z0-9-]*[a-z0-9])$ /$1/$2/ [R=301,L]

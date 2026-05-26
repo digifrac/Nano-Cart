@@ -27,6 +27,7 @@ $values = [
     'image_height'     => $loaded['image_height']     ?? 'auto',
     'image_fit'        => $loaded['image_fit']        ?? 'contain',
     'image_position'   => $loaded['image_position']   ?? 'left',
+    'image_bg'         => $loaded['image_bg']         ?? '',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -42,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $values['image_height']     = (string)($_POST['image_height'] ?? 'auto');
     $values['image_fit']        = ($_POST['image_fit'] ?? 'contain') === 'cover' ? 'cover' : 'contain';
     $values['image_position']   = ($_POST['image_position'] ?? 'left') === 'right' ? 'right' : 'left';
+    $values['image_bg']         = strtolower(trim((string)($_POST['image_bg'] ?? '')));
 
     if (!nano_cart_slug_ok($values['slug'])) {
         $errors[] = 'Slug must be lowercase alphanumeric and hyphens only, 2+ characters.';
@@ -55,6 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($values['sort_order'] !== '' && !preg_match('/^-?\d+$/', $values['sort_order'])) {
         $errors[] = 'Sort order must be an integer (positive or negative).';
+    }
+    if ($values['image_bg'] !== '' && !preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/', $values['image_bg'])) {
+        $errors[] = 'Image background must be a hex colour like #ffffff, or left blank.';
     }
     if ($is_edit && $values['slug'] !== $existing_slug) {
         $errors[] = 'Changing the slug on an existing category is not supported (it would break URLs).';
@@ -81,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'image_height'     => $values['image_height'],
             'image_fit'        => $values['image_fit'],
             'image_position'   => $values['image_position'],
+            'image_bg'         => $values['image_bg'],
         ];
         if (nano_cart_admin_save_category($to_save)) {
             nano_cart_admin_flash_set('success', 'Category saved.');
@@ -195,6 +201,11 @@ if ($values['image'] !== '') {
     <label class="nano-cart-admin-inline">
       <input type="radio" name="image_position" value="right" <?= $values['image_position'] === 'right' ? 'checked' : '' ?>>
       Banner floats right of description
+    </label>
+    <label>
+      Image background colour
+      <input type="text" name="image_bg" value="<?= htmlspecialchars((string)$values['image_bg']) ?>" placeholder="#1d0a3e" maxlength="7">
+      <span class="nano-cart-admin-help">Shown behind the category banner and card image, including through the transparent areas of a PNG. Hex like <code>#1d0a3e</code>; leave blank for none.</span>
     </label>
   </fieldset>
 

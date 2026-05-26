@@ -50,7 +50,7 @@ $page_h1 = $site_name !== '' ? $site_name : 'Shop';
     <a class="nano-cart-hero-link" href="<?= htmlspecialchars($hero_url) ?>">
 <?php if ($primary !== null): ?>
       <div class="nano-cart-hero-image">
-<?= nano_cart_picture('product-images/' . $hero['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'hero', 0, 0, 'nano-cart-hero-img', false, 'cover') ?>
+<?= nano_cart_picture('product-images/' . $hero['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'hero', 0, 0, 'nano-cart-hero-img', false, 'cover', (string)($hero['image_bg'] ?? '')) ?>
       </div>
 <?php endif; ?>
       <div class="nano-cart-hero-body">
@@ -75,7 +75,7 @@ $page_h1 = $site_name !== '' ? $site_name : 'Shop';
       <a class="nano-cart-card" href="<?= htmlspecialchars($cat_url) ?>">
 <?php if ($has_img): ?>
         <div class="nano-cart-card-image">
-<?= nano_cart_picture('category-images/' . $cat['image'], (string)$cat['name'], 'thumb', 0, 0, 'nano-cart-card-img', true, '') ?>
+<?= nano_cart_picture('category-images/' . $cat['image'], (string)$cat['name'], 'thumb', 0, 0, 'nano-cart-card-img', true, '', (string)($cat['image_bg'] ?? '')) ?>
         </div>
 <?php endif; ?>
         <div class="nano-cart-card-body">
@@ -99,7 +99,7 @@ if (!empty($featured_excl_hero)):
       <a class="nano-cart-card" href="<?= htmlspecialchars($p_url) ?>">
 <?php if ($primary !== null): ?>
         <div class="nano-cart-card-image">
-<?= nano_cart_picture('product-images/' . $p['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'thumb', 0, 0, 'nano-cart-card-img', true, '') ?>
+<?= nano_cart_picture('product-images/' . $p['sku'] . '/' . $primary['file'], (string)$primary['alt'], 'thumb', 0, 0, 'nano-cart-card-img', true, '', (string)($p['image_bg'] ?? '')) ?>
         </div>
 <?php endif; ?>
         <div class="nano-cart-card-body">

@@ -2,6 +2,30 @@
 
 All notable changes to Nano Cart are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] - 2026-05-26
+
+### Added
+
+- **Transparency-preserving images.** PNG uploads are now stored as PNG (any
+  alpha is kept) and served with transparency intact through the on-demand
+  resizer; the WebP and PNG variants both keep alpha. A WebP upload is kept as
+  PNG when it carries alpha. Opaque uploads are still stored as JPEG.
+  Previously every upload was flattened to JPEG, which dropped transparency and
+  could leave a stray fill colour behind a cut-out image.
+- **Per-image background colour.** A hex colour shown behind an image,
+  including through the transparent areas of a PNG. Set it per product and per
+  category in their editors, or shop-wide in Settings. Applied to card, hero,
+  product, gallery, and category banner images; leave blank for none.
+
+### Changed
+
+- The on-demand image route (`image.php`) and `.htaccess` now accept a `png`
+  variant alongside `jpg` and `webp`.
+- The media manager threads the stored source extension (`.jpg` / `.png`)
+  through upload, listing, copy, move, rename, delete, and cache purging.
+- The gallery lightbox rebuilds the full-size URL with the source's real
+  extension, so PNG product images open correctly instead of 404ing.
+
 ## [1.3.0] - 2026-05-25
 
 ### Added

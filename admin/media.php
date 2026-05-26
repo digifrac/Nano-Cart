@@ -162,11 +162,41 @@ function nano_cart_media_purge_cache(string $rel_no_ext): void
     $dir  = NANO_CART_MEDIA_PATH . '/img' . (str_contains($rel_no_ext, '/') ? '/' . dirname($rel_no_ext) : '');
     $base = basename($rel_no_ext);
     foreach (glob($dir . '/' . $base . '-*') ?: [] as $cp) {
-        if (!preg_match('/^' . preg_quote($base, '/') . '-\d+\.(?:jpg|webp)$/', basename($cp))) continue;
+        if (!preg_match('/^' . preg_quote($base, '/') . '-\d+\.(?:jpg|webp|png)$/', basename($cp))) continue;
         $real = is_file($cp) ? realpath($cp) : false;
         if ($real === false || !str_starts_with($real, $cache_root . DIRECTORY_SEPARATOR)) continue;
         @unlink($real);
     }
+}
+
+/**
+ * Stored source extension for a media base path (relative, no extension):
+ * 'png' (transparency preserved) or 'jpg'. Null when neither exists.
+ */
+function nano_cart_media_src_ext(string $rel): ?string
+{
+    if (is_file(nano_cart_media_fs($rel . '.png'))) return 'png';
+    if (is_file(nano_cart_media_fs($rel . '.jpg'))) return 'jpg';
+    return null;
+}
+
+/** True when a GD image carries any transparency (palette index or alpha). */
+function nano_cart_media_has_alpha($img): bool
+{
+    if (!imageistruecolor($img)) {
+        return imagecolortransparent($img) >= 0;
+    }
+    $w = imagesx($img); $h = imagesy($img);
+    // Sample on a bounded grid: catches the large transparent regions of
+    // logos/cutouts cheaply without scanning every pixel of a big upload.
+    $sx = max(1, intdiv($w, 200));
+    $sy = max(1, intdiv($h, 200));
+    for ($y = 0; $y < $h; $y += $sy) {
+        for ($x = 0; $x < $w; $x += $sx) {
+            if (((imagecolorat($img, $x, $y) >> 24) & 0x7F) !== 0) return true;
+        }
+    }
+    return false;
 }
 
 function nano_cart_media_usage(?string $owner, ?string $ref): array
@@ -322,16 +352,32 @@ function nano_cart_media_save_one(array $file, string $dir, array $cfg): array
     $cap = max(400, min(4000, (int)($cfg['source_max_width'] ?? 1600)));
     if (imagesx($img) > $cap) $img = nano_cart_media_resize_width($img, $cap);
 
+    // Preserve the uploaded format's transparency. A PNG upload is always
+    // kept as PNG (any alpha preserved, no background composited in); a WebP
+    // is kept as PNG only when it carries alpha; anything else is stored as a
+    // smaller JPEG.
+    $keep_alpha = ($ext === 'png') || ($ext === 'webp' && nano_cart_media_has_alpha($img));
+    $out_ext = $keep_alpha ? 'png' : 'jpg';
+
     $base = nano_cart_media_safe_basename($orig);
     $try = $base;
-    while (is_file($dir . '/' . $try . '.jpg')) { $try = $base . '-' . bin2hex(random_bytes(2)); }
+    while (is_file($dir . '/' . $try . '.jpg') || is_file($dir . '/' . $try . '.png')) {
+        $try = $base . '-' . bin2hex(random_bytes(2));
+    }
     $base = $try;
-    $q = max(60, min(95, (int)($cfg['image_quality_jpeg'] ?? 85)));
-    if (!@imagejpeg($img, $dir . '/' . $base . '.jpg', $q)) {
+    if ($out_ext === 'png') {
+        imagealphablending($img, false);
+        imagesavealpha($img, true);
+        $ok = @imagepng($img, $dir . '/' . $base . '.png', 6);
+    } else {
+        $q = max(60, min(95, (int)($cfg['image_quality_jpeg'] ?? 85)));
+        $ok = @imagejpeg($img, $dir . '/' . $base . '.jpg', $q);
+    }
+    if (!$ok) {
         imagedestroy($img);
         return ['ok' => false, 'name' => $orig, 'error' => 'Could not write image (check folder permissions).'];
     }
-    @chmod($dir . '/' . $base . '.jpg', 0644);
+    @chmod($dir . '/' . $base . '.' . $out_ext, 0644);
     imagedestroy($img);
     return ['ok' => true, 'name' => $orig, 'file' => $base];
 }
@@ -346,17 +392,21 @@ function nano_cart_media_scan_files(string $dir): array
     $abs = nano_cart_media_fs($dir);
     $files = [];
     if (!is_dir($abs)) return $files;
+    $seen = [];
     foreach (scandir($abs) ?: [] as $entry) {
-        if (!str_ends_with($entry, '.jpg')) continue;
+        $is_png = str_ends_with($entry, '.png');
+        if (!$is_png && !str_ends_with($entry, '.jpg')) continue;
         $b = substr($entry, 0, -4);
+        if (isset($seen[$b])) continue;
         if (preg_match('/-(?:thumb-400|hero-800|thumb-120)$/', $b)) continue;
         if (!nano_cart_media_seg_ok($b)) continue;
+        $seen[$b] = true;
         $rel = ($dir !== '' ? $dir . '/' : '') . $b;
         [$owner, $ref] = nano_cart_media_owner_ref($rel);
         $files[] = [
             'name'    => $b,
             'path'    => $rel,
-            'thumb'   => nano_cart_image_url($rel, 'gallery-thumb', 'jpg'),
+            'thumb'   => nano_cart_image_url($rel, 'gallery-thumb', $is_png ? 'png' : 'jpg'),
             'used_by' => nano_cart_media_usage($owner, $ref),
         ];
     }
@@ -460,7 +510,9 @@ function nano_cart_media_action_copyinto(): void
     $owner = trim((string)($_POST['owner'] ?? ''), '/');   // category-images | product-images/<sku>
     if (!nano_cart_media_file_ok($src)) nano_cart_media_fail('Invalid image.');
     if (!nano_cart_media_dir_ok($owner)) nano_cart_media_fail('Invalid destination.');
-    $src_abs = nano_cart_media_fs($src . '.jpg');
+    $ext = nano_cart_media_src_ext($src);
+    if ($ext === null) nano_cart_media_fail('Image not found.', 404);
+    $src_abs = nano_cart_media_fs($src . '.' . $ext);
     if (!is_file($src_abs) || !nano_cart_media_contained($src_abs)) nano_cart_media_fail('Image not found.', 404);
 
     // Already under the owner: just return the owner-relative reference.
@@ -474,11 +526,13 @@ function nano_cart_media_action_copyinto(): void
     }
     $base = basename($src);
     $try = $base;
-    while (is_file($dest_dir . '/' . $try . '.jpg')) { $try = $base . '-' . bin2hex(random_bytes(2)); }
-    if (!@copy($src_abs, $dest_dir . '/' . $try . '.jpg')) {
+    while (is_file($dest_dir . '/' . $try . '.jpg') || is_file($dest_dir . '/' . $try . '.png')) {
+        $try = $base . '-' . bin2hex(random_bytes(2));
+    }
+    if (!@copy($src_abs, $dest_dir . '/' . $try . '.' . $ext)) {
         nano_cart_media_fail('Could not copy the image into the folder.', 500);
     }
-    @chmod($dest_dir . '/' . $try . '.jpg', 0644);
+    @chmod($dest_dir . '/' . $try . '.' . $ext, 0644);
     nano_cart_media_ok(['file' => $try]);
 }
 
@@ -534,7 +588,7 @@ function nano_cart_media_collect_sources(string $absDir, string $relDir, array &
         $rel = ($relDir !== '' ? $relDir . '/' : '') . $e;
         if (is_dir($abs)) {
             nano_cart_media_collect_sources($abs, $rel, $out);
-        } elseif (str_ends_with($e, '.jpg')) {
+        } elseif (str_ends_with($e, '.jpg') || str_ends_with($e, '.png')) {
             $b = substr($rel, 0, -4);
             if (!preg_match('/-(?:thumb-400|hero-800|thumb-120)$/', $b)) $out[] = $b;
         }
@@ -550,11 +604,13 @@ function nano_cart_media_action_rename(): void
     $base = strrpos($path, '/') !== false ? substr($path, strrpos($path, '/') + 1) : $path;
     $parent = strrpos($path, '/') !== false ? substr($path, 0, strrpos($path, '/')) : '';
     if ($newname === $base) nano_cart_media_ok(['unchanged' => true]);
-    $src = nano_cart_media_fs($path . '.jpg');
+    $ext = nano_cart_media_src_ext($path);
+    if ($ext === null) nano_cart_media_fail('File not found.', 404);
+    $src = nano_cart_media_fs($path . '.' . $ext);
     if (!is_file($src) || !nano_cart_media_contained($src)) nano_cart_media_fail('File not found.', 404);
     $new_rel = ($parent !== '' ? $parent . '/' : '') . $newname;
-    if (is_file(nano_cart_media_fs($new_rel . '.jpg'))) nano_cart_media_fail('A file named "' . $newname . '" already exists here.');
-    if (!@rename($src, nano_cart_media_fs($new_rel . '.jpg'))) nano_cart_media_fail('Could not rename the file.', 500);
+    if (is_file(nano_cart_media_fs($new_rel . '.jpg')) || is_file(nano_cart_media_fs($new_rel . '.png'))) nano_cart_media_fail('A file named "' . $newname . '" already exists here.');
+    if (!@rename($src, nano_cart_media_fs($new_rel . '.' . $ext))) nano_cart_media_fail('Could not rename the file.', 500);
     nano_cart_media_purge_cache($path);
     [$o1, $r1] = nano_cart_media_owner_ref($path);
     [$o2, $r2] = nano_cart_media_owner_ref($new_rel);
@@ -586,14 +642,16 @@ function nano_cart_media_action_move(): void
         }
     }
 
-    $src = nano_cart_media_fs($path . '.jpg');
+    $ext = nano_cart_media_src_ext($path);
+    if ($ext === null) nano_cart_media_fail('File not found.', 404);
+    $src = nano_cart_media_fs($path . '.' . $ext);
     if (!is_file($src) || !nano_cart_media_contained($src)) nano_cart_media_fail('File not found.', 404);
     $dest_abs = nano_cart_media_fs($to);
     if (!is_dir($dest_abs) && !@mkdir($dest_abs, 0755, true) && !is_dir($dest_abs)) {
         nano_cart_media_fail('Destination folder is missing.', 404);
     }
-    if (is_file(nano_cart_media_fs($new_rel . '.jpg'))) nano_cart_media_fail('A file named "' . $base . '" already exists there.');
-    if (!@rename($src, nano_cart_media_fs($new_rel . '.jpg'))) nano_cart_media_fail('Could not move the file.', 500);
+    if (is_file(nano_cart_media_fs($new_rel . '.jpg')) || is_file(nano_cart_media_fs($new_rel . '.png'))) nano_cart_media_fail('A file named "' . $base . '" already exists there.');
+    if (!@rename($src, nano_cart_media_fs($new_rel . '.' . $ext))) nano_cart_media_fail('Could not move the file.', 500);
     nano_cart_media_purge_cache($path);
     $updated = ($o1 === $o2) ? nano_cart_media_rewrite_refs($o1, $r1, $r2) : nano_cart_media_rewrite_refs($o1, $r1, null);
     nano_cart_media_ok(['refs_updated' => $updated]);
@@ -603,7 +661,9 @@ function nano_cart_media_action_delete(): void
 {
     $path = trim((string)($_POST['path'] ?? ''), '/');
     if (!nano_cart_media_file_ok($path)) nano_cart_media_fail('Invalid file.');
-    $src = nano_cart_media_fs($path . '.jpg');
+    $ext = nano_cart_media_src_ext($path);
+    if ($ext === null) nano_cart_media_fail('File not found.', 404);
+    $src = nano_cart_media_fs($path . '.' . $ext);
     if (!is_file($src) || !nano_cart_media_contained($src)) nano_cart_media_fail('File not found.', 404);
     if (!@unlink($src)) nano_cart_media_fail('Could not delete the file.', 500);
     nano_cart_media_purge_cache($path);

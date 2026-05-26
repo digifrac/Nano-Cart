@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $next['card_image_fit']      = ($_POST['card_image_fit'] ?? 'cover') === 'contain' ? 'contain' : 'cover';
     $card_pos = (string)($_POST['card_image_position'] ?? 'center');
     $next['card_image_position'] = in_array($card_pos, ['top', 'center', 'bottom', 'left', 'right'], true) ? $card_pos : 'center';
+    $next['card_image_bg']       = strtolower(trim((string)($_POST['card_image_bg'] ?? '')));
     $next['seo'] = [
         'default_meta_description' => trim((string)($_POST['seo_default_meta_description'] ?? '')),
         'og_image'                 => trim((string)($_POST['seo_og_image'] ?? '')),
@@ -61,6 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         || (int)$next['card_image_height'] < 100
         || (int)$next['card_image_height'] > 600) {
         $errors[] = 'Card image height must be 100-600 (pixels).';
+    }
+    if ($next['card_image_bg'] !== '' && !preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/', $next['card_image_bg'])) {
+        $errors[] = 'Image background must be a hex colour like #ffffff, or left blank.';
     }
 
     // Optional password change.
@@ -180,6 +184,11 @@ echo nano_cart_admin_flash_html();
       <option value="<?= $h($val) ?>" <?= $cpos === $val ? 'selected' : '' ?>><?= $h($lbl) ?></option>
 <?php endforeach; ?>
     </select>
+  </label>
+  <label>
+    Image background colour
+    <input type="text" name="card_image_bg" value="<?= $h((string)($cfg['card_image_bg'] ?? '')) ?>" placeholder="#ffffff" maxlength="7">
+    <span class="nano-cart-admin-help">Shown behind images, including through the transparent areas of a PNG. A hex colour like <code>#ffffff</code>; leave blank for none (transparent). Applies in both the default and neon themes.</span>
   </label>
 
   <h2>SEO defaults</h2>

@@ -242,6 +242,7 @@ a.nano-cart-breadcrumb-item:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--nano-cart-card-image-bg, transparent);
 }
 .nano-cart-card-image picture,
 .nano-cart-card-image img {
@@ -291,7 +292,7 @@ a.nano-cart-breadcrumb-item:hover {
   overflow: hidden;
   box-shadow: var(--nano-cart-shadow);
 }
-.nano-cart-hero-image { background: var(--nano-cart-bg-soft); }
+.nano-cart-hero-image { background: var(--nano-cart-card-image-bg, var(--nano-cart-bg-soft)); }
 .nano-cart-hero-image picture, .nano-cart-hero-image img {
   width: 100%; height: auto; display: block;
 }
@@ -452,6 +453,7 @@ a.nano-cart-breadcrumb-item:hover {
   border-radius: var(--nano-cart-radius);
   border: 1px solid var(--nano-cart-border);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: var(--nano-cart-card-image-bg, transparent);
 }
 .nano-cart-gallery-thumbs {
   display: flex;

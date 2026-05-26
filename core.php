@@ -19,7 +19,7 @@ if (!defined('NANO_CART_BOOTSTRAPPED')) {
  * Project version. Bumped on every public release alongside the
  * VERSION file at the repo root. Displayed in the admin footer.
  */
-const NANO_CART_VERSION = '1.3.0';
+const NANO_CART_VERSION = '1.4.0';
 
 // Register the failsafe before loading anything else, so that a missing
 // required file or an unloadable config below degrades to a clean page
@@ -300,7 +300,8 @@ function nano_cart_image_widths(): array
  *
  * Sized variants point at /media/img/, which image.php generates on the
  * first request and caches to disk. The "original" variant points at the
- * stored source file, which is always a JPEG.
+ * stored source file, which is a JPEG, or a PNG when the upload carried
+ * transparency (resolved by nano_cart_image_source_ext()).
  *
  * Examples:
  *   nano_cart_image_url('product-images/sku-001/main')
@@ -310,10 +311,23 @@ function nano_cart_image_widths(): array
  *   nano_cart_image_url('product-images/sku-001/main', 'original')
  *     -> /shop/media/product-images/sku-001/main.jpg
  */
+/**
+ * Stored source extension for a media base path (no extension): 'png' when a
+ * transparent image was kept as PNG, otherwise 'jpg'. Defaults to 'jpg' so
+ * callers always get a usable URL even before the source exists.
+ */
+function nano_cart_image_source_ext(string $path): string
+{
+    if (defined('NANO_CART_MEDIA_PATH') && is_file(NANO_CART_MEDIA_PATH . '/' . $path . '.png')) {
+        return 'png';
+    }
+    return 'jpg';
+}
+
 function nano_cart_image_url(string $path, string $variant = 'hero', string $format = 'jpg'): string
 {
     if ($variant === 'original') {
-        return nano_cart_shop_path() . '/media/' . $path . '.jpg';
+        return nano_cart_shop_path() . '/media/' . $path . '.' . nano_cart_image_source_ext($path);
     }
     $width = match ($variant) {
         'thumb'         => 400,
@@ -383,21 +397,28 @@ function nano_cart_picture(
     int $height = 0,
     string $class = '',
     bool $lazy = true,
-    string $fit = 'contain'
+    string $fit = 'contain',
+    string $bg = ''
 ): string {
-    $jpg  = nano_cart_image_url($base_path, $variant, 'jpg');
+    // Fallback format follows the stored source: PNG keeps transparency,
+    // everything else stays JPEG. The WebP <source> carries alpha either way.
+    $fallback_fmt = nano_cart_image_source_ext($base_path);
+    $jpg  = nano_cart_image_url($base_path, $variant, $fallback_fmt);
     $webp = nano_cart_image_url($base_path, $variant, 'webp');
     $attrs = '';
     if ($width > 0)  $attrs .= ' width="' . $width . '"';
     if ($height > 0) $attrs .= ' height="' . $height . '"';
     if ($class !== '') $attrs .= ' class="' . htmlspecialchars($class) . '"';
     if ($lazy) $attrs .= ' loading="lazy"';
+    // Per-image background colour shows behind transparent areas of a PNG.
+    $bg_ok = (bool)preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i', $bg);
     $style = '';
-    if ($width > 0 || $height > 0 || $fit !== '') {
+    if ($width > 0 || $height > 0 || $fit !== '' || $bg_ok) {
         $parts = [];
         if ($width > 0)  $parts[] = 'width:' . $width . 'px';
         if ($height > 0) $parts[] = 'height:' . $height . 'px';
         if ($fit !== '') $parts[] = 'object-fit:' . $fit;
+        if ($bg_ok)      $parts[] = 'background-color:' . $bg;
         $style = ' style="' . implode(';', $parts) . '"';
     }
     return '<picture>'
@@ -769,9 +790,16 @@ function nano_cart_runtime_styles(): string
     $map = ['top' => '50% 0%', 'center' => '50% 50%', 'bottom' => '50% 100%',
             'left' => '0% 50%', 'right' => '100% 50%'];
     $posval = $map[$pos] ?? '50% 50%';
+    // Optional background colour shown behind images (e.g. through the
+    // transparent areas of a PNG). Only emitted when a valid hex is set;
+    // otherwise each theme keeps its own default.
+    $bg = (string)($cfg['card_image_bg'] ?? '');
+    $bg_css = preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i', $bg)
+        ? '--nano-cart-card-image-bg:' . $bg . ';' : '';
     return '<style>:root{'
         . '--nano-cart-card-image-height:' . $h . 'px;'
         . '--nano-cart-card-image-fit:' . $fit . ';'
         . '--nano-cart-card-image-position:' . $posval . ';'
+        . $bg_css
         . '}</style>';
 }

@@ -39,6 +39,7 @@ $values = [
     'image_width'       => $loaded['image_width']       ?? '400',
     'image_height'      => $loaded['image_height']      ?? 'auto',
     'image_fit'         => $loaded['image_fit']         ?? 'contain',
+    'image_bg'          => $loaded['image_bg']          ?? '',
     'status'            => $loaded['status']            ?? 'published',
     'images'            => $loaded['images']            ?? [],
 ];
@@ -63,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $values['image_width']       = (string)($_POST['image_width'] ?? '400');
     $values['image_height']      = (string)($_POST['image_height'] ?? 'auto');
     $values['image_fit']         = ($_POST['image_fit'] ?? 'contain') === 'cover' ? 'cover' : 'contain';
+    $values['image_bg']          = strtolower(trim((string)($_POST['image_bg'] ?? '')));
     $values['status']            = ($is_draft || ($_POST['status'] ?? 'published') === 'draft') ? 'draft' : 'published';
 
     if (!nano_cart_slug_ok($values['sku'])) {
@@ -92,6 +94,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $allowed_widths = ['300','400','500','600','full'];
     if (!in_array($values['image_width'], $allowed_widths, true)) {
         $errors[] = 'Image width must be one of the preset values.';
+    }
+    if ($values['image_bg'] !== '' && !preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/', $values['image_bg'])) {
+        $errors[] = 'Image background must be a hex colour like #ffffff, or left blank.';
     }
     $allowed_heights = ['auto','300','400','500','600'];
     if (!in_array($values['image_height'], $allowed_heights, true)) {
@@ -124,6 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'image_width'       => $values['image_width'],
             'image_height'      => $values['image_height'],
             'image_fit'         => $values['image_fit'],
+            'image_bg'          => $values['image_bg'],
             'status'            => $values['status'],
         ];
         if ($is_edit) {
@@ -238,6 +244,11 @@ echo '<script src="' . $h($admin_url . '/editor-images.js' . $v) . '" defer></sc
     <label class="nano-cart-admin-inline">
       <input type="radio" name="image_fit" value="cover" <?= $values['image_fit'] === 'cover' ? 'checked' : '' ?>>
       Cover (fill the space, crop excess)
+    </label>
+    <label>
+      Image background colour
+      <input type="text" name="image_bg" value="<?= htmlspecialchars((string)$values['image_bg']) ?>" placeholder="#1d0a3e" maxlength="7">
+      <span class="nano-cart-admin-help">Shown behind this product's image, including through the transparent areas of a PNG. Hex like <code>#1d0a3e</code>; leave blank for none.</span>
     </label>
   </fieldset>
 

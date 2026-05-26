@@ -66,10 +66,14 @@
     var imgs = document.querySelectorAll('.nano-cart-gallery-thumb-img, .nano-cart-gallery-main-img');
     if (!imgs.length) return;
 
-    // Turn an on-demand thumbnail URL into the full source image:
+    // Turn an on-demand thumbnail URL into the full source image, keeping the
+    // correct extension: a PNG source stays .png; jpg/webp map to .jpg.
     //   /shop/media/img/<path>-120.jpg  ->  /shop/media/<path>.jpg
+    //   /shop/media/img/<path>-120.png  ->  /shop/media/<path>.png
     function fullSrc(src) {
-      return src.replace('/media/img/', '/media/').replace(/-\d+\.(jpg|webp)$/i, '.jpg');
+      return src.replace('/media/img/', '/media/')
+                .replace(/-\d+\.png$/i, '.png')
+                .replace(/-\d+\.(jpg|webp)$/i, '.jpg');
     }
 
     function open(src) {
@@ -94,9 +98,9 @@
     imgs.forEach(function (img) {
       img.style.cursor = 'zoom-in';
       img.tabIndex = img.tabIndex || 0;
-      img.addEventListener('click', function () { open(fullSrc(img.currentSrc || img.src)); });
+      img.addEventListener('click', function () { open(fullSrc(img.src)); });
       img.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(fullSrc(img.currentSrc || img.src)); }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(fullSrc(img.src)); }
       });
     });
   }

@@ -2,6 +2,23 @@
 
 All notable changes to Nano Cart are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.0] - 2026-05-26
+
+### Added
+
+- **Manual product ordering.** Each product gains an optional **Sort order**
+  field (integer, lower appears first) in the editor, mirroring the existing
+  category sort order. Products with a sort order lead the category grids and
+  featured lists; products left blank fall to the bottom, ordered
+  alphabetically by title. Intended for small catalogues (10-20 products) where
+  a quick number per product is all the control you need.
+
+### Changed
+
+- `nano_cart_load_products()` now sorts by `sort_order` (then title), replacing
+  the previous SKU-alphabetical order. Existing products with no `sort_order`
+  set simply sort alphabetically by title, so nothing breaks on upgrade.
+
 ## [1.4.0] - 2026-05-26
 
 ### Added

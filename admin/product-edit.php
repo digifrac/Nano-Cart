@@ -40,6 +40,7 @@ $values = [
     'image_height'      => $loaded['image_height']      ?? 'auto',
     'image_fit'         => $loaded['image_fit']         ?? 'contain',
     'image_bg'          => $loaded['image_bg']          ?? '',
+    'sort_order'        => $loaded['sort_order']        ?? '',
     'status'            => $loaded['status']            ?? 'published',
     'images'            => $loaded['images']            ?? [],
 ];
@@ -65,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $values['image_height']      = (string)($_POST['image_height'] ?? 'auto');
     $values['image_fit']         = ($_POST['image_fit'] ?? 'contain') === 'cover' ? 'cover' : 'contain';
     $values['image_bg']          = strtolower(trim((string)($_POST['image_bg'] ?? '')));
+    $values['sort_order']        = trim((string)($_POST['sort_order'] ?? ''));
     $values['status']            = ($is_draft || ($_POST['status'] ?? 'published') === 'draft') ? 'draft' : 'published';
 
     if (!nano_cart_slug_ok($values['sku'])) {
@@ -98,6 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($values['image_bg'] !== '' && !preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/', $values['image_bg'])) {
         $errors[] = 'Image background must be a hex colour like #ffffff, or left blank.';
     }
+    if ($values['sort_order'] !== '' && !preg_match('/^-?\d+$/', $values['sort_order'])) {
+        $errors[] = 'Sort order must be a whole number, or left blank.';
+    }
     $allowed_heights = ['auto','300','400','500','600'];
     if (!in_array($values['image_height'], $allowed_heights, true)) {
         $errors[] = 'Image height must be one of the preset values.';
@@ -130,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'image_height'      => $values['image_height'],
             'image_fit'         => $values['image_fit'],
             'image_bg'          => $values['image_bg'],
+            'sort_order'        => $values['sort_order'] !== '' ? (int)$values['sort_order'] : null,
             'status'            => $values['status'],
         ];
         if ($is_edit) {
@@ -263,6 +269,11 @@ echo '<script src="' . $h($admin_url . '/editor-images.js' . $v) . '" defer></sc
       Hero featured (only one product across the shop; saving will clear the flag on any other product)
     </label>
   </fieldset>
+
+  <label>
+    Sort order (integer, lower appears first; leave blank to sort alphabetically)
+    <input type="text" name="sort_order" pattern="-?\d+" value="<?= $h((string)$values['sort_order']) ?>">
+  </label>
 
   <label>
     Status

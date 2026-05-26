@@ -19,7 +19,7 @@ if (!defined('NANO_CART_BOOTSTRAPPED')) {
  * Project version. Bumped on every public release alongside the
  * VERSION file at the repo root. Displayed in the admin footer.
  */
-const NANO_CART_VERSION = '1.4.0';
+const NANO_CART_VERSION = '1.5.0';
 
 // Register the failsafe before loading anything else, so that a missing
 // required file or an unloadable config below degrades to a clean page
@@ -188,7 +188,17 @@ function nano_cart_load_products(array $filters = []): array
         if (array_key_exists('hero_featured', $filters) && (bool)($p['hero_featured'] ?? false) !== (bool)$filters['hero_featured']) continue;
         $out[] = $p;
     }
-    usort($out, static fn($a, $b) => strcmp((string)($a['sku'] ?? ''), (string)($b['sku'] ?? '')));
+    // Manual display order: products with a sort_order lead, lowest first;
+    // those left blank fall to the bottom, sorted alphabetically by title.
+    // Mirrors the category sort_order field.
+    usort($out, static function ($a, $b) {
+        $sa = $a['sort_order'] ?? null;
+        $sb = $b['sort_order'] ?? null;
+        $oa = ($sa === null || $sa === '') ? PHP_INT_MAX : (int)$sa;
+        $ob = ($sb === null || $sb === '') ? PHP_INT_MAX : (int)$sb;
+        if ($oa !== $ob) return $oa <=> $ob;
+        return strcmp((string)($a['title'] ?? ''), (string)($b['title'] ?? ''));
+    });
     return $out;
 }
 

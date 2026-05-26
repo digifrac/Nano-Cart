@@ -62,6 +62,15 @@ $assets    = $shop_path . '/assets';
   <!-- =========================================================== -->
   <!-- BEGIN: paste client's site header HTML below                 -->
   <!-- =========================================================== -->
+  <!--
+    Heads-up: Nano Cart's CSS is scoped to .nano-cart-main and deliberately
+    does NOT set a global box-sizing or line-height reset, so it never
+    restyles your existing site. Anything you paste in this header (and the
+    footer zone below) is styled by YOUR site's CSS and inherits the browser
+    defaults (box-sizing: content-box, line-height: normal), not the shop's.
+    If your header uses max-width + padding, give it box-sizing: border-box;
+    and set a line-height, or it can render a different size than you expect.
+  -->
 
 
 

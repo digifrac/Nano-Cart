@@ -6,7 +6,7 @@ A flat-file PHP product catalogue framework for static client sites. Sells fixed
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/digitalfracture)
 
-> **Status: v1.5.0, feature-complete.** Production-ready and feature-locked: future releases are bug fixes, security, and documentation only. See [INSTALL.md](INSTALL.md) for deployment, [CHANGELOG.md](CHANGELOG.md) for release notes.
+> **Status: v1.5.1, feature-complete.** Production-ready and feature-locked: future releases are bug fixes, security, and documentation only. See [INSTALL.md](INSTALL.md) for deployment, [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ---
 
@@ -146,7 +146,7 @@ Restore is `rsync` in the other direction. No database to dump, no migrations to
 
 ## Roadmap
 
-**v1.5.0 is the current release, and Nano Cart is feature-complete.** Frontend, admin, media manager, on-demand image pipeline, transparency-aware images, manual product ordering, licence verification, and full documentation are all in place. See [CHANGELOG.md](CHANGELOG.md) for the full history.
+**v1.5.1 is the current release, and Nano Cart is feature-complete.** Frontend, admin, media manager, on-demand image pipeline, transparency-aware images, manual product ordering, licence verification, and full documentation are all in place. See [CHANGELOG.md](CHANGELOG.md) for the full history.
 
 **The feature set is now locked.** Future releases are limited to bug fixes, security patches, code cleanup, and documentation. No new features will be added: a small, fixed surface is the point of the product, not a stage it is passing through.
 

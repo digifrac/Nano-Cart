@@ -2,6 +2,31 @@
 
 All notable changes to Nano Cart are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.1] - 2026-05-27
+
+### Fixed
+
+- **Card thumbnails are framed consistently across screen sizes.** The
+  thumbnail box used a fixed pixel height, so on a full-width phone card it
+  became a wide landscape box that cropped square product images and made the
+  padding differ at each breakpoint. It now uses an aspect-ratio that scales
+  with the card width, so the framing is identical on phones, tablets, and
+  desktops.
+- **The card-image settings now actually apply.** Fit ("contain"), crop
+  position, and background colour were emitted as custom properties on `:root`,
+  but the grid inherits the same properties from `.nano-cart-main`, whose values
+  won, so the admin choices had no effect. The runtime style now sets them on
+  `.nano-cart-main`, so the settings take effect.
+
+### Changed
+
+- The admin **"Card thumbnail height (pixels)"** setting is now **"Card
+  thumbnail proportion"**. The same number (100-600) controls the thumbnail
+  shape rather than a fixed pixel height: 240 is a square, lower is wider,
+  higher is taller. No config change is required. On upgrade, thumbnails may
+  re-shape if you had set a non-default value, and a "Contain" fit that was
+  previously ignored will now show.
+
 ## [1.5.0] - 2026-05-26
 
 ### Added

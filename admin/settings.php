@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!preg_match('/^\d+$/', $next['card_image_height'])
         || (int)$next['card_image_height'] < 100
         || (int)$next['card_image_height'] > 600) {
-        $errors[] = 'Card image height must be 100-600 (pixels).';
+        $errors[] = 'Card thumbnail proportion must be 100-600.';
     }
     if ($next['card_image_bg'] !== '' && !preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/', $next['card_image_bg'])) {
         $errors[] = 'Image background must be a hex colour like #ffffff, or left blank.';
@@ -162,8 +162,9 @@ echo nano_cart_admin_flash_html();
     <strong>category and home grids</strong> only. They do <strong>not</strong> affect the large image on the
     product page (that is set per product, under each product's Image fields).</p>
   <label>
-    Card thumbnail height (pixels, 100-600)
+    Card thumbnail proportion (100-600)
     <input type="number" name="card_image_height" min="100" max="600" value="<?= (int)($cfg['card_image_height'] ?? 240) ?>">
+    <span class="nano-cart-admin-help">Controls the thumbnail's shape, which now scales with the card so the framing is identical on every screen size. <code>240</code> is a square; lower is wider (landscape), higher is taller (portrait). It is no longer a fixed pixel height, so it can't be cropped differently on phones and desktops.</span>
   </label>
   <fieldset class="nano-cart-admin-fieldset">
     <legend>Card thumbnail fit</legend>

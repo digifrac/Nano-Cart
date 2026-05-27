@@ -19,7 +19,7 @@ if (!defined('NANO_CART_BOOTSTRAPPED')) {
  * Project version. Bumped on every public release alongside the
  * VERSION file at the repo root. Displayed in the admin footer.
  */
-const NANO_CART_VERSION = '1.5.0';
+const NANO_CART_VERSION = '1.5.1';
 
 // Register the failsafe before loading anything else, so that a missing
 // required file or an unloadable config below degrades to a clean page
@@ -794,7 +794,14 @@ function nano_cart_footer_attribution(): string
 function nano_cart_runtime_styles(): string
 {
     $cfg = nano_cart_load_config();
-    $h   = max(80, min(800, (int)($cfg['card_image_height'] ?? 240)));
+    // The stored "card_image_height" now drives the thumbnail proportion rather
+    // than a fixed pixel height: a fixed height became a different-shaped box at
+    // each breakpoint (cropping/padding varied per viewport). We turn it into an
+    // aspect-ratio (width / height) around a square default of 240, so the box
+    // scales with the card width and frames identically everywhere. Lower value
+    // = wider box, higher = taller; 240 = square.
+    $h     = max(80, min(800, (int)($cfg['card_image_height'] ?? 240)));
+    $ratio = round(240 / $h, 4);
     $fit = ($cfg['card_image_fit'] ?? 'cover') === 'contain' ? 'contain' : 'cover';
     $pos = (string)($cfg['card_image_position'] ?? 'center');
     $map = ['top' => '50% 0%', 'center' => '50% 50%', 'bottom' => '50% 100%',
@@ -806,8 +813,13 @@ function nano_cart_runtime_styles(): string
     $bg = (string)($cfg['card_image_bg'] ?? '');
     $bg_css = preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i', $bg)
         ? '--nano-cart-card-image-bg:' . $bg . ';' : '';
-    return '<style>:root{'
-        . '--nano-cart-card-image-height:' . $h . 'px;'
+    // Emitted on .nano-cart-main (not :root): these custom properties are
+    // declared on .nano-cart-main in the stylesheet, and the grid lives inside
+    // it, so a :root override would lose to that closer declaration. This style
+    // is output after the stylesheet, so a same-specificity .nano-cart-main rule
+    // wins and the operator's settings actually take effect.
+    return '<style>.nano-cart-main{'
+        . '--nano-cart-card-image-ratio:' . $ratio . ';'
         . '--nano-cart-card-image-fit:' . $fit . ';'
         . '--nano-cart-card-image-position:' . $posval . ';'
         . $bg_css

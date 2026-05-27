@@ -91,6 +91,20 @@ error log. Restoring the backup from step 1 reverts cleanly.
 
 ## Version-specific notes
 
+### v1.5.1
+
+Card thumbnail rendering fix. No data migration.
+
+- Thumbnails now use a consistent aspect-ratio that scales with the card, so
+  they are framed identically on phones and desktops instead of being cropped
+  differently per screen.
+- The admin "Card thumbnail height" setting is now "Card thumbnail proportion":
+  the stored number (100-600) sets the shape, where 240 is a square, lower is
+  wider, higher is taller. Your existing value is kept; if it was not 240 the
+  thumbnails may change shape after upgrading.
+- If you had selected the "Contain" thumbnail fit, note it now actually applies
+  (it was previously ignored).
+
 ### v1.2.0
 
 Unified image handling. No data migration. After upgrading:

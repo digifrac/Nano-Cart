@@ -27,7 +27,8 @@
  *     --nano-cart-spacing-unit    Base spacing rhythm
  *     --nano-cart-radius          Corner radius on cards, code, images
  *     --nano-cart-gap             Vertical space between grid cards
- *     --nano-cart-card-image-height  Shop-uniform card thumbnail height
+ *     --nano-cart-card-image-ratio   Card thumbnail aspect-ratio (width/height,
+ *                                    e.g. 1 = square); scales with card width
  *     --nano-cart-card-image-fit     "cover" or "contain"
  *
  * Includes a prefers-color-scheme: dark override at the bottom.
@@ -56,7 +57,7 @@
   --nano-cart-radius:          6px;
   --nano-cart-radius-sm:       4px;
   --nano-cart-gap:             1.5rem;
-  --nano-cart-card-image-height: 240px;
+  --nano-cart-card-image-ratio:  1;
   --nano-cart-card-image-fit:    cover;
 
   font-family: var(--nano-cart-font);
@@ -238,7 +239,13 @@ a.nano-cart-breadcrumb-item:hover {
 }
 .nano-cart-card-image {
   overflow: hidden;
-  height: var(--nano-cart-card-image-height);
+  /* Aspect-ratio box, not a fixed pixel height: the box scales with the card
+   * width so the thumbnail framing (and padding) stays identical at every
+   * breakpoint. A fixed height turned into a wide landscape box on full-width
+   * cards, which cropped square images and made the padding differ per
+   * viewport. The ratio is driven by the admin "thumbnail proportion" setting
+   * (default 1 = square); fit/position/background still apply inside it. */
+  aspect-ratio: var(--nano-cart-card-image-ratio, 1);
   display: flex;
   align-items: center;
   justify-content: center;

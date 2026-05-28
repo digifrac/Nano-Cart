@@ -280,7 +280,7 @@ a.nano-cart-breadcrumb-item:hover {
   transition: color 200ms ease-out;
 }
 .nano-cart-card-price {
-  margin: 0.15rem 0 0;
+  margin: auto 0 0;
   color: var(--nano-cart-text);
   font-size: 1.15rem;
   font-weight: 600;

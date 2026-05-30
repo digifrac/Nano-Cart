@@ -32,6 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $card_pos = (string)($_POST['card_image_position'] ?? 'center');
     $next['card_image_position'] = in_array($card_pos, ['top', 'center', 'bottom', 'left', 'right'], true) ? $card_pos : 'center';
     $next['card_image_bg']       = strtolower(trim((string)($_POST['card_image_bg'] ?? '')));
+    $cats_raw  = (int)($_POST['categories_per_row'] ?? 4);
+    $prods_raw = (int)($_POST['products_per_row'] ?? 4);
+    $next['categories_per_row'] = ($cats_raw === 3) ? 3 : 4;
+    $next['products_per_row']   = ($prods_raw === 3) ? 3 : 4;
     $next['seo'] = [
         'default_meta_description' => trim((string)($_POST['seo_default_meta_description'] ?? '')),
         'og_image'                 => trim((string)($_POST['seo_og_image'] ?? '')),
@@ -97,6 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $h = static fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
 $seo = is_array($cfg['seo'] ?? null) ? $cfg['seo'] : [];
+$cats_per_row  = ((int)($cfg['categories_per_row'] ?? 4) === 3) ? 3 : 4;
+$prods_per_row = ((int)($cfg['products_per_row'] ?? 4) === 3) ? 3 : 4;
 
 echo nano_cart_admin_header('Settings', 'settings');
 echo nano_cart_admin_flash_html();
@@ -191,6 +197,23 @@ echo nano_cart_admin_flash_html();
     <input type="text" name="card_image_bg" value="<?= $h((string)($cfg['card_image_bg'] ?? '')) ?>" placeholder="#ffffff" maxlength="7">
     <span class="nano-cart-admin-help">Shown behind images, including through the transparent areas of a PNG. A hex colour like <code>#ffffff</code>; leave blank for none (transparent). Applies in both the default and neon themes.</span>
   </label>
+
+  <h2>Layout</h2>
+  <label>Categories per row
+    <select name="categories_per_row">
+      <option value="3"<?= $cats_per_row === 3 ? ' selected' : '' ?>>3</option>
+      <option value="4"<?= $cats_per_row === 4 ? ' selected' : '' ?>>4 (default)</option>
+    </select>
+  </label>
+  <p class="nano-cart-admin-help">How many category cards appear per row on the shop homepage (on wide screens; narrower screens automatically show fewer).</p>
+
+  <label>Products per row
+    <select name="products_per_row">
+      <option value="3"<?= $prods_per_row === 3 ? ' selected' : '' ?>>3</option>
+      <option value="4"<?= $prods_per_row === 4 ? ' selected' : '' ?>>4 (default)</option>
+    </select>
+  </label>
+  <p class="nano-cart-admin-help">How many product cards appear per row on category pages and the homepage Featured grid (on wide screens).</p>
 
   <h2>SEO defaults</h2>
   <label>

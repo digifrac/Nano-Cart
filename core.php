@@ -19,7 +19,7 @@ if (!defined('NANO_CART_BOOTSTRAPPED')) {
  * Project version. Bumped on every public release alongside the
  * VERSION file at the repo root. Displayed in the admin footer.
  */
-const NANO_CART_VERSION = '1.5.1';
+const NANO_CART_VERSION = '1.6.0';
 
 // Register the failsafe before loading anything else, so that a missing
 // required file or an unloadable config below degrades to a clean page
@@ -543,6 +543,45 @@ function nano_cart_breadcrumb_html(array $crumbs): string
     return '<nav class="nano-cart-breadcrumb" aria-label="Breadcrumb">'
         . implode('<span class="nano-cart-breadcrumb-separator" aria-hidden="true">&rsaquo;</span>', $parts)
         . '</nav>';
+}
+
+/**
+ * Section sub-nav: an "All" tab (the shop home) plus one tab per category,
+ * shown above each storefront page's heading. Mirrors the Nano CMS blog's
+ * nano_category_nav_html() so the two front-ends navigate identically.
+ * Pass the active category slug ('' on the homepage) to highlight a tab.
+ */
+function nano_cart_category_nav_html(string $current_slug = ''): string
+{
+    $cats = nano_cart_load_categories();
+    if (empty($cats)) {
+        return '';
+    }
+    $shop = nano_cart_shop_path();
+    $h = static fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+    $out  = '<nav class="nano-cart-catnav" aria-label="Categories">';
+    $out .= '<input type="checkbox" id="nano-cart-catnav-toggle" class="nano-cart-catnav-toggle">';
+    $out .= '<label class="nano-cart-catnav-btn" for="nano-cart-catnav-toggle">'
+          . '<svg class="nano-cart-catnav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>'
+          . '<span>Categories</span></label>';
+    $out .= '<label class="nano-cart-catnav-backdrop" for="nano-cart-catnav-toggle" aria-hidden="true"></label>';
+    $out .= '<aside class="nano-cart-catnav-panel" aria-label="Categories">';
+    $out .= '<div class="nano-cart-catnav-head"><span>Categories</span>'
+          . '<label class="nano-cart-catnav-close" for="nano-cart-catnav-toggle" aria-label="Close">&times;</label></div>';
+    $out .= '<div class="nano-cart-catnav-links">';
+    $out .= '<a' . ($current_slug === '' ? ' class="is-active" aria-current="page"' : '') . ' href="'
+          . $h($shop . '/') . '">Shop</a>';
+    foreach ($cats as $c) {
+        $slug = trim((string)($c['slug'] ?? ''));
+        if ($slug === '') {
+            continue;
+        }
+        $label  = trim((string)($c['name'] ?? '')) !== '' ? (string)$c['name'] : $slug;
+        $active = $slug === $current_slug ? ' class="is-active" aria-current="page"' : '';
+        $out .= '<a href="' . $h($shop . '/' . $slug . '/') . '"' . $active . '>' . $h($label) . '</a>';
+    }
+    $out .= '</div></aside></nav>';
+    return $out;
 }
 
 /* ----------------------------------------------------------------------- */

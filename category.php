@@ -19,6 +19,7 @@ if ($category === null) {
 }
 
 $cfg       = nano_cart_load_config();
+$prods_per_row = ((int)($cfg['products_per_row'] ?? 4) === 3) ? 3 : 4;
 $site_name = nano_cart_site_name();
 $shop_path = nano_cart_shop_path();
 $products  = nano_cart_load_products(['category' => $slug]);
@@ -50,6 +51,7 @@ if ($cat_pos !== 'right') $cat_pos = 'left';
 
 ob_start();
 ?>
+<?= nano_cart_category_nav_html($slug) ?>
 <?= nano_cart_breadcrumb_html($crumbs) ?>
 <article class="nano-cart-category">
   <h1 class="nano-cart-page-title"><?= htmlspecialchars($category['name']) ?></h1>
@@ -71,7 +73,7 @@ if ($has_banner || $has_desc):
 <?php endif; ?>
 
 <?php if (!empty($products)): ?>
-  <section class="nano-cart-grid">
+  <section class="nano-cart-grid" style="--nano-cart-cards-per-row: <?= $prods_per_row ?>;">
 <?php foreach ($products as $p):
     $primary = nano_cart_primary_image($p);
     $p_url = $shop_path . '/' . $p['category'] . '/' . $p['sku'] . '/';

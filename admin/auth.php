@@ -505,6 +505,27 @@ function nano_cart_admin_h(string $s): string
     return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * Inline monoline SVG icon for a nav item, keyed by nav slug. Kept inline
+ * (no sprite or image file) so the admin stays a self-contained upload with
+ * no extra asset requests. Unknown keys fall back to a neutral dot.
+ */
+function nano_cart_admin_nav_icon(string $key): string
+{
+    $paths = [
+        'dashboard'  => '<rect x="3.5" y="3.5" width="7" height="7"/><rect x="13.5" y="3.5" width="7" height="7"/><rect x="3.5" y="13.5" width="7" height="7"/><rect x="13.5" y="13.5" width="7" height="7"/>',
+        'posts'      => '<path d="M6 3.5h9l4 4V20.5H6z"/><path d="M15 3.5V8h4"/><path d="M9 12.5h7M9 16h7"/>',
+        'products'   => '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M12 12v9"/>',
+        'categories' => '<path d="M3.5 8.5 12 4l8.5 4.5L12 13z"/><path d="M3.5 13.5 12 18l8.5-4.5"/>',
+        'media'      => '<rect x="3.5" y="4.5" width="17" height="15"/><circle cx="9" cy="10" r="1.7"/><path d="M20.5 15.5 15 10 4 19.5"/>',
+        'settings'   => '<path d="M4 8h9M17 8h3"/><circle cx="15" cy="8" r="2"/><path d="M4 16h3M11 16h9"/><circle cx="9" cy="16" r="2"/>',
+        'licence'    => '<path d="M12 3.5 19 6v6c0 4.3-3 7-7 8.5-4-1.5-7-4.2-7-8.5V6z"/><path d="M9 12l2 2 4-4"/>',
+        'help'       => '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.4 2.4 0 1 1 3.3 2.3c-.8.4-1.4.9-1.4 1.9"/><path d="M12 16.6h.01"/>',
+    ];
+    $inner = $paths[$key] ?? '<circle cx="12" cy="12" r="3.2"/>';
+    return '<svg class="nano-cart-admin-nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $inner . '</svg>';
+}
+
 function nano_cart_admin_header(string $page_title, string $current_nav = ''): string
 {
     $shop = nano_cart_shop_path();
@@ -516,11 +537,15 @@ function nano_cart_admin_header(string $page_title, string $current_nav = ''): s
         'media'      => ['Media',      $admin . '/media.php'],
         'settings'   => ['Settings',   $admin . '/settings.php'],
         'licence'    => ['Licence',    $admin . '/licence.php'],
+        'help'       => ['Help',       $admin . '/help.php'],
     ];
     $nav = '';
     foreach ($items as $key => [$label, $url]) {
-        $cls = $key === $current_nav ? 'nano-cart-admin-nav-current' : '';
-        $nav .= '<a class="nano-cart-admin-nav-link ' . $cls . '" href="' . nano_cart_admin_h($url) . '">' . nano_cart_admin_h($label) . '</a>';
+        $cls = 'nano-cart-admin-nav-link' . ($key === $current_nav ? ' nano-cart-admin-nav-current' : '');
+        $nav .= '<a class="' . $cls . '" href="' . nano_cart_admin_h($url) . '"'
+            . ($key === $current_nav ? ' aria-current="page"' : '') . '>'
+            . nano_cart_admin_nav_icon($key)
+            . '<span class="nano-cart-admin-nav-label">' . nano_cart_admin_h($label) . '</span></a>';
     }
     $title = nano_cart_admin_h($page_title . ' - ' . nano_cart_site_name() . ' admin');
     return '<!doctype html><html lang="en"><head><meta charset="utf-8">'
@@ -530,9 +555,13 @@ function nano_cart_admin_header(string $page_title, string $current_nav = ''): s
         . '<link rel="stylesheet" href="' . nano_cart_admin_h($admin . '/assets/admin.css?v=' . NANO_CART_VERSION) . '">'
         . '</head><body class="nano-cart-admin">'
         . '<header class="nano-cart-admin-header">'
-        . '<a class="nano-cart-admin-brand" href="' . nano_cart_admin_h($admin . '/') . '">Nano Cart</a>'
-        . '<nav class="nano-cart-admin-nav">' . $nav . '</nav>'
+        . '<a class="nano-cart-admin-brand" href="' . nano_cart_admin_h($admin . '/') . '"><span class="nano-cart-admin-brand-mark" aria-hidden="true"></span>Nano <span class="nano-cart-admin-brand-tag">Cart</span></a>'
+        . '<input type="checkbox" id="nano-cart-admin-navtoggle" class="nano-cart-admin-navtoggle" aria-label="Toggle menu">'
+        . '<label class="nano-cart-admin-navtoggle-btn" for="nano-cart-admin-navtoggle" aria-hidden="true"><span class="nano-cart-admin-navtoggle-bars"></span></label>'
+        . '<label class="nano-cart-admin-navbackdrop" for="nano-cart-admin-navtoggle" aria-hidden="true"></label>'
+        . '<nav class="nano-cart-admin-nav">' . $nav
         . '<a class="nano-cart-admin-logout" href="' . nano_cart_admin_h($admin . '/logout.php') . '">Log out</a>'
+        . '</nav>'
         . '</header>'
         . '<main class="nano-cart-admin-main">'
         . '<h1 class="nano-cart-admin-page-title">' . nano_cart_admin_h($page_title) . '</h1>';

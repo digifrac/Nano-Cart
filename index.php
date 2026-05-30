@@ -12,6 +12,8 @@ require __DIR__ . '/nano-preflight.php';
 nano_cart_preflight();
 
 $cfg        = nano_cart_load_config();
+$cats_per_row  = ((int)($cfg['categories_per_row'] ?? 4) === 3) ? 3 : 4;
+$prods_per_row = ((int)($cfg['products_per_row'] ?? 4) === 3) ? 3 : 4;
 $site_name  = nano_cart_site_name();
 $shop_path  = nano_cart_shop_path();
 $categories = nano_cart_load_categories();
@@ -34,6 +36,7 @@ ob_start();
 $has_any_content = $hero !== null || !empty($categories) || !empty($featured);
 $page_h1 = $site_name !== '' ? $site_name : 'Shop';
 ?>
+<?= nano_cart_category_nav_html('') ?>
 <article class="nano-cart-home">
   <h1 class="nano-cart-page-title"><?= htmlspecialchars($page_h1) ?></h1>
 <?php if (!$has_any_content): ?>
@@ -67,7 +70,7 @@ $page_h1 = $site_name !== '' ? $site_name : 'Shop';
 <?php if (!empty($categories)): ?>
   <section class="nano-cart-section nano-cart-categories">
     <h2 class="nano-cart-section-title">Categories</h2>
-    <div class="nano-cart-grid">
+    <div class="nano-cart-grid" style="--nano-cart-cards-per-row: <?= $cats_per_row ?>;">
 <?php foreach ($categories as $cat):
     $cat_url = $shop_path . '/' . $cat['slug'] . '/';
     $has_img = !empty($cat['image']);
@@ -91,7 +94,7 @@ if (!empty($featured_excl_hero)):
 ?>
   <section class="nano-cart-section nano-cart-featured">
     <h2 class="nano-cart-section-title">Featured</h2>
-    <div class="nano-cart-grid">
+    <div class="nano-cart-grid" style="--nano-cart-cards-per-row: <?= $prods_per_row ?>;">
 <?php foreach ($featured_excl_hero as $p):
     $primary = nano_cart_primary_image($p);
     $p_url = $shop_path . '/' . $p['category'] . '/' . $p['sku'] . '/';

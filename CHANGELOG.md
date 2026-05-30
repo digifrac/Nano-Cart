@@ -2,6 +2,25 @@
 
 All notable changes to Nano Cart are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.6.0] - 2026-05-30
+
+### Added
+
+- **Help page in the admin.** A reference page (product fields, per-product
+  image control, media uploads, deployment notes) gated behind the admin login,
+  mirroring Nano CMS. The admin menu is now identical to Nano CMS's: Dashboard ·
+  Products · Categories · Media · Settings · Licence · Help.
+- **Default Blog/Shop site header in the storefront template.** The shop wrapper
+  now ships a sticky site nav (matching the Nano CMS blog) so a paired Blog +
+  Shop install has a consistent header out of the box. It lives in the editable
+  paste-zone, so it is easy to replace with the client's own header.
+
+### Changed
+
+- **Redesigned admin navigation.** A wordmark, monoline icons, and an active
+  underline; on phones and tablets the menu collapses into a slide-in drawer
+  (CSS-only, no JavaScript), matching Nano CMS.
+
 ## [1.5.1] - 2026-05-27
 
 ### Fixed

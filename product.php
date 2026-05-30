@@ -59,6 +59,7 @@ $gallery = array_values(array_filter(
 
 ob_start();
 ?>
+<?= nano_cart_category_nav_html($cat_slug) ?>
 <?= nano_cart_breadcrumb_html($crumbs) ?>
 <article class="nano-cart-product">
   <h1 class="nano-cart-product-title"><?= htmlspecialchars($product['title']) ?></h1>

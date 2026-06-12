@@ -192,6 +192,7 @@ If Nano Cart saves you time on a client project, consider [buying me a coffee](h
 
 ## See also
 
+- [GUIDE.html](GUIDE.html): standalone user guide for shop operators (day-to-day use: products, images, checkout links, publishing)
 - [INSTALL.md](INSTALL.md): step-by-step deployment guide
 - [FORMAT.md](FORMAT.md): on-disk format specification (schemas, paths, URLs)
 - [ARCHITECTURE.md](ARCHITECTURE.md): runtime architecture and design contracts

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nano Cart User Guide</title>
+<style>
+  :root {
+    --ink: #1b1b22;
+    --muted: #5a5a68;
+    --line: #e6e6ee;
+    --bg: #ffffff;
+    --soft: #f6f6fb;
+    --accent: #5b3df5;
+    --accent_soft: #efeaff;
+    --radius: 10px;
+    --maxw: 820px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px 96px; }
+  header.masthead {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 64px 24px 28px;
+  }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-size: 40px;
+    line-height: 1.15;
+    margin: 0 0 14px;
+    letter-spacing: -0.02em;
+  }
+  .lede { font-size: 19px; color: var(--muted); margin: 0; max-width: 60ch; }
+  h2 {
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    margin: 56px 0 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  h3 { font-size: 19px; margin: 32px 0 10px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { font-weight: 650; }
+  code {
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font: 14px/1.5 "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    color: #3a2db8;
+  }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin: 6px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 24px;
+    font-size: 15.5px;
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    background: var(--soft);
+    font-weight: 650;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+  }
+  tr:last-child td { border-bottom: none; }
+  table { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .callout {
+    background: var(--accent_soft);
+    border: 1px solid #ddd2ff;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 24px 0;
+    font-size: 16px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  nav.toc {
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    margin: 36px 0 8px;
+  }
+  nav.toc h2 {
+    border: none;
+    padding: 0;
+    margin: 0 0 12px;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  nav.toc ol { columns: 2; column-gap: 32px; margin: 0; }
+  nav.toc a { color: var(--ink); }
+  footer.endmatter {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 32px; }
+    nav.toc ol { columns: 1; }
+    header.masthead { padding-top: 44px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <p class="eyebrow">Nano Cart</p>
+  <h1>User Guide</h1>
+  <p class="lede">A plain language guide to running a Nano Cart shop: signing in, building your catalogue, adding products and images, connecting checkout links, and publishing. It assumes the shop is already installed. You do not need to know any code.</p>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#layout">How a shop is laid out</a></li>
+      <li><a href="#signin">Signing in</a></li>
+      <li><a href="#tour">A tour of the admin</a></li>
+      <li><a href="#categories">Create your categories</a></li>
+      <li><a href="#links">Get your checkout links ready</a></li>
+      <li><a href="#product">Add a product</a></li>
+      <li><a href="#images">Add product images</a></li>
+      <li><a href="#publish">Publish and check</a></li>
+      <li><a href="#arrange">Arranging your shop</a></li>
+      <li><a href="#media">The Media area</a></li>
+      <li><a href="#settings">Settings</a></li>
+      <li><a href="#licence">Removing the footer credit</a></li>
+      <li><a href="#golive">Going live and staying safe</a></li>
+      <li><a href="#backups">Backups</a></li>
+      <li><a href="#faq">Common questions</a></li>
+      <li><a href="#routine">A simple weekly routine</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="layout">How a Nano Cart shop is laid out</h2>
+  <p>A Nano Cart shop has three simple ideas behind it. Understanding them makes everything else easy.</p>
+  <p><strong>Categories hold products.</strong> Every product belongs to one category. A potter might have categories like Mugs, Bowls, and Vases. The shop homepage shows your categories. Clicking a category shows the products inside it.</p>
+  <p><strong>Each product links to a payment page.</strong> Nano Cart does not take payment itself. It shows your products beautifully, and the Buy button sends the customer to a checkout page you already control: a Stripe payment link, a PayPal button, Gumroad, Square, Ko-fi, or any other hosted checkout. You paste that link into the product, and Nano Cart does the rest.</p>
+  <p><strong>The admin is removable.</strong> You make changes through a private admin area. When you finish, the admin can be taken off the server entirely, so there is nothing to break into while you are not using it. Putting it back is how you make your next round of edits. Your developer usually handles uploading and removing the admin.</p>
+
+  <h2 id="signin">Signing in</h2>
+  <p>Your admin lives at your shop address followed by <code>/admin</code>. For example, if your shop is at <code>example.com/shop</code>, your admin is at <code>example.com/shop/admin</code>.</p>
+  <ol>
+    <li>Open that address in your browser.</li>
+    <li>Enter the password you set during setup.</li>
+    <li>You land on the Dashboard.</li>
+  </ol>
+  <p>A few things worth knowing:</p>
+  <ul>
+    <li>The admin only works over a secure <code>https</code> connection. This is deliberate and protects your password.</li>
+    <li>If the admin address shows a "not configured" page or simply does not load, the admin folder is probably not on the server right now. Ask your developer to upload it so you can make changes.</li>
+    <li>You can change your password at any time under Settings.</li>
+  </ul>
+
+  <h2 id="tour">A tour of the admin</h2>
+  <p>Down the side of the admin you will find these areas:</p>
+  <table>
+    <tr><th>Area</th><th>What it is for</th></tr>
+    <tr><td><strong>Dashboard</strong></td><td>Your starting point. Shows how many products are live, how many are still drafts, and quick links.</td></tr>
+    <tr><td><strong>Products</strong></td><td>The list of everything you sell. Add, edit, reorder, and delete products here.</td></tr>
+    <tr><td><strong>Categories</strong></td><td>The groups your products sit in. Create these before you add products.</td></tr>
+    <tr><td><strong>Media</strong></td><td>Every image you have uploaded, in one place.</td></tr>
+    <tr><td><strong>Settings</strong></td><td>Shop wide options: name, currency, layout, checkout style, and your password.</td></tr>
+    <tr><td><strong>Licence</strong></td><td>Where you paste a licence key to remove the small footer credit. Optional.</td></tr>
+    <tr><td><strong>Help</strong></td><td>A short reference card built into the admin.</td></tr>
+  </table>
+  <p>The rest of this guide goes through these in the order you will actually use them.</p>
+
+  <h2 id="categories">Step one: create your categories</h2>
+  <p>Always build at least one category before you add a product, because every product has to be filed under a category.</p>
+  <ol>
+    <li>Go to <strong>Categories</strong> and choose to add a new one.</li>
+    <li>Fill in the fields:</li>
+  </ol>
+  <table>
+    <tr><th>Field</th><th>What to put</th></tr>
+    <tr><td><strong>Name</strong></td><td>The display name customers see, for example <code>Pottery</code>.</td></tr>
+    <tr><td><strong>Slug</strong></td><td>The short web friendly version, for example <code>pottery</code>. Lowercase letters, numbers, and nothing fancy. This becomes part of the web address, so keep it tidy.</td></tr>
+    <tr><td><strong>Description</strong></td><td>A sentence or two shown at the top of the category page. Optional but good for search engines.</td></tr>
+    <tr><td><strong>Image</strong></td><td>A picture that represents the category on the homepage. Optional.</td></tr>
+    <tr><td><strong>Sort order</strong></td><td>A number that decides where this category sits among the others. Lower numbers come first.</td></tr>
+  </table>
+  <p>Save. The category now appears on your shop homepage, ready to hold products. Repeat for each group of products you sell. Most small shops have somewhere between two and eight categories.</p>
+
+  <h2 id="links">Step two: get your checkout links ready</h2>
+  <p>Before you add a product, you need the web address customers go to in order to pay for it. This comes from your payment provider, not from Nano Cart. You create one checkout link per product.</p>
+  <p>The most common choice is a <strong>Stripe payment link</strong>:</p>
+  <ol>
+    <li>Sign in to your Stripe dashboard.</li>
+    <li>Create a payment link for the item, set its price, and copy the link it gives you. It will look something like <code>https://buy.stripe.com/...</code></li>
+    <li>That copied address is what you paste into the product later.</li>
+  </ol>
+  <p>The same idea applies to <strong>PayPal</strong>, <strong>Square</strong>, <strong>Gumroad</strong>, <strong>Ko-fi</strong>, or any other provider that gives you a shareable checkout or buy page. As long as you can copy a web address that starts with <code>https://</code> and leads to a page where the customer pays, Nano Cart can use it.</p>
+  <div class="callout"><p>Keep a simple list of your products and their checkout links somewhere handy while you work. It makes adding products much faster.</p></div>
+
+  <h2 id="product">Step three: add a product</h2>
+  <p>This is the part you will do most often.</p>
+  <ol>
+    <li>Go to <strong>Products</strong> and choose to add a new one.</li>
+    <li>Fill in the fields below.</li>
+  </ol>
+  <table>
+    <tr><th>Field</th><th>Required</th><th>What to put</th></tr>
+    <tr><td><strong>SKU</strong></td><td>Yes</td><td>A short code that names the product, in lowercase letters and numbers, for example <code>mug001</code>. This is permanent. It becomes the filename and the web address, so it cannot be changed later. Pick something sensible and move on.</td></tr>
+    <tr><td><strong>Title</strong></td><td>Yes</td><td>The product name customers read, for example <code>Hand thrown stoneware mug</code>.</td></tr>
+    <tr><td><strong>Short description</strong></td><td>Yes</td><td>One or two sentences, up to 300 characters. Shown on product cards and used by search engines as the page summary.</td></tr>
+    <tr><td><strong>Long description</strong></td><td>Yes</td><td>The full description shown on the product page. You can use simple formatting (headings, bold, bullet lists) and it renders cleanly.</td></tr>
+    <tr><td><strong>Category</strong></td><td>Yes</td><td>Choose one of the categories you created earlier.</td></tr>
+    <tr><td><strong>Price display</strong></td><td>Yes</td><td>Free text, shown exactly as you type it, for example <code>&pound;32.00</code> or <code>From &pound;49</code>. This is just what the customer reads. The actual charge happens on the checkout page.</td></tr>
+    <tr><td><strong>Checkout URL</strong></td><td>Yes</td><td>The payment link you prepared in step two. Must start with <code>https://</code></td></tr>
+    <tr><td><strong>Featured</strong></td><td>No</td><td>Promotes the product on listing pages.</td></tr>
+    <tr><td><strong>Hero featured</strong></td><td>No</td><td>Promotes the product in the large banner at the top of the homepage.</td></tr>
+    <tr><td><strong>Sort order</strong></td><td>No</td><td>A number deciding where the product sits within its category. Lower comes first. Leave it blank to sort by newest.</td></tr>
+    <tr><td><strong>Status</strong></td><td>Yes</td><td><code>Draft</code> keeps it hidden while you work. <code>Published</code> makes it live on the shop.</td></tr>
+  </table>
+  <div class="callout"><p>A good habit: add the product as a <strong>Draft</strong> first, get the words and pictures right, preview it, then switch it to <strong>Published</strong> when you are happy.</p></div>
+
+  <h2 id="images">Step four: add product images</h2>
+  <p>Good photos sell. Nano Cart makes them easy and forgiving.</p>
+  <h3>Uploading</h3>
+  <p>On the product editor you upload one or more images for that product. Allowed types are JPG, PNG, GIF, and WebP. Every upload is processed on the server, so you do not need to worry about file size or compression beforehand.</p>
+  <div class="callout"><p><strong>Upload large, and the shop will shrink it for you.</strong> A generous source picture, say 1200 by 1200 or bigger, gives the best results. The shop never stretches a small image up, so avoid tiny files.</p></div>
+  <h3>Choosing the main image</h3>
+  <p>One image is the <strong>primary</strong> image. That is the one shown first on the product card and at the top of the product page. The others appear in the gallery. You choose which one is primary.</p>
+  <h3>Fitting the picture</h3>
+  <p>Each image carries its own display settings, so one product never forces an awkward crop on another. For each image you can set:</p>
+  <table>
+    <tr><th>Setting</th><th>What it does</th></tr>
+    <tr><td><strong>Width and Height</strong></td><td>The size of the display box the picture sits in.</td></tr>
+    <tr><td><strong>Fit: Cover</strong></td><td>Fills the whole box and trims any overflow. Best for photographs where losing a little around the edges is fine.</td></tr>
+    <tr><td><strong>Fit: Contain</strong></td><td>Shows the entire picture with nothing trimmed. Any spare space shows the background colour. Best for packaging, logos, or anything that must be seen in full.</td></tr>
+    <tr><td><strong>Background</strong></td><td>A colour shown behind a Contain image or through the see through parts of a PNG. Leave it blank for none.</td></tr>
+  </table>
+  <p>Because the shop resizes on demand, you can change a picture's box and fit at any time without uploading it again. Tweak until it looks right.</p>
+  <h3>A quick rule of thumb</h3>
+  <ul>
+    <li>Square or gently rectangular photos are the safe default.</li>
+    <li>Use <strong>Cover</strong> for normal product photos.</li>
+    <li>Use <strong>Contain</strong> for anything with packaging, text, or a logo that must not be cut.</li>
+    <li>Always write a short, honest description of each picture in its alt text box. It helps search engines and customers using screen readers, and the admin will ask you for it.</li>
+  </ul>
+
+  <h2 id="publish">Step five: publish and check</h2>
+  <p>When the words and pictures are ready, set the product's <strong>Status</strong> to <strong>Published</strong> and save. It is now live.</p>
+  <p>Visit your shop in a normal browser tab and check:</p>
+  <ul>
+    <li>The product shows up in the right category.</li>
+    <li>The picture looks how you want.</li>
+    <li>The Buy button takes you to the correct payment page.</li>
+  </ul>
+  <p>If something is off, go back into the admin, fix it, and save again. Changes are live immediately.</p>
+
+  <h2 id="arrange">Arranging your shop</h2>
+  <p>A few tools let you control what customers notice first.</p>
+  <p><strong>Featured</strong> lifts a product up on listing pages. Use it for your best sellers.</p>
+  <p><strong>Hero featured</strong> puts a product in the big banner across the top of the homepage. Reserve this for one or a few standout pieces.</p>
+  <p><strong>Sort order</strong> is a number on each product and each category. Lower numbers come first. Use round numbers like 10, 20, 30 so you can slot something new in between later without renumbering everything.</p>
+  <p><strong>Draft versus Published</strong> is your on and off switch. A draft is invisible to customers but saved safely, ready for the day you publish it.</p>
+
+  <h2 id="media">The Media area</h2>
+  <p>Everything you upload collects in <strong>Media</strong>. This is useful when you want to see all your pictures in one place, reuse an image, or tidy up files you no longer need. Most of the time you will add images straight from the product editor and rarely need to come here, but it is there when you want it.</p>
+
+  <h2 id="settings">Settings</h2>
+  <p><strong>Settings</strong> holds the shop wide options. You will set most of these once at the start and rarely touch them again.</p>
+  <h3>Shop details</h3>
+  <ul>
+    <li><strong>Site name</strong>: the name of your shop.</li>
+    <li><strong>Site URL</strong>: your shop's full web address.</li>
+    <li><strong>Default currency</strong>: a three letter code such as <code>GBP</code>, <code>USD</code>, or <code>EUR</code>. This is used behind the scenes for search engines.</li>
+  </ul>
+  <h3>Shop mode</h3>
+  <p>This decides what the button on each product does.</p>
+  <ul>
+    <li><strong>Checkout mode</strong> (the usual choice): each product shows a Buy button that goes to its payment link. This is what most shops want.</li>
+    <li><strong>Catalogue mode</strong>: instead of a Buy button, every product shows an enquiry action, such as an email link or a contact form. This suits businesses that sell by quote rather than fixed online payment, like a gallery or a consultant. In this mode you set one <strong>enquiry action</strong> for the whole shop, for example <code>mailto:hello@example.com</code> or a link to your contact page.</li>
+  </ul>
+  <h3>The secure checkout notice</h3>
+  <p>In checkout mode you can show a small reassurance line under the Buy button. It tells the customer which payment provider handles the payment and that it opens in a new tab. The provider name is worked out automatically from each product's checkout link. You can switch this notice on or off.</p>
+  <h3>Image quality</h3>
+  <p>Two sliders set how crisp your saved images are, on a scale from 60 to 95. The defaults are a good balance of quality and speed. Higher means sharper but heavier files. You can leave these alone unless you have a reason not to.</p>
+  <h3>Grid card thumbnails</h3>
+  <p>These control the small pictures in the category and homepage grids only. They do not affect the large image on the product page, which you set per product.</p>
+  <ul>
+    <li><strong>Thumbnail proportion</strong>: the shape of the small cards. A value around 240 is square. Lower is wider, higher is taller. The shape scales with the screen, so it looks the same on a phone and a desktop.</li>
+    <li><strong>Thumbnail fit</strong>: Cover crops to fill for a tidy uniform grid, or Contain shows the whole picture.</li>
+    <li><strong>Crop position</strong>: when using Cover, which part of the picture to keep.</li>
+    <li><strong>Background colour</strong>: shown behind images and through transparent areas. A hex colour, or blank for none.</li>
+  </ul>
+  <h3>Layout</h3>
+  <ul>
+    <li><strong>Categories per row</strong> and <strong>Products per row</strong>: choose 3 or 4 across on wide screens. Narrower screens automatically show fewer so nothing is ever cramped.</li>
+  </ul>
+  <h3>Search engine defaults</h3>
+  <p>These help your shop appear well in search results and when shared on social media.</p>
+  <ul>
+    <li><strong>Default meta description</strong>: a sentence describing your whole shop, used on the homepage.</li>
+    <li><strong>Default sharing image</strong>: a picture used when a page has no image of its own.</li>
+    <li><strong>Twitter handle</strong>: your handle, including the <code>@</code>.</li>
+    <li><strong>Brand name</strong>: your brand, used in the structured data search engines read. Defaults to your site name if left blank.</li>
+  </ul>
+  <h3>Changing your password</h3>
+  <p>At the bottom of Settings you can set a new password. It must be at least ten characters. Leave the boxes blank to keep your current one. Changing your password signs you out, so you will log back in with the new one.</p>
+
+  <h2 id="licence">Removing the footer credit (optional)</h2>
+  <p>Without a licence, Nano Cart shows a small "Powered by Nano Cart" line in the footer. This is normal and completely fine to leave in place.</p>
+  <p>If you would rather remove it, you can buy a licence for your domain and paste the key into the <strong>Licence</strong> area of the admin. The footer credit then disappears. The check happens entirely on your own server, with no tracking and no contact with anyone. You can buy a licence from the Nano Cart website.</p>
+
+  <h2 id="golive">Going live and staying safe</h2>
+  <p>When you have finished a round of edits, the safest thing is to have the admin folder taken off the server. Your shop keeps working perfectly without it: customers browse, view products, and click through to pay exactly as before. The only thing that goes away is the private admin area, and with it any way for someone to try the password while you are not using it.</p>
+  <p>When you want to make changes again, the admin folder goes back on, you sign in, you work, and it comes off again. Your developer usually handles this part, so a typical routine is:</p>
+  <ol>
+    <li>Ask your developer to put the admin back.</li>
+    <li>Make your changes.</li>
+    <li>Tell them you are done so they can take it off again.</li>
+  </ol>
+
+  <h2 id="backups">Backups</h2>
+  <p>Your entire shop is a set of plain files on the server: the product details, the categories, and the images. There is no database. A simple scheduled copy of the shop folder and its config folder to a safe place is all the backup you need. Your developer sets this up once, and restoring is just copying the files back. It is worth confirming with them that backups are running.</p>
+
+  <h2 id="faq">Common questions</h2>
+  <p><strong>Can I sell different sizes or colours of the same product?</strong><br>Not as variants. Nano Cart is built for one item at one price. If you need size or colour options, list them as separate products, or use a fuller shop platform.</p>
+  <p><strong>Can customers buy several things in one go?</strong><br>No. There is no basket. Each product is a single Buy button that leads straight to its own checkout. This keeps the shop fast and simple, which suits small fixed catalogues.</p>
+  <p><strong>Where does the money go?</strong><br>Straight to your payment provider. Nano Cart never handles money or card details. It only shows your products and points the Buy button at the checkout page you set up.</p>
+  <p><strong>I changed a product but the shop looks the same.</strong><br>Refresh the page in your browser. If you edited an image's fit or size, give it a moment, as the new version is prepared the first time it is viewed.</p>
+  <p><strong>A product is not showing up.</strong><br>Check its status is Published, not Draft, and that it is filed under a category that exists.</p>
+  <p><strong>The admin will not load.</strong><br>The admin folder is most likely off the server for safety. Ask your developer to put it back so you can sign in.</p>
+
+  <h2 id="routine">A simple weekly routine</h2>
+  <ol>
+    <li>Have the admin put back on the server.</li>
+    <li>Sign in.</li>
+    <li>Add new products as drafts, with photos and checkout links.</li>
+    <li>Preview them on the live shop.</li>
+    <li>Switch the ones you are happy with to Published.</li>
+    <li>Sign out and have the admin taken off again.</li>
+  </ol>
+  <p>That is the whole job. Build your categories once, add products as you make them, and let the shop stay quiet, fast, and safe in between.</p>
+
+  <footer class="endmatter">
+    <p>Nano Cart User Guide. For setup and deployment see INSTALL.md, and the built in Help page inside the admin for a quick reference while you work.</p>
+  </footer>
+
+</div>
+</body>
+</html>

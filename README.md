@@ -6,7 +6,7 @@ A flat-file PHP product catalogue framework for static client sites. Sells fixed
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/digitalfracture)
 
-> **Status: v1.5.1, feature-complete.** Production-ready and feature-locked: future releases are bug fixes, security, and documentation only. See [INSTALL.md](INSTALL.md) for deployment, [CHANGELOG.md](CHANGELOG.md) for release notes.
+> **Status: v1.6.0, feature-complete.** Production-ready and feature-locked: future releases are bug fixes, security, and documentation only. See [INSTALL.md](INSTALL.md) for deployment, [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ---
 

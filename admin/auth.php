@@ -574,7 +574,7 @@ function nano_cart_admin_footer(): string
     return '</main>'
         . '<footer class="nano-cart-admin-footer">'
         . '<p>Nano Cart' . $vstring . ' admin. Remove this folder when done editing.</p>'
-        . '<p><a href="https://digitalfracture.co.uk/nano-cart.html" target="_blank" rel="noopener">Buy a licence to remove the footer attribution</a> &middot; '
+        . '<p><a href="https://www.digitalfracture.co.uk/nano.php" target="_blank" rel="noopener">Buy a licence to remove the footer attribution</a> &middot; '
         . '<a href="https://github.com/digifrac/Nano-Cart" target="_blank" rel="noopener">GitHub</a> &middot; '
         . '<a href="https://buymeacoffee.com/digitalfracture" target="_blank" rel="noopener">Buy me a coffee</a></p>'
         . '</footer>'

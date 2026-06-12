@@ -66,7 +66,7 @@ Visit `http://127.0.0.1:8000/admin/setup.php` to run the setup wizard.
 - Share the project with developers who build static client sites
 - Write a blog post about your installation experience
 - [Buy me a coffee](https://buymeacoffee.com/digitalfracture) if Nano Cart saves you time
-- Buy a per-domain licence (single £29 / agency 3-pack £69 / agency unlimited £249) to use the project on commercial client work without the footer attribution. See [digitalfracture.co.uk/nano-cart.html](https://digitalfracture.co.uk/nano-cart.html).
+- Buy a per-domain licence (single £29 / agency 3-pack £69 / agency unlimited £249) to use the project on commercial client work without the footer attribution. See [digitalfracture.co.uk/nano.php](https://www.digitalfracture.co.uk/nano.php).
 
 ---
 

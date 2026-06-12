@@ -198,7 +198,7 @@ The next time the operator wants to make changes, re-upload `admin/` from the re
 
 If you have a per-domain licence for this shop, upload the admin temporarily, log in, go to **Licence**, paste the key, click **Verify and save**. The "Powered by Nano Cart" footer attribution disappears on public pages.
 
-Buy a licence at [digitalfracture.co.uk/nano-cart.html](https://digitalfracture.co.uk/nano-cart.html).
+Buy a licence at [digitalfracture.co.uk/nano.php](https://www.digitalfracture.co.uk/nano.php).
 
 ---
 

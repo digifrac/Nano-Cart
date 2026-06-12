@@ -174,7 +174,7 @@ The check is local: no phone-home, no network calls, no telemetry. Verification 
 
 Paste your licence key into the admin under **Licence**, or directly into `/shop-config/config.json` as the `licence_key` field.
 
-Buy a licence at [digitalfracture.co.uk/nano-cart.html](https://digitalfracture.co.uk/nano-cart.html).
+Buy a licence at [digitalfracture.co.uk/nano.php](https://www.digitalfracture.co.uk/nano.php).
 
 ---
 

@@ -17,7 +17,7 @@ Nano Cart sells one item, one price, one click. It is deliberately not a general
 - Size, colour, or other product variants
 - Quantity selectors or multi-item shopping carts
 - Inventory or stock tracking
-- Search, filtering, or pagination
+- Search or filtering
 - Tax engines or shipping rules
 - Subscriptions or recurring billing
 - Catalogues larger than around 150 SKUs

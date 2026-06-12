@@ -146,9 +146,11 @@ Restore is `rsync` in the other direction. No database to dump, no migrations to
 
 ## Roadmap
 
-**v1.5.1 is the current release, and Nano Cart is feature-complete.** Frontend, admin, media manager, on-demand image pipeline, transparency-aware images, manual product ordering, licence verification, and full documentation are all in place. See [CHANGELOG.md](CHANGELOG.md) for the full history.
+**v1.6.0 is the current release, and Nano Cart is feature-complete.** Frontend, admin, media manager, on-demand image pipeline, transparency-aware images, manual product ordering, licence verification, and full documentation are all in place. See [CHANGELOG.md](CHANGELOG.md) for the full history.
 
 **The feature set is now locked.** Future releases are limited to bug fixes, security patches, code cleanup, and documentation. No new features will be added: a small, fixed surface is the point of the product, not a stage it is passing through.
+
+**Possible future (only on sustained demand).** Category-page pagination. Deliberately omitted today because Nano Cart targets small catalogues (roughly 10-20 products per category), where one page is the right answer. It would only be considered if enough operators with larger catalogues ask for it.
 
 **Explicitly out of scope.** Variants, quantity selectors, multi-item carts, inventory, search, tax/shipping engines, subscriptions. These will not be added. See "Not for you" above.
 

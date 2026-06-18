@@ -17,6 +17,11 @@ $prods_per_row = ((int)($cfg['products_per_row'] ?? 4) === 3) ? 3 : 4;
 $site_name  = nano_cart_site_name();
 $shop_path  = nano_cart_shop_path();
 $categories = nano_cart_load_categories();
+// Homepage grid is capped to two rows of category cards (6 at 3-per-row,
+// 8 at 4-per-row). Operators choose which categories fill the slots; the
+// rest remain reachable from the off-canvas category nav. With no slots
+// assigned, all categories show (unchanged behaviour).
+$home_categories = nano_cart_homepage_categories($categories, $cats_per_row * 2);
 $featured   = nano_cart_load_products(['featured' => true]);
 $heroes     = nano_cart_load_products(['hero_featured' => true]);
 $hero       = $heroes[0] ?? null;
@@ -67,11 +72,11 @@ $page_h1 = $site_name !== '' ? $site_name : 'Shop';
   </section>
 <?php endif; ?>
 
-<?php if (!empty($categories)): ?>
+<?php if (!empty($home_categories)): ?>
   <section class="nano-cart-section nano-cart-categories">
     <h2 class="nano-cart-section-title">Categories</h2>
     <div class="nano-cart-grid" style="--nano-cart-cards-per-row: <?= $cats_per_row ?>;">
-<?php foreach ($categories as $cat):
+<?php foreach ($home_categories as $cat):
     $cat_url = $shop_path . '/' . $cat['slug'] . '/';
     $has_img = !empty($cat['image']);
 ?>

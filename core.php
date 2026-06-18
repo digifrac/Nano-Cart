@@ -19,7 +19,7 @@ if (!defined('NANO_CART_BOOTSTRAPPED')) {
  * Project version. Bumped on every public release alongside the
  * VERSION file at the repo root. Displayed in the admin footer.
  */
-const NANO_CART_VERSION = '1.6.0';
+const NANO_CART_VERSION = '1.7.0';
 
 // Register the failsafe before loading anything else, so that a missing
 // required file or an unloadable config below degrades to a clean page
@@ -229,6 +229,32 @@ function nano_cart_load_categories(): array
         return strcmp((string)($a['name'] ?? ''), (string)($b['name'] ?? ''));
     });
     return $out;
+}
+
+/**
+ * The categories to show in the homepage grid. Each category may carry a
+ * `homepage_slot` (1..$cap). If any category is slotted, only the slotted
+ * ones are shown, ordered by slot number. If none are slotted, all
+ * categories are returned, so an existing shop is unchanged until an
+ * operator starts assigning slots. The off-canvas category nav always
+ * lists every category regardless of slots.
+ *
+ * @param array $categories Output of nano_cart_load_categories().
+ * @param int   $cap        Maximum slots, = categories_per_row * 2 (6 or 8).
+ */
+function nano_cart_homepage_categories(array $categories, int $cap): array
+{
+    $slotted = [];
+    foreach ($categories as $c) {
+        if (!array_key_exists('homepage_slot', $c)) continue;
+        $slot = (int)$c['homepage_slot'];
+        if ($slot < 1 || $slot > $cap) continue;
+        if (isset($slotted[$slot])) continue; // first category wins a contested slot
+        $slotted[$slot] = $c;
+    }
+    if (empty($slotted)) return $categories; // fallback: no slots assigned yet
+    ksort($slotted);
+    return array_values($slotted);
 }
 
 /* ----------------------------------------------------------------------- */

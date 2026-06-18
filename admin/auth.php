@@ -375,6 +375,48 @@ function nano_cart_admin_save_category(array $category): bool
     return true;
 }
 
+/**
+ * Assign homepage slots to categories. $slot_to_slug maps a slot number
+ * (1..$cap) to a category slug (or '' for empty). Each category ends up
+ * with at most one homepage_slot, each slot held by at most one category:
+ * the first non-empty entry wins a contested slot or category. Categories
+ * not given a slot have homepage_slot removed. Only changed files are
+ * rewritten.
+ */
+function nano_cart_admin_set_homepage_slots(array $slot_to_slug, int $cap): bool
+{
+    // Build slug => slot, deduping so a category can hold only one slot.
+    $slug_to_slot = [];
+    for ($slot = 1; $slot <= $cap; $slot++) {
+        $slug = trim((string)($slot_to_slug[$slot] ?? ''));
+        if ($slug === '' || !nano_cart_slug_ok($slug)) continue;
+        if (isset($slug_to_slot[$slug])) continue; // category already holds an earlier slot
+        $slug_to_slot[$slug] = $slot;
+    }
+
+    $ok = true;
+    foreach (glob(NANO_CART_CATEGORIES_PATH . '/*.json') ?: [] as $path) {
+        $c = json_decode((string)file_get_contents($path), true);
+        if (!is_array($c)) continue;
+        $slug = (string)($c['slug'] ?? '');
+        $new  = $slug_to_slot[$slug] ?? null;
+        $cur  = array_key_exists('homepage_slot', $c) ? (int)$c['homepage_slot'] : null;
+        if ($new === null) {
+            if (!array_key_exists('homepage_slot', $c)) continue; // unchanged
+            unset($c['homepage_slot']);
+        } else {
+            if ($cur === $new) continue; // unchanged
+            $c['homepage_slot'] = $new;
+        }
+        $json = json_encode($c, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if ($json === false || !nano_cart_admin_atomic_write($path, $json)) {
+            $ok = false;
+        }
+    }
+    nano_cart_admin_regenerate_sitemap();
+    return $ok;
+}
+
 function nano_cart_admin_delete_category(string $slug): bool
 {
     if (!nano_cart_slug_ok($slug)) return false;

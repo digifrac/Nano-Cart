@@ -73,6 +73,17 @@ Always build at least one category before you add a product, because every produ
 
 Repeat for each group of products you sell. Most small shops have somewhere between two and eight categories.
 
+### Featuring categories on the homepage
+
+If you build up a lot of categories, you do not want the homepage to become an endless wall of them. So the homepage shows a fixed number of category cards in **slots**, and you choose which categories fill them.
+
+* The homepage has **6 slots** (when categories show 3 per row) or **8 slots** (4 per row). The number follows your "Categories per row" setting.
+* On the **Categories** page there is a **Homepage slots** panel: one dropdown per slot. Pick a category for Slot 1, Slot 2, and so on, in the order you want them to appear. Leave a slot on "Empty" to leave it blank.
+* Categories you do not put in a slot are still there for shoppers, in the slide out **Categories** menu (the button at the top of every page). Nothing is lost, it is just not on the homepage.
+* To feature a different category, change a slot's dropdown to it and save. To reorder, change which category sits in which slot.
+
+If you leave every slot empty, the homepage simply shows all your categories, the same as before. So you only need to touch this once a shop grows past a homepage full of categories.
+
 ---
 
 ## Step two: get your checkout links ready

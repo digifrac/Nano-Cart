@@ -180,6 +180,7 @@ One category = one JSON file under `categories/`. Filename is `<slug>.json`.
 | `description` | string | no | `""` | Markdown source. Rendered alongside the banner image on the category page. Truncated to 150 plain-text characters for the meta description if `meta_description` not set. |
 | `image` | string | no | `null` | Path under `/media/category-images/`, without extension. May include one subfolder, e.g. `"prints/banner"`. |
 | `sort_order` | integer | no | — | Lower values appear first. If unset for all categories, ordering is alphabetical by `name`. Mixing set and unset is allowed (set values win, unset fall through to alphabetical). |
+| `homepage_slot` | integer | no | — | Position in the homepage category grid, `1`..`cap` where `cap = categories_per_row × 2` (6 or 8). **Uniqueness enforced by admin** — a slot is held by one category and a category holds one slot, both edited from the Homepage slots picker on the Categories page. If **no** category has a `homepage_slot`, the homepage shows all categories (default). If any do, the homepage shows only slotted categories, ordered by slot; the rest remain in the off-canvas category nav. |
 | `meta_title` | string | no | `null` | Overrides the `<title>` tag. If null, defaults to `name + " — " + site_name`. |
 | `meta_description` | string | no | `null` | Overrides the meta description. If null, derived from `description`. |
 
@@ -201,6 +202,7 @@ One category = one JSON file under `categories/`. Filename is `<slug>.json`.
   "description": "Hand-thrown stoneware and porcelain pieces, glazed and fired in our studio.\n\nEach piece is one of a kind.",
   "image": "pottery",
   "sort_order": 10,
+  "homepage_slot": 1,
   "meta_title": null,
   "meta_description": null,
   "image_width": "500",

@@ -50,6 +50,8 @@
   --nano-cart-link-hover:      #999999;
   --nano-cart-button:          #ff4d00;
   --nano-cart-button-hover:    #e64500;
+  --nano-cart-button-glow:     rgba(255, 77, 0, 0.30);
+  --nano-cart-button-glow-lift: rgba(255, 77, 0, 0.36);
   --nano-cart-shadow:          0 2px 4px rgba(0,0,0,0.08);
   --nano-cart-shadow-lift:     0 12px 28px rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.06);
   --nano-cart-content-width:   1100px;
@@ -142,15 +144,15 @@
 .nano-cart-footer-attribution {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--nano-cart-border);
   font-size: 0.8125rem;
   color: var(--nano-cart-text-muted);
+  opacity: 0.55;
   text-align: center;
 }
 .nano-cart-footer-attribution a {
-  color: var(--nano-cart-text-muted);
+  color: inherit;
   text-decoration: underline;
-  text-decoration-color: var(--nano-cart-border);
+  text-decoration-color: var(--nano-cart-border-soft);
   text-underline-offset: 0.15em;
 }
 .nano-cart-footer-attribution a:hover { color: var(--nano-cart-accent); }
@@ -190,7 +192,7 @@ a.nano-cart-breadcrumb-item:hover {
    a floating edge tab. The only on-page element is that tab; every category
    link lives in the slide-in panel, so it scales to any number and never
    competes with the host site's own header/mobile nav. Highlight colour is
-   orange (#ff4d00). Pure CSS (checkbox toggle), no JS. Mirrors the Nano CMS blog. */
+   --nano-cart-button. Pure CSS (checkbox toggle), no JS. Mirrors the Nano CMS blog. */
 .nano-cart-catnav { margin: 0; }
 .nano-cart-catnav-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 /* Floating edge tab - fixed to the right of the viewport, always reachable. */
@@ -217,7 +219,7 @@ a.nano-cart-breadcrumb-item:hover {
   box-shadow: -4px 0 14px rgba(0, 0, 0, 0.08);
   transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
 }
-.nano-cart-catnav-btn:hover { background: #ff4d00; color: #fff; border-color: #ff4d00; }
+.nano-cart-catnav-btn:hover { background: var(--nano-cart-button); color: #fff; border-color: var(--nano-cart-button); }
 .nano-cart-catnav-ico { width: 1.05rem; height: 1.05rem; flex: none; }
 
 .nano-cart-catnav-backdrop {
@@ -270,7 +272,7 @@ a.nano-cart-breadcrumb-item:hover {
   transition: color 140ms ease, background-color 140ms ease;
 }
 .nano-cart-catnav-links a:hover { color: var(--nano-cart-text); background: var(--nano-cart-bg-soft); }
-.nano-cart-catnav-links a.is-active { color: #ff4d00; background: var(--nano-cart-bg-soft); font-weight: 700; }
+.nano-cart-catnav-links a.is-active { color: var(--nano-cart-accent); background: var(--nano-cart-bg-soft); font-weight: 700; }
 
 /* Section headings. */
 .nano-cart-section {
@@ -421,12 +423,12 @@ a.nano-cart-breadcrumb-item:hover {
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: 0.01em;
-  box-shadow: 0 4px 16px rgba(255, 77, 0, 0.3);
+  box-shadow: 0 4px 16px var(--nano-cart-button-glow);
   transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
 }
 .nano-cart-hero-link:hover .nano-cart-hero-price {
   background: var(--nano-cart-button-hover);
-  box-shadow: 0 6px 20px rgba(255, 77, 0, 0.36);
+  box-shadow: 0 6px 20px var(--nano-cart-button-glow-lift);
 }
 @media (min-width: 768px) {
   .nano-cart-hero-link { flex-direction: row; }
@@ -676,13 +678,13 @@ a.nano-cart-breadcrumb-item:hover {
   font-weight: 800;
   letter-spacing: 0.01em;
   min-height: 66px;
-  box-shadow: 0 4px 16px rgba(255, 77, 0, 0.3);
+  box-shadow: 0 4px 16px var(--nano-cart-button-glow);
 }
 .nano-cart-buy-button:hover {
   background: var(--nano-cart-button-hover);
 }
 .nano-cart-product .nano-cart-buy-button:hover {
-  box-shadow: 0 4px 14px rgba(255, 77, 0, 0.32);
+  box-shadow: 0 4px 14px var(--nano-cart-button-glow-lift);
   transform: translateY(-1px);
 }
 .nano-cart-buy-button:active {

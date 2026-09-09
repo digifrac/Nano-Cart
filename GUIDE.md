@@ -47,7 +47,6 @@ Down the side of the admin you will find these areas:
 | **Categories** | The groups your products sit in. Create these before you add products. |
 | **Media** | Every image you have uploaded, in one place. |
 | **Settings** | Shop wide options: name, currency, layout, checkout style, and your password. |
-| **Licence** | Where you paste a licence key to remove the small footer credit. Optional. |
 | **Help** | A short reference card built into the admin. |
 
 The rest of this guide goes through these in the order you will actually use them.
@@ -252,14 +251,6 @@ These help your shop appear well in search results and when shared on social med
 ### Changing your password
 
 At the bottom of Settings you can set a new password. It must be at least ten characters. Leave the boxes blank to keep your current one. Changing your password signs you out, so you will log back in with the new one.
-
----
-
-## Removing the footer credit (optional)
-
-Without a licence, Nano Cart shows a small "Powered by Nano Cart" line in the footer. This is normal and completely fine to leave in place.
-
-If you would rather remove it, you can buy a licence for your domain and paste the key into the **Licence** area of the admin. The footer credit then disappears. The check happens entirely on your own server, with no tracking and no contact with anyone. You can buy a licence from the Nano Cart website.
 
 ---
 

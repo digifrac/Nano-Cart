@@ -43,11 +43,11 @@ The rule applies to **prose dashes used as punctuation**, not to functional synt
 
 ### The footer attribution string
 
-The locked footer wording for the unlicensed-shop attribution is:
+The locked footer wording for the shop attribution is:
 
 > Powered by Nano Cart. Developed by Digital Fracture.
 
-Two short sentences separated by a period. Earlier draft material may show an em-dash variant (`Powered by Nano Cart — Developed by Digital Fracture`). That variant is superseded by this style rule and must not appear in the rendered footer, in README references to it, in admin previews, or in licence verification test cases.
+Two short sentences separated by a period. Earlier draft material may show an em-dash variant (`Powered by Nano Cart — Developed by Digital Fracture`). That variant is superseded by this style rule and must not appear in the rendered footer, in README references to it, in admin previews, or in tests.
 
 ### Why this rule exists
 

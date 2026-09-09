@@ -160,22 +160,6 @@ Restore is `rsync` in the other direction. No database to dump, no migrations to
 
 **The code is MIT-licensed.** Free to use, fork, modify, and deploy commercially.
 
-**Footer attribution is removable via a per-domain licence:**
-
-| Tier | Price | Use |
-|------|-------|-----|
-| Single domain | £29 | One shop on one domain |
-| Agency 3-pack | £69 | Up to three shops |
-| Agency unlimited | £249 | Unlimited domains (wildcard) |
-
-Without a licence, Nano Cart displays a small "Powered by Nano Cart. Developed by Digital Fracture." footer on the pages it renders. With a valid licence, the footer is hidden. Localhost, `127.0.0.1`, any host with a non-default port, and `.test` / `.local` zones skip the licence check, so local development is always footer-free.
-
-The check is local: no phone-home, no network calls, no telemetry. Verification uses libsodium's Ed25519 against an embedded Digital Fracture public key.
-
-Paste your licence key into the admin under **Licence**, or directly into `/shop-config/config.json` as the `licence_key` field.
-
-Buy a licence at [digitalfracture.co.uk/nano.php](https://www.digitalfracture.co.uk/nano.php).
-
 ---
 
 ## Contributing
